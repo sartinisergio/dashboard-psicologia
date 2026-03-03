@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Psicologia Generale L-19 / LM-85bis</title>
+<style>
+:root {
+    --zanichelli-blue: #003C82;
+    --zanichelli-light: #0068C8;
+    --zanichelli-accent: #E63946;
+    --zanichelli-green: #2A9D8F;
+    --zanichelli-orange: #F4A261;
+    --zanichelli-gold: #E9C46A;
+    --zanichelli-purple: #7B2D8E;
+    --bg-primary: #F0F4F8;
+    --bg-card: #FFFFFF;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A5568;
+    --border-color: #E2E8F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+.top-toolbar{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border-color);padding:10px 2rem;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.toolbar-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border-color);background:#fff;color:var(--text-primary);transition:all .2s;font-family:inherit}
+.toolbar-btn:hover{background:#F0F4FF;border-color:var(--zanichelli-blue);color:var(--zanichelli-blue)}
+.toolbar-btn.primary{background:var(--zanichelli-blue);color:#fff;border-color:var(--zanichelli-blue)}
+.toolbar-btn.primary:hover{background:var(--zanichelli-light)}
+.toolbar-spacer{flex:1}
+.toolbar-title{font-size:13px;color:var(--text-secondary);font-weight:500}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,var(--zanichelli-light) 100%);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.05);border-radius:50%}
+.header-content{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.logo-area{display:flex;align-items:center;gap:1rem}
+.logo-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700}
+.brand{font-size:1.4rem;font-weight:700;letter-spacing:.5px}
+.header-badge{background:rgba(255,255,255,.15);padding:.4rem 1rem;border-radius:20px;font-size:.85rem;backdrop-filter:blur(10px)}
+.header h1{font-size:1.9rem;font-weight:700;margin-bottom:.3rem}
+.header .subtitle{font-size:1rem;opacity:.9}
+.header-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem}
+.header-kpi{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,.15)}
+.header-kpi .kpi-value{font-size:1.8rem;font-weight:800}
+.header-kpi .kpi-label{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.nav-tabs{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;transform:translateY(-1.2rem)}
+.nav-tab{padding:.6rem 1.3rem;background:var(--bg-card);border:none;border-radius:10px 10px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-secondary);box-shadow:var(--shadow-sm);transition:all .3s}
+.nav-tab:hover{color:var(--zanichelli-blue)}
+.nav-tab.active{background:var(--zanichelli-blue);color:#fff}
+.main-content{max-width:1400px;margin:0 auto;padding:.5rem 2rem 3rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section{margin-bottom:2rem}
+.section-title{font-size:1.15rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--zanichelli-light);display:flex;align-items:center;gap:.5rem}
+.section-title .icon{width:28px;height:28px;background:var(--zanichelli-blue);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card{background:var(--bg-card);border-radius:14px;box-shadow:var(--shadow-md);padding:1.5rem;margin-bottom:1.2rem;border:1px solid var(--border-color);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1.2rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.chart-container{position:relative;width:100%;max-width:100%;margin:0 auto}
+.chart-container.chart-sm{height:280px}.chart-container.chart-md{height:360px}.chart-container.chart-lg{height:440px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table th{background:var(--zanichelli-blue);color:#fff;padding:.7rem .8rem;text-align:left;font-weight:600;position:sticky;top:0;white-space:nowrap}
+.data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--border-color);vertical-align:top}
+.data-table tr:hover td{background:#F7FAFC}
+.data-table-wrapper{max-height:520px;overflow-y:auto;border-radius:10px;border:1px solid var(--border-color)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.badge-zan{background:#FEE2E2;color:#991B1B}
+.badge-mgh{background:#FFEDD5;color:#9A3412}
+.badge-pic{background:#EDE9FE;color:#5B21B6}
+.badge-pea{background:#DBEAFE;color:#1E40AF}
+.badge-mul{background:#D1FAE5;color:#065F46}
+.badge-cor{background:#FCE7F3;color:#9D174D}
+.badge-car{background:#CCFBF1;color:#115E59}
+.badge-utet{background:#E2E8F0;color:#334155}
+.badge-alt{background:#F1F5F9;color:#475569}
+.badge-blue{background:#DBEAFE;color:#1E40AF}
+.badge-green{background:#D1FAE5;color:#065F46}
+.badge-orange{background:#FEF3C7;color:#92400E}
+.badge-red{background:#FEE2E2;color:#991B1B}
+.badge-purple{background:#EDE9FE;color:#5B21B6}
+.badge-zanichelli{background:#E63946;color:#fff}
+.badge-l19{background:#DBEAFE;color:#1E40AF}
+.badge-lm85{background:#FEF3C7;color:#92400E}
+.metric-card{background:var(--bg-card);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border-color)}
+.metric-card .metric-value{font-size:2rem;font-weight:800;color:var(--zanichelli-blue)}
+.metric-card .metric-label{font-size:.8rem;color:var(--text-secondary);margin-top:.3rem}
+.bar-h{display:flex;align-items:center;margin-bottom:.7rem;gap:.8rem}
+.bar-h .bar-label{flex:0 0 200px;font-size:.82rem;font-weight:600;text-align:right;color:var(--text-primary)}
+.bar-h .bar-track{flex:1;height:26px;background:#EDF2F7;border-radius:6px;overflow:hidden}
+.bar-h .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.75rem;font-weight:700;color:#fff;transition:width 1s ease}
+.highlight-box{background:linear-gradient(135deg,#EBF4FF 0%,#F0F7FF 100%);border-left:4px solid var(--zanichelli-blue);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.highlight-box.zanichelli-highlight{background:linear-gradient(135deg,#FFF5F5 0%,#FFF0F0 100%);border-left-color:var(--zanichelli-accent)}
+.highlight-box h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.highlight-box p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.competitor-card{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;border:1px solid var(--border-color);margin-bottom:.8rem;background:var(--bg-card)}
+.competitor-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.competitor-info{flex:1}
+.competitor-info .comp-title{font-weight:700;font-size:.92rem}
+.competitor-info .comp-publisher{font-size:.8rem;color:var(--text-secondary)}
+.competitor-info .comp-adoptions{font-size:.82rem;font-weight:600;color:var(--zanichelli-blue);margin-top:.2rem}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.swot-box{border-radius:12px;padding:1.2rem}
+.swot-box h4{font-size:.95rem;font-weight:700;margin-bottom:.6rem}
+.swot-box ul{list-style:none;padding:0}
+.swot-box ul li{padding:.3rem 0;font-size:.84rem;padding-left:1.2rem;position:relative}
+.swot-box ul li::before{content:'→';position:absolute;left:0;font-weight:700}
+.swot-strengths{background:#D1FAE5;border:1px solid #6EE7B7}.swot-strengths h4{color:#065F46}
+.swot-weaknesses{background:#FEE2E2;border:1px solid #FCA5A5}.swot-weaknesses h4{color:#991B1B}
+.swot-opportunities{background:#DBEAFE;border:1px solid #93C5FD}.swot-opportunities h4{color:#1E40AF}
+.swot-threats{background:#FEF3C7;border:1px solid #FCD34D}.swot-threats h4{color:#92400E}
+.collapsible{background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;color:var(--zanichelli-blue);user-select:none;transition:background .2s}
+.collapsible-header:hover{background:#F0F4FF}
+.collapsible-header .arrow{transition:transform .3s;font-size:12px}
+.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}
+.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.collapsible.open .collapsible-body{max-height:15000px}
+.cc{padding:0 22px 20px;font-size:.88rem;line-height:1.75;color:var(--text-primary)}
+.cc p{margin-bottom:10px}.cc ul{margin:8px 0 12px 18px}.cc ul li{margin-bottom:5px}
+.cc strong{color:var(--zanichelli-blue)}.cc h4{color:var(--zanichelli-light);margin:16px 0 8px;font-size:.95rem;font-weight:600}
+.spec-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}
+.spec-table th{background:var(--zanichelli-blue);color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}
+.spec-table td{padding:8px 10px;border-bottom:1px solid var(--border-color);vertical-align:top}
+.spec-table tr:hover{background:#F8FAFC}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;margin:1px}
+.tag-a{background:#D1FAE5;color:#065F46}.tag-m{background:#FEF3C7;color:#92400E}.tag-b{background:#FEE2E2;color:#991B1B}
+.pill-list{display:flex;flex-wrap:wrap;gap:.5rem}
+.pill{padding:.35rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.id-card{background:var(--bg-card);border-radius:14px;border:2px solid var(--zanichelli-blue);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-md)}
+.id-card.scenario-b{border-color:var(--zanichelli-accent)}
+.id-card-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:2px dashed var(--border-color)}
+.id-card-header .id-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}
+.id-card-header h3{font-size:1.05rem;font-weight:700}
+.id-card-header p{font-size:.82rem;color:var(--text-secondary)}
+.id-section{margin-bottom:1rem}
+.id-section h5{font-size:.88rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.id-section p,.id-section ul{font-size:.84rem;color:var(--text-secondary);line-height:1.65}
+.id-section ul{margin-left:1.2rem;margin-top:.3rem}.id-section ul li{margin-bottom:.3rem}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{padding:8px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--zanichelli-light)}
+.filter-bar input{width:240px}
+.filter-bar label{font-size:12px;color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.8rem;border-top:1px solid var(--border-color);max-width:1400px;margin:0 auto}
+tr.zan-row td{background:#FFF5F5 !important}
+tr.zan-row:hover td{background:#FFE8E8 !important}
+@media print {
+    .tab-panel{display:block !important}
+    .nav-tabs,.top-toolbar,.filter-bar{display:none !important}
+    .data-table-wrapper{max-height:none !important;overflow:visible !important}
+    .data-table th{position:static !important}
+    body{background:#fff !important}
+    .header{break-after:avoid}
+    .card,.collapsible{box-shadow:none !important;border:1px solid #ccc !important;break-inside:avoid;transform:none !important}
+    .collapsible-body{max-height:none !important;overflow:visible !important}
+    .section,.chart-container,.competitor-card,.swot-grid,.id-card{break-inside:avoid}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr !important}
+    .tab-panel::before{display:block;font-size:1.3rem;font-weight:700;color:var(--zanichelli-blue);border-bottom:3px solid var(--zanichelli-blue);padding-bottom:.5rem;margin-bottom:1.5rem;margin-top:2rem}
+    #panoramica::before{content:'';margin-top:0}
+    #adozioni::before{content:'— MAPPA ADOZIONI —'}
+    #competitor::before{content:'— ANALISI COMPETITOR —'}
+    #contenuti::before{content:'— CONTENUTI & PROGRAMMI —'}
+    #zanichelli::before{content:'— POSIZIONAMENTO ZANICHELLI —'}
+    .badge{border:1px solid #999 !important}
+    .badge-zanichelli{background:#E63946 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    tr.zan-row td{background:#FFF0F0 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .header,.header-kpi,.section-title .icon,.data-table th,.competitor-rank,.swot-box,.highlight-box,.bar-h .bar-fill,.id-card-header .id-icon{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .footer{border-top:2px solid #003C82;margin-top:2rem}
+}
+@media(max-width:768px){
+    .header h1{font-size:1.4rem}
+    .header-kpis{grid-template-columns:repeat(2,1fr)}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .nav-tabs{padding:0 1rem}
+    .main-content{padding:.5rem 1rem 2rem}
+    .swot-grid{grid-template-columns:1fr}
+    .bar-h .bar-label{flex:0 0 120px;font-size:.75rem}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===================== TOOLBAR ===================== -->
+<div class="top-toolbar">
+    <a href="index.html" class="toolbar-btn primary">← Torna alla Dashboard</a>
+    <div class="toolbar-spacer"></div>
+    <span class="toolbar-title">Psicologia Generale — L-19 / LM-85bis</span>
+    <button class="toolbar-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+</div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-top">
+            <div class="logo-area">
+                <div class="logo-icon">Z</div>
+                <span class="brand">ZANICHELLI</span>
+            </div>
+            <div class="header-badge">📊 Intelligence Report — Febbraio 2026</div>
+        </div>
+        <h1>Psicologia Generale — L-19 / LM-85bis</h1>
+        <p class="subtitle">Analisi adozioni, competitor, contenuti e posizionamento nei corsi di Scienze dell'Educazione e Formazione Primaria</p>
+        <div class="header-kpis">
+            <div class="header-kpi"><div class="kpi-value">38</div><div class="kpi-label">Cattedre censite</div></div>
+            <div class="header-kpi"><div class="kpi-value">~30</div><div class="kpi-label">Atenei coinvolti</div></div>
+            <div class="header-kpi"><div class="kpi-value">5</div><div class="kpi-label">Adozioni Zanichelli</div></div>
+            <div class="header-kpi"><div class="kpi-value">~14%</div><div class="kpi-label">Quota Zanichelli (3°)</div></div>
+            <div class="header-kpi"><div class="kpi-value">~40%</div><div class="kpi-label">McGraw-Hill (Leader)</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== NAV TABS ===================== -->
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('panoramica')">Panoramica</button>
+    <button class="nav-tab" onclick="showTab('adozioni')">Mappa Adozioni</button>
+    <button class="nav-tab" onclick="showTab('competitor')">Competitor</button>
+    <button class="nav-tab" onclick="showTab('contenuti')">Contenuti & Programmi</button>
+    <button class="nav-tab" onclick="showTab('zanichelli')">Posizionamento Zanichelli</button>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="main-content">
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-panel active" id="panoramica">
+    <div class="section">
+        <div class="section-title"><div class="icon">📈</div> Quadro di sintesi del mercato</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>McGraw-Hill domina nettamente — Zanichelli terzo editore con spazio di crescita</h4>
+            <p>In L-19 / LM-85bis, <strong>McGraw-Hill</strong> è il leader indiscusso con circa il <strong>40% delle cattedre</strong> (Holt ~9 + Feldman ~4 + Rullo 1 = ~14 cattedre). <strong>Il Mulino</strong> è secondo con circa il <strong>20%</strong> (Girotto-Zorzi, Legrenzi-Jacomuzzi, Anolli-Legrenzi, Speltini, Boca = ~7 cattedre). <strong>Zanichelli è terzo con circa il 14%</strong> (Schacter ×3 come testo principale + Revlin ×1 + Smith come complementare a Padova = 5 presenze). Seguono UTET (~8,6%, Coon-Mitterer), Pearson (~5,7%, Gerrig) e Piccin (~5,7%, Atkinson). Il bacino è enorme: <strong>70.254 iscritti L-19 + 41.729 LM-85bis = 111.983 studenti</strong>, quasi il doppio della L-24. Il gap rispetto alla leadership L-24 dello Schacter è significativo e rappresenta un'area di forte potenziale commerciale.</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-orange);">McGraw-Hill</div><div class="metric-label">Leader — ~40% (Holt + Feldman)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-green);">Il Mulino</div><div class="metric-label">Secondo — ~20% (Girotto-Zorzi + altri)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-accent);">Zanichelli</div><div class="metric-label">Terzo — ~14% (Schacter + Revlin)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:#64748B;">UTET</div><div class="metric-label">Quarto — ~8,6% (Coon-Mitterer)</div></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🏢</div> Market Share Editori</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartMarketShare"></canvas></div></div>
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartEditoreBar"></canvas></div></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎓</div> Il Contesto: L-19 + LM-85bis</div>
+        <div class="grid-2">
+            <div class="card">
+                <div class="chart-container chart-sm"><canvas id="chartClassi"></canvas></div>
+            </div>
+            <div class="card">
+                <div class="highlight-box">
+                    <h4>Due classi, un unico mercato da presidiare</h4>
+                    <p>La <strong>L-19</strong> (Scienze dell'Educazione) raccoglie <strong>70.254 iscritti</strong> su 75 corsi, con una fortissima componente telematica (Pegaso 18.552, e-Campus 3.908, Marconi 1.961). La <strong>LM-85bis</strong> (Formazione Primaria) conta <strong>41.729 iscritti</strong> su 41 corsi, tutti in presenza e a numero programmato. Psicologia Generale è materia obbligatoria del I anno in quasi tutti i corsi L-19, mentre in LM-85bis è spesso integrata con Psicologia dello Sviluppo o Psicobiologia. Il campione analizzato (37 cattedre L-19 + 1 LM-85bis) sottostima la LM-85bis, che richiede un'indagine dedicata più approfondita.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📅</div> Distribuzione per Semestre e Anno</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-sm"><canvas id="chartSemestre"></canvas></div></div>
+            <div class="card">
+                <div class="highlight-box">
+                    <h4>I anno, prevalentemente I semestre</h4>
+                    <p>Dove il dato è disponibile, Psicologia Generale è collocata al <strong>I anno</strong> nella grande maggioranza dei corsi L-19 (Bari, Cagliari, Chieti, Ferrara, L'Aquila, Modena, Padova, Perugia, Roma Tre, Salerno, Siena, Torino, Udine, Unicusano) e al II anno in pochi casi (Foggia, Messina, Trieste). Il <strong>I semestre</strong> è prevalente, ma il II semestre ha una quota significativa (Ferrara, Modena, Torino, Trieste). Alcuni programmi non specificano il semestre (Benevento, Catania, Macerata, Napoli Benincasa). L'unico corso LM-85bis censito (Udine) è al I anno, II semestre.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-panel" id="adozioni">
+    <div class="section">
+        <div class="section-title"><div class="icon">🗺️</div> Adozioni per Ateneo — Dettaglio completo</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="filter-bar">
+                <label>🔍 Cerca:</label>
+                <input type="text" id="searchTable" placeholder="Ateneo, docente, testo..." oninput="filterTable()">
+                <label>Editore:</label>
+                <select id="filterEditore" onchange="filterTable()">
+                    <option value="">Tutti</option>
+                    <option value="Zanichelli">Zanichelli</option>
+                    <option value="McGraw">McGraw-Hill</option>
+                    <option value="Mulino">Il Mulino</option>
+                    <option value="UTET">UTET</option>
+                    <option value="Pearson">Pearson</option>
+                    <option value="Piccin">Piccin</option>
+                    <option value="Cortina">Cortina</option>
+                    <option value="Carocci">Carocci</option>
+                </select>
+                <label>Classe:</label>
+                <select id="filterClasse" onchange="filterTable()">
+                    <option value="">Tutte</option>
+                    <option value="L-19">L-19</option>
+                    <option value="LM-85bis">LM-85bis</option>
+                </select>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="mainTable">
+                    <thead><tr><th onclick="sortTable(0)">Ateneo ↕</th><th>Classe</th><th>Insegnamento</th><th>Docente</th><th>Sem.</th><th>Testo Principale</th><th>Editore</th></tr></thead>
+                    <tbody>
+<tr><td>Bari</td><td><span class="badge badge-l19">L-19</span></td><td>Psicol. Gen. con cont. spec. infanzia 0-3</td><td>Elvira Brattico</td><td>I</td><td>NON DISPONIBILE</td><td><span class="badge badge-alt">N.D.</span></td></tr>
+<tr class="zan-row"><td><strong>Benevento G. Fortunato</strong></td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Alessia Bonavita</td><td>—</td><td>Schacter, Gilbert, Nock — Psicologia Generale (Zanichelli)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Bologna (Infanzia)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Marco Fabbri</td><td>I</td><td>Occhionero — Introduzione alla Psicol. Generale (Carocci)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Bologna (Sociale — Melotti)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Giannino Melotti</td><td>II</td><td>Speltini — L'età giovanile (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Bologna (Sociale — Passini)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Stefano Passini</td><td>II</td><td>Boca, Bocchiaro, Scaffidi Abbate — Intro. Psicol. Sociale (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Cagliari</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Federica Ambu</td><td>I</td><td>NON DISPONIBILE</td><td><span class="badge badge-alt">N.D.</span></td></tr>
+<tr><td>Catania (M-Z)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale M-Z</td><td>Antonio Pellicano</td><td>—</td><td>Holt et al. — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Catania (A-L)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale A-L</td><td>Concetta Pirrone</td><td>—</td><td>Holt et al. — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Chieti (Di-M)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale (Di-M)</td><td>Di Domenico / Ceccato</td><td>I</td><td>Holt et al. — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Chieti (A-De)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale (A-De)</td><td>Di Matteo / Brunetti</td><td>I</td><td>Holt et al. — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Chieti (N-Z)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale (N-Z)</td><td>Palumbo / Di Crosta</td><td>I</td><td>Holt et al. — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Ferrara</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Tania Cerni</td><td>II</td><td>Holt et al. — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Foggia</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Lucia Monacis</td><td>II</td><td>Anolli, Legrenzi — Psicologia Generale (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>L'Aquila</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Domenico Passafiume</td><td>I</td><td>Cherubini, Bricolo, Reverberi — Psicol. Generale (Cortina)</td><td><span class="badge badge-cor">Cortina</span></td></tr>
+<tr><td>Macerata (Canestrari)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Carla Canestrari</td><td>—</td><td>Feldman, Amoretti, Ciceri — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Macerata (Riccioni)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Ilaria Riccioni</td><td>—</td><td>Feldman, Amoretti, Ciceri — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Messina</td><td><span class="badge badge-l19">L-19</span></td><td>Fond. di Psicol. Generale</td><td>Simona Massimino</td><td>I</td><td>Legrenzi — Fond. di Psicol. Generale (Il Mulino) + Eysenck + Holt</td><td><span class="badge badge-mul">Il Mulino</span> + <span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano Cattolica (Piacenza)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Anna Flavia Di Natale</td><td>—</td><td>Feldman, Amoretti, Ciceri — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr class="zan-row"><td><strong>Modena-RE (M-Z)</strong></td><td><span class="badge badge-l19">L-19</span></td><td>Psicol. Gen. con cont. spec. prima infanzia (M-Z)</td><td>Sendy Caffarra</td><td>II</td><td>Schacter, Gilbert, Nock — Psicologia Generale (Zanichelli)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Modena-RE (A-L)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicol. Gen. con cont. spec. prima infanzia (A-L)</td><td>Angela Ciaramidaro</td><td>II</td><td>Feldman, Amoretti, Ciceri — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr class="zan-row"><td><strong>Napoli Benincasa (M-Z)</strong></td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale (M-Z)</td><td>Antimo Buonocore</td><td>—</td><td>Schacter, Gilbert, Nock — Psicologia Generale (Zanichelli)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Napoli Benincasa (A-L)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale (A-L)</td><td>Nadia Gamboz</td><td>—</td><td>Holt et al. — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Padova (Rovigo)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicol. Generale e Sociale</td><td>Cottone / Polezzi</td><td>I</td><td>Gerrig — Psicologia Generale (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr class="zan-row"><td><strong>Padova</strong></td><td><span class="badge badge-l19">L-19</span></td><td>Psicol. Generale e Sociale</td><td>Falvo / Fracasso</td><td>I</td><td>Cornoldi et al. — Processi cognitivi (Il Mulino) + <strong>Smith et al. — Psicol. Sociale (Zanichelli)</strong></td><td><span class="badge badge-mul">Il Mulino</span> + <span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Palermo</td><td><span class="badge badge-l19">L-19</span></td><td>Psicol. Gen. / Modelli e Tecn. Osservazione</td><td>Polizzi / Caci</td><td>I</td><td>Gerrig et al. — Psicologia Generale (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Perugia</td><td><span class="badge badge-l19">L-19</span></td><td>Psicol. Generale (Infanzia 0-3)</td><td>Piergiorgio Sensi</td><td>I</td><td>Legrenzi, Jacomuzzi — Fond. di Psicol. Generale (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Marconi</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Silvia Picazio</td><td>—</td><td>Holt et al. — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Roma Tre (Nido)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Fagioli (A-L) / Nardo (M-Z)</td><td>I</td><td>Coon, Mitterer, Martini — Psicol. Generale (UTET)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Roma Tre (Formatori)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Stefano Mastandrea</td><td>I</td><td>Coon, Mitterer — Psicol. Generale (UTET)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Roma Unicusano</td><td><span class="badge badge-l19">L-19</span></td><td>Psicol. Gen. (indir. infanzia)</td><td>Giorgia Morgese</td><td>—</td><td>Atkinson, Hilgard — Intro. alla Psicol. (Piccin) + Girotto, Zorzi (Il Mulino)</td><td><span class="badge badge-pic">Piccin</span> + <span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Salerno</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Laura Girelli</td><td>I</td><td>Feldman, Amoretti, Ciceri — Psicol. Generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Siena</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Marika Rullo</td><td>I</td><td>Rullo — Elementi di Psicol. Generale e Sociale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr class="zan-row"><td><strong>Torino (I-Z)</strong></td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale B (I-Z)</td><td>Ivan Enrici</td><td>II</td><td>Revlin — Psicol. Cognitiva (Zanichelli) + Dehaene (Cortina) + Holt (McGraw-Hill)</td><td><span class="badge badge-zanichelli">Zanichelli</span> + <span class="badge badge-cor">Cortina</span> + <span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Torino (A-H)</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale A (A-H)</td><td>Donato Liloia</td><td>II</td><td>Atkinson, Hilgard — Intro. alla Psicol. (Piccin)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Trieste</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Sors / Fornaciai</td><td>II</td><td>Girotto, Zorzi — Manuale Psicol. Generale (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Udine</td><td><span class="badge badge-l19">L-19</span></td><td>Basi di Psicol. Gen. per il lavoro educativo</td><td>Marta Stragà</td><td>II</td><td>Girotto, Zorzi — Manuale Psicol. Generale (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Udine</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Psicol. e Psicobiologia dello Sviluppo</td><td>Cosimo Urgesi</td><td>II</td><td>Atkinson, Hilgard — Intro. alla Psicol. (Piccin)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Viterbo Tuscia</td><td><span class="badge badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Sabrina Fagioli</td><td>—</td><td>Coon, Mitterer — Psicol. Generale (UTET)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Cattedre con presenza Zanichelli</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>5 cattedre con presenza Zanichelli — dettaglio</h4>
+            <p><strong>Schacter come testo principale (3 cattedre):</strong> Benevento G. Fortunato (Bonavita), Modena-RE canale M-Z (Caffarra), Napoli Benincasa canale M-Z (Buonocore).<br>
+            <strong>Revlin come testo principale (1 cattedra):</strong> Torino canale I-Z (Enrici) — Revlin, <em>Psicologia Cognitiva</em>, Zanichelli, con Dehaene (Cortina) e Holt (McGraw-Hill) come complementari.<br>
+            <strong>Smith, Mackie, Claypool come testo complementare (1 cattedra):</strong> Padova (Falvo/Fracasso) — <em>Psicologia Sociale</em>, Zanichelli, con Cornoldi (Il Mulino) come testo principale.<br>
+            <strong>Totale Zanichelli: 5 presenze su 36 cattedre con testo noto (~14%).</strong><br>
+            <strong>Nota chiave:</strong> Lo Schacter è il medesimo titolo leader nella L-24 (25,5%), ma qui è adottato solo in 3 cattedre. Il dato rivela un forte potenziale inespresso nel segmento educativo.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-panel" id="competitor">
+    <div class="section">
+        <div class="section-title"><div class="icon">⚔️</div> Ranking Manuali per numero di adozioni</div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">1</div><div class="competitor-info"><div class="comp-title">Holt, Bremner, Vliek et al. — <em>Psicologia Generale</em> (3ª ed., 2023)</div><div class="comp-publisher">McGraw-Hill Education — con piattaforma Connect</div><div class="comp-adoptions">~9 cattedre — Catania (×2), Chieti (×3), Ferrara, Napoli Benincasa A-L, Roma Marconi + Messina (complementare) + Torino I-Z (complementare)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">2</div><div class="competitor-info"><div class="comp-title">Feldman, Amoretti, Ciceri — <em>Psicologia Generale</em> (4ª ed., 2021)</div><div class="comp-publisher">McGraw-Hill Education — con piattaforma Connect</div><div class="comp-adoptions">~5 cattedre — Macerata (×2), Milano Cattolica Piacenza, Modena-RE A-L, Salerno</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-accent);">3</div><div class="competitor-info"><div class="comp-title">Schacter, Gilbert, Nock — <em>Psicologia Generale</em> (3ª ed., 2024)</div><div class="comp-publisher">Zanichelli</div><div class="comp-adoptions">3 cattedre come principale — Benevento (Bonavita), Modena-RE M-Z (Caffarra), Napoli Benincasa M-Z (Buonocore)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-green);">4</div><div class="competitor-info"><div class="comp-title">Girotto & Zorzi — <em>Manuale di Psicologia Generale</em> (Il Mulino, 2016)</div><div class="comp-publisher">Il Mulino</div><div class="comp-adoptions">~3 cattedre — Trieste, Udine L-19 + Roma Unicusano (complementare)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#64748B;">5</div><div class="competitor-info"><div class="comp-title">Coon, Mitterer, Martini — <em>Psicologia Generale</em> (UTET, 2020/2025)</div><div class="comp-publisher">UTET Università — a cura di Nardo, Fagioli, Mastandrea</div><div class="comp-adoptions">3 cattedre — Roma Tre Nido (Fagioli/Nardo), Roma Tre Formatori (Mastandrea), Viterbo (Fagioli)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#3B82F6;">6</div><div class="competitor-info"><div class="comp-title">Gerrig, Zimbardo et al. — <em>Psicologia Generale</em> (Pearson)</div><div class="comp-publisher">Pearson</div><div class="comp-adoptions">2 cattedre — Padova Rovigo (Cottone/Polezzi), Palermo (Polizzi/Caci)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#8B5CF6;">7</div><div class="competitor-info"><div class="comp-title">Atkinson & Hilgard — <em>Introduzione alla Psicologia</em> (Piccin)</div><div class="comp-publisher">Piccin</div><div class="comp-adoptions">2-3 cattedre — Torino A-H (Liloia), Udine LM-85bis (Urgesi) + Roma Unicusano (complementare)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#264653;">8</div><div class="competitor-info"><div class="comp-title">Legrenzi / Anolli-Legrenzi — <em>Fondamenti / Psicologia Generale</em> (Il Mulino)</div><div class="comp-publisher">Il Mulino</div><div class="comp-adoptions">~3 cattedre — Perugia (Legrenzi-Jacomuzzi), Foggia (Anolli-Legrenzi), Messina (Legrenzi)</div></div></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📚</div> Analisi comparativa dei manuali</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">Holt et al. — Psicologia Generale (McGraw-Hill) — IL LEADER<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>È il <strong>manuale dominante in L-19</strong>, adottato in almeno 9 cattedre come testo principale e presente come complementare in altre 2. La 3ª edizione italiana (2023) è la versione corrente.</p>
+                <p><strong>Perché domina in L-19:</strong> L'approccio "Capire la mente osservando il comportamento" si sposa bene con la formazione dell'educatore, che ha bisogno di strumenti osservativi più che di modelli sperimentali puri. La piattaforma Connect offre quiz, flashcard e monitoraggio — particolarmente attraente per le telematiche (Roma Marconi).</p>
+                <p><strong>Punti di forza:</strong> Chiarezza espositiva, forte enfasi sul metodo scientifico e sulla relazione genetica-ambiente-comportamento. 752 pagine complete ma modulari. Stessa adozione in L-24 (Chieti, Firenze, Catania), il che crea continuità di brand per i docenti a cavallo tra classi.</p>
+                <p><strong>Punti di debolezza:</strong> Eccessiva estensione per corsi da 6-8 CFU; molti docenti escludono capitoli (psicopatologia, salute). Non offre contenuti specifici per l'infanzia 0-3 o per il contesto educativo.</p>
+                <p><strong>Nota strategica:</strong> A Chieti, gli stessi docenti (Di Domenico/Ceccato, Brunetti, Palumbo/Di Crosta) usano Holt sia in L-24 che in L-19. Il blocco Chieti (3 canali L-19 + 3 canali L-24 = 6 cattedre Holt) è un bastione McGraw-Hill quasi inespugnabile.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Feldman, Amoretti, Ciceri — Psicologia Generale (McGraw-Hill)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>La 4ª edizione italiana (2021) è il secondo cavallo di McGraw-Hill, adottato in 5 cattedre L-19.</p>
+                <p><strong>Perché funziona in L-19:</strong> L'attenzione alla psicologia positiva, al benessere e allo stress/coping si allinea con la missione formativa dell'educatore. La curatela italiana (Amoretti/Ciceri) garantisce riferimenti al contesto italiano. A Milano Cattolica Piacenza viene integrato con Riva, <em>Nativi digitali</em> (Il Mulino) — segnale di attenzione al digitale nell'educazione.</p>
+                <p><strong>Punti di forza:</strong> Più accessibile e compatto dell'Holt (502 pp. vs 752 pp.). Piattaforma Connect inclusa. Versioni personalizzate "Create" disponibili.</p>
+                <p><strong>Punti di debolezza:</strong> Meno aggiornato dell'Holt (2021 vs 2023). Talvolta integrato con monografie per coprire storia della psicologia.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Schacter, Gilbert, Nock — Psicologia Generale (Zanichelli)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Leader assoluto in L-24, lo Schacter ha una penetrazione molto inferiore in L-19: <strong>solo 3 cattedre</strong> come principale (Benevento, Modena M-Z, Napoli Benincasa M-Z).</p>
+                <p><strong>Perché il gap rispetto alla L-24:</strong> Lo Schacter nasce come manuale per il curriculum psicologico puro, con forte impronta sperimentale e neurobiologica. In L-19, dove il focus è sulla progettazione educativa e sull'intervento nei servizi, i docenti preferiscono testi con un taglio più applicativo o osservativo (Holt) oppure più compatti (Feldman).</p>
+                <p><strong>Punti di forza:</strong> Edizione 2024 la più aggiornata del mercato. Approccio integrato (basi biologiche → processi cognitivi → personalità → sviluppo). Docenti che insegnano anche in L-24 possono adottarlo per coerenza.</p>
+                <p><strong>Punti di debolezza per L-19:</strong> Mancano contenuti specifici per l'educatore (infanzia 0-3, osservazione, progettazione educativa). L'estensione del testo è un problema ancora più marcato che in L-24, dato che i corsi L-19 hanno tipicamente meno CFU dedicati alla psicologia generale. Le risorse digitali sono meno strutturate di Connect.</p>
+                <p><strong>Caso emblematico — Napoli Benincasa:</strong> Il corso ha due canali: Buonocore adotta Schacter, Gamboz adotta Holt. Questo split dimostra che lo Schacter può competere anche in L-19 quando il docente ha una formazione di tipo sperimentale.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Coon, Mitterer, Martini — Psicologia Generale (UTET)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Adottato in 3 cattedre, tutte a Roma Tre e Viterbo. La 4ª edizione italiana (settembre 2025) è stata curata da Nardo, Fagioli e Mastandrea — gli stessi docenti che lo adottano.</p>
+                <p><strong>Perché funziona in L-19:</strong> Apparato didattico ricchissimo di esempi concreti e situazioni di vita quotidiana, ideale per studenti di scienze dell'educazione. La curatela italiana è firmata dai docenti stessi, creando un circolo virtuoso curatore→adottante difficile da scardinare.</p>
+                <p><strong>Punti di forza:</strong> 736 pagine nella nuova edizione 2025 con aggiornamenti significativi. Forte radicamento a Roma Tre (2 corsi L-19) e Viterbo.</p>
+                <p><strong>Punti di debolezza:</strong> Diffusione limitata a un singolo ecosistema (Roma Tre + Viterbo). UTET ha una rete commerciale più ridotta rispetto a McGraw-Hill o Zanichelli.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Girotto & Zorzi — Manuale di Psicologia Generale (Il Mulino)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Adottato in 3 cattedre L-19 (Trieste, Udine, Unicusano come complementare) — la stessa nicchia nord-est già vista in L-24.</p>
+                <p><strong>Perché funziona:</strong> Orientamento forte verso la scienza cognitiva e l'elaborazione dell'informazione. Ideale per corsi che vogliono dare una base sperimentale solida anche nell'ambito educativo.</p>
+                <p><strong>Limite per L-19:</strong> Troppo tecnico e privo di riferimenti al contesto educativo. La presenza in L-19 è un'estensione della preferenza dei docenti più che una scelta mirata al profilo professionale dell'educatore.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Testi con taglio psicosociale — Bologna (Speltini, Boca)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Un fenomeno specifico dell'L-19: a Bologna, i corsi di "Psicologia Generale" nell'indirizzo <em>Educatore Sociale e Culturale</em> adottano testi di psicologia sociale e psicologia dell'adolescenza, non manuali classici di psicologia generale.</p>
+                <p><strong>Melotti:</strong> Speltini, <em>L'età giovanile</em> (Il Mulino) + Miceli, <em>Sentirsi soli</em> + articolo su bullismo elettronico.</p>
+                <p><strong>Passini:</strong> Boca, Bocchiaro, Scaffidi Abbate, <em>Introduzione alla Psicologia Sociale</em> (Il Mulino).</p>
+                <p><strong>Implicazione:</strong> Questi programmi non sono target per manuali di psicologia generale in senso stretto, ma potrebbero essere target per lo <strong>Smith, Mackie, Claypool — Psicologia Sociale (Zanichelli)</strong> nella prossima indagine sulla psicologia sociale in L-19.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Revlin — Psicologia Cognitiva (Zanichelli) — Caso Torino<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Caso unico e significativo: il canale I-Z di Torino (Enrici) adotta come testo principale il <strong>Revlin — Psicologia Cognitiva (Zanichelli, 2014)</strong>, integrato con Dehaene, <em>Imparare</em> (Cortina) e Holt (McGraw-Hill) come complementari.</p>
+                <p><strong>Perché è rilevante:</strong> Dimostra che un manuale Zanichelli di psicologia cognitiva può trovare spazio anche in L-19 quando il docente ha un profilo neuroscientifico (Enrici lavora sulle neuroscienze cognitive). Il Revlin però è datato (2014) e non ha contenuti educativi specifici.</p>
+                <p><strong>Implicazione strategica:</strong> Se Zanichelli pubblicasse un nuovo manuale di psicologia cognitiva aggiornato (Scenario 2 della dashboard L-24), potrebbe candidarsi come sostituto del Revlin a Torino e aprire varchi in sedi simili.</p>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-panel" id="contenuti">
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Nucleo Minimo di Contenuti (presenza >90%)</div>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid var(--zanichelli-blue);"><h4 style="color:var(--zanichelli-blue);margin-bottom:.5rem;">Metodologia della Ricerca</h4><p style="font-size:.85rem;color:var(--text-secondary);">Introduzione al metodo scientifico in psicologia, storia delle scuole. Presente nella quasi totalità dei programmi, ma con meno enfasi sperimentale rispetto alla L-24.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-green);"><h4 style="color:var(--zanichelli-green);margin-bottom:.5rem;">Sensazione e Percezione</h4><p style="font-size:.85rem;color:var(--text-secondary);">Soglie sensoriali, organizzazione percettiva, sistemi sensoriali. Nucleo imprescindibile, ma trattato in modo meno approfondito che in L-24.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-orange);"><h4 style="color:var(--zanichelli-orange);margin-bottom:.5rem;">Apprendimento e Memoria</h4><p style="font-size:.85rem;color:var(--text-secondary);">Condizionamento classico e operante, modelli di memoria, oblio. Tema centrale, con particolare enfasi sulle implicazioni per la pratica educativa.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-accent);"><h4 style="color:var(--zanichelli-accent);margin-bottom:.5rem;">Pensiero e Linguaggio</h4><p style="font-size:.85rem;color:var(--text-secondary);">Struttura del linguaggio, processi di ragionamento, problem solving. Collegamento frequente con lo sviluppo linguistico infantile nei corsi orientati all'infanzia.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-purple);"><h4 style="color:var(--zanichelli-purple);margin-bottom:.5rem;">Emozione e Motivazione</h4><p style="font-size:.85rem;color:var(--text-secondary);">Teorie classiche (James-Lange, Schachter-Singer), basi biologiche delle spinte affettive. In L-19, forte attenzione alla competenza socio-affettiva dell'educatore.</p></div>
+            <div class="card" style="border-left:4px solid #264653;"><h4 style="color:#264653;margin-bottom:.5rem;">Attenzione</h4><p style="font-size:.85rem;color:var(--text-secondary);">Processi attentivi, attenzione selettiva e divisa. Nella L-19 l'attenzione è spesso collegata al tema della gestione del comportamento infantile.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📑</div> Nucleo Esteso (presenza 50-70%)</div>
+        <div class="card">
+            <div class="pill-list">
+                <span class="pill" style="background:#DBEAFE;color:#1E40AF;">Basi biologiche / SN</span>
+                <span class="pill" style="background:#D1FAE5;color:#065F46;">Intelligenza</span>
+                <span class="pill" style="background:#FEF3C7;color:#92400E;">Personalità</span>
+                <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Psicol. dello sviluppo (cenni)</span>
+                <span class="pill" style="background:#FEE2E2;color:#991B1B;">Social cognition</span>
+                <span class="pill" style="background:#E0F2FE;color:#075985;">Coscienza</span>
+                <span class="pill" style="background:#FCE7F3;color:#9D174D;">Stress e coping</span>
+                <span class="pill" style="background:#F0FDF4;color:#166534;">Competenza socio-affettiva</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🔬</div> Specificità, Variazioni e Approfondimenti</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">1. Specificità tematiche della L-19 rispetto alla L-24<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Focus sulla prima infanzia (0-3 anni):</strong> Presente in una minoranza significativa dei corsi, specificamente quelli orientati all'educatore di nido: Bari (Brattico), Bologna-Fabbri, Modena (Caffarra/Ciaramidaro), Perugia (Sensi), Roma Tre-Fagioli, Viterbo (Fagioli). Questo focus è assente in L-24 e rappresenta la specificità più marcata della L-19. Testi complementari tipici: Di Pietro & Salviato, <em>La competenza socio-affettiva in età prescolare</em> (Carocci); D'Amico, <em>Intelligenza emotiva e metaemotiva</em> (Il Mulino).</p>
+                <p><strong>Integrazione con la Psicologia Sociale:</strong> Alcuni atenei accorpano i due settori in corsi da 12 CFU (Padova, Siena). A Padova (Falvo/Fracasso) il corso si chiama "Psicologia Generale e Sociale" e adotta sia Cornoldi et al. (<em>Processi cognitivi</em>, Il Mulino) sia Smith et al. (<em>Psicologia Sociale</em>, Zanichelli). A Siena, Rullo usa un manuale proprio (<em>Elementi di Psicologia Generale e Sociale</em>, McGraw-Hill). Questa integrazione non esiste in L-24.</p>
+                <p><strong>Temi specialistici per l'educatore sociale:</strong> Bologna (Melotti/Passini) introduce variazioni rare: bullismo elettronico, burnout nelle professioni d'aiuto, solitudine, processi di empowerment — temi di psicologia sociale applicata all'educazione, non di psicologia generale in senso stretto.</p>
+                <p><strong>Tecnologie e "Nativi Digitali":</strong> Milano Cattolica Piacenza (Di Natale) integra Feldman con Riva, <em>Nativi digitali</em> (Il Mulino) — l'impatto dei nuovi media sull'apprendimento infantile.</p>
+                <p><strong>Psicologia e investigazione:</strong> Foggia (Monacis) cita il raccordo tra ricerca scientifica psicologica e indagine giudiziaria — una specificità unica nel campione.</p>
+                <p><strong>Neuroscienze e apprendimento:</strong> Torino I-Z (Enrici) adotta Dehaene, <em>Imparare. Il talento del cervello, la sfida delle macchine</em> (Cortina) come testo complementare — ponte tra neuroscienze cognitive e pedagogia.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">2. Prospettive / Scuole teoriche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <table class="spec-table">
+                    <thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Atenei di riferimento</th><th>Note</th></tr></thead>
+                    <tbody>
+                        <tr><td>Cognitivismo / HIP</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Catania, Chieti, Ferrara, Modena, Napoli, Torino, Trieste, Udine</td><td>Paradigma dominante, come in L-24, ma con minor formalismo metodologico</td></tr>
+                        <tr><td>Neuroscienze Cognitive</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>L'Aquila, Catania-Pellicano, Torino-Enrici, Udine LM-85bis</td><td>Spesso citata in relazione a mente-cervello; meno pervasiva che in L-24</td></tr>
+                        <tr><td>Gestalt / Comportamentismo</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Perugia, Roma Tre, Viterbo, Bologna</td><td>Nelle sezioni storiche e apprendimento/percezione</td></tr>
+                        <tr><td>Psicodinamica</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita / Implicita</td><td>Perugia (Freud), Roma Tre-Mastandrea</td><td>Più presente che in L-24 per la vicinanza all'educazione relazionale</td></tr>
+                        <tr><td>Etologia / Attaccamento</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Perugia (Bowlby)</td><td>Legato allo sviluppo 0-3 anni, specifico dei corsi per educatori di nido</td></tr>
+                        <tr><td>Psicologia Sociale applicata</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Bologna, Padova, Siena</td><td>Specificità L-19: corsi integrati Generale + Sociale</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">3. Modelli di strutturazione del corso<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Modello Standard (6-9 CFU):</strong> Didattica frontale centrata sul manuale. È il modello più diffuso (Cagliari, Catania, Ferrara, Salerno, Trieste, Udine). Il docente seleziona capitoli dal manuale generalista, spesso escludendo le sezioni più tecniche (basi biologiche, neuroscienze avanzate).</p>
+                <p><strong>Modello Integrato/Esteso (12 CFU):</strong> Programmi ampi che includono la Psicologia Sociale o la Psicobiologia (Padova, Roma Marconi, Siena). Questi corsi richiedono due o più testi e coprono sia i processi cognitivi sia le dinamiche sociali, offrendo una visione più completa per il futuro educatore.</p>
+                <p><strong>Modello Laboratoriale:</strong> Prevede ore di laboratorio o esercitazioni pratiche integrate alle lezioni teoriche (Palermo: tecniche di osservazione; Roma Tre: analisi di casi; Viterbo: intelligenza emotiva). Questo modello è specifico della L-19 e quasi assente in L-24.</p>
+                <p><strong>Modello Telematico/Blended:</strong> Basato su videolezioni, e-tivity e monitoraggio in piattaforma (Benevento, Roma Marconi, Unicusano). Particolarmente rilevante dato il peso delle telematiche in L-19 (Pegaso 18.552 iscritti, e-Campus 3.908).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">4. La specificità LM-85bis: il caso Udine<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>L'unico corso esplicitamente LM-85bis nel campione è <strong>Udine (Urgesi) — "Psicologia e Psicobiologia dello Sviluppo"</strong>. Adotta l'Atkinson & Hilgard (Piccin) con una prospettiva ontogenetica marcata, focalizzandosi sullo sviluppo del sistema nervoso del bambino e adattando i contenuti alle fasi di sviluppo per l'insegnamento scolastico.</p>
+                <p><strong>Implicazione:</strong> In LM-85bis, la psicologia generale è quasi sempre integrata con la psicologia dello sviluppo e la psicobiologia. I manuali generalisti competono quindi con testi di sviluppo (Belsky, Santrock, Vianello) e di neuropsicologia dell'età evolutiva. Per Zanichelli, questo significa che lo Schacter compete non solo con Holt e Feldman, ma anche con il Belsky (Zanichelli stesso!) sul versante dello sviluppo.</p>
+                <p><strong>Nota metodologica:</strong> Il campione è fortemente sbilanciato verso la L-19 (37 vs 1 cattedra LM-85bis). Per una mappatura completa della LM-85bis sarà necessaria un'indagine dedicata.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">5. Focus scientifico per ateneo — Tabella completa<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <div style="overflow-x:auto">
+                <table class="spec-table">
+                    <thead><tr><th>Ateneo</th><th>Classe</th><th>Focus scientifico</th><th>Testo cardine</th><th>Nota</th></tr></thead>
+                    <tbody>
+<tr><td>Bari</td><td>L-19</td><td>Infanzia 0-3</td><td>N.D.</td><td>Programma non disponibile; titolo esplicita il focus infanzia</td></tr>
+<tr><td>Benevento</td><td>L-19</td><td>Generale-Sperimentale</td><td>Schacter (Zanichelli)</td><td>Stessa docente (Bonavita) che insegna in L-24</td></tr>
+<tr><td>Bologna (Infanzia)</td><td>L-19</td><td>Processi cognitivi di base</td><td>Occhionero (Carocci)</td><td>Testo del docente Bologna L-24; continuità di approccio</td></tr>
+<tr><td>Bologna (Sociale)</td><td>L-19</td><td>Psicol. sociale / disagio giovanile</td><td>Speltini / Boca (Il Mulino)</td><td>Non è psicologia generale in senso stretto</td></tr>
+<tr><td>Cagliari</td><td>L-19</td><td>N.D.</td><td>N.D.</td><td>Programma non disponibile</td></tr>
+<tr><td>Catania</td><td>L-19</td><td>Osservativo-comportamentale</td><td>Holt (McGraw-Hill)</td><td>2 canali; stessa Pirrone che insegna in L-24</td></tr>
+<tr><td>Chieti</td><td>L-19</td><td>Cognitivismo di base</td><td>Holt (McGraw-Hill)</td><td>3 canali; stessi docenti della L-24</td></tr>
+<tr><td>Ferrara</td><td>L-19</td><td>Generale</td><td>Holt (McGraw-Hill)</td><td>Corso standard al I anno, II semestre</td></tr>
+<tr><td>Foggia</td><td>L-19</td><td>Investigativo</td><td>Anolli-Legrenzi (Il Mulino)</td><td>Raccordo ricerca psicologica / indagine giudiziaria</td></tr>
+<tr><td>L'Aquila</td><td>L-19</td><td>Neuroscienze</td><td>Cherubini (Cortina)</td><td>Scelta diversa dalla L-24 (dove usa Schacter)</td></tr>
+<tr><td>Macerata</td><td>L-19</td><td>Generale-Applicativo</td><td>Feldman (McGraw-Hill)</td><td>2 canali con stesso testo</td></tr>
+<tr><td>Messina</td><td>L-19</td><td>Eclettico / multi-testo</td><td>Legrenzi + Eysenck + Holt</td><td>3 testi diversi per un unico corso</td></tr>
+<tr><td>Milano Cattolica (PC)</td><td>L-19</td><td>Nativi digitali</td><td>Feldman (McGraw-Hill)</td><td>Integrazione con Riva, Nativi digitali</td></tr>
+<tr><td>Modena-RE</td><td>L-19</td><td>Infanzia / Cognitivo</td><td>Schacter / Feldman</td><td>2 canali con editori diversi (split Zanichelli/McGraw-Hill)</td></tr>
+<tr><td>Napoli Benincasa</td><td>L-19</td><td>Sperimentale / Osservativo</td><td>Schacter / Holt</td><td>2 canali con editori diversi (split Zanichelli/McGraw-Hill)</td></tr>
+<tr><td>Padova (Rovigo)</td><td>L-19</td><td>Generale + Sociale</td><td>Gerrig (Pearson)</td><td>Corso 12 CFU integrato</td></tr>
+<tr><td>Padova</td><td>L-19</td><td>Cognitivo + Sociale</td><td>Cornoldi (Il Mulino) + Smith (Zanichelli)</td><td>Presenza Zanichelli come testo di Psicol. Sociale</td></tr>
+<tr><td>Palermo</td><td>L-19</td><td>Osservazione comportamento</td><td>Gerrig (Pearson)</td><td>Integrato con Perricone-Polizzi su osservazione</td></tr>
+<tr><td>Perugia</td><td>L-19</td><td>Infanzia 0-3 / Psicodinamica</td><td>Legrenzi-Jacomuzzi (Il Mulino)</td><td>Include Freud e Bowlby — unico nel campione</td></tr>
+<tr><td>Roma Marconi</td><td>L-19</td><td>Telematico / Generale</td><td>Holt (McGraw-Hill)</td><td>Modello telematico; 1.961 iscritti L-19</td></tr>
+<tr><td>Roma Tre</td><td>L-19</td><td>Didattico-Applicativo</td><td>Coon-Mitterer (UTET)</td><td>2 corsi; curatori = docenti. Nuova ed. UTET 2025</td></tr>
+<tr><td>Roma Unicusano</td><td>L-19</td><td>Eclettico / Telematico</td><td>Atkinson (Piccin) + Girotto-Zorzi</td><td>2 testi da editori diversi</td></tr>
+<tr><td>Salerno</td><td>L-19</td><td>Generale</td><td>Feldman (McGraw-Hill)</td><td>—</td></tr>
+<tr><td>Siena</td><td>L-19</td><td>Generale + Sociale</td><td>Rullo (McGraw-Hill)</td><td>Manuale del docente stesso — circolo chiuso</td></tr>
+<tr><td>Torino</td><td>L-19</td><td>Neuroscienze / Cognitivo</td><td>Revlin (Zanichelli) / Atkinson (Piccin)</td><td>2 canali con approcci opposti</td></tr>
+<tr><td>Trieste</td><td>L-19</td><td>Cognitivo</td><td>Girotto-Zorzi (Il Mulino)</td><td>—</td></tr>
+<tr><td>Udine</td><td>L-19</td><td>Cognitivo</td><td>Girotto-Zorzi (Il Mulino)</td><td>—</td></tr>
+<tr><td>Udine</td><td>LM-85bis</td><td>Psicobiologia dello sviluppo</td><td>Atkinson (Piccin)</td><td>Unico LM-85bis; prospettiva ontogenetica</td></tr>
+<tr><td>Viterbo</td><td>L-19</td><td>Didattico / Intelligenza emotiva</td><td>Coon-Mitterer (UTET)</td><td>Integrato con D'Amico, Intelligenza emotiva</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">6. Limiti dell'analisi<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>L'analisi risente di tre limiti principali. Primo, l'<strong>assenza del dato CFU</strong> in molti programmi (Benevento, Macerata, Bologna, Catania, Napoli Benincasa) rende difficile valutare il carico didattico effettivo. Secondo, la <strong>fortissima sottorappresentazione della LM-85bis</strong> (1 sola cattedra su 41 corsi attivi) impedisce qualsiasi conclusione su quella classe — sarà necessaria un'indagine dedicata. Terzo, sussiste un'<strong>ambiguità terminologica</strong> tra "Psicologia Generale" e moduli integrati di Sviluppo o Sociale: a Bologna (Educatore Sociale) il corso si chiama "Psicologia Generale" ma adotta testi di psicologia sociale; a Padova il corso è "Psicologia Generale e Sociale" e copre entrambe le discipline. Queste ibridazioni rendono i confini dei contenuti core sfumati e dipendenti dall'orientamento del docente. Le prospettive teoriche, infine, sono spesso deducibili solo implicitamente dagli indici dei manuali adottati.</p>
+            </div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📊</div> Prospettive Teoriche — Diffusione nei programmi</div>
+        <div class="card"><div class="chart-container chart-md"><canvas id="chartTeorie"></canvas></div></div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-panel" id="zanichelli">
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Situazione attuale — Zanichelli in L-19 / LM-85bis</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli terzo editore con ~14% — forte potenziale di crescita rispetto alla leadership L-24</h4>
+            <p>Lo Schacter è adottato come <strong>testo principale in sole 3 cattedre L-19</strong> (Benevento, Modena M-Z, Napoli Benincasa M-Z), contro le 10 della L-24. Il Revlin (Psicol. Cognitiva, 2014) è adottato a Torino I-Z, e lo Smith (Psicol. Sociale) è complementare a Padova. Totale: <strong>5 presenze su 36 cattedre con testo noto (~14%)</strong>. Il gap con la L-24 (25,5%) è di 11 punti percentuali e rappresenta il principale spazio di crescita. McGraw-Hill domina con ~40% grazie a due linee (Holt ~25% + Feldman ~14%) e alla piattaforma Connect. Il Mulino è secondo con ~20%, forte del Girotto-Zorzi e dei testi di Legrenzi/Anolli. Il mercato L-19 + LM-85bis vale <strong>111.983 iscritti</strong> (vs 66.931 L-24): ogni punto percentuale guadagnato qui ha un impatto maggiore che in L-24.</p>
+        </div>
+        <div class="swot-grid">
+            <div class="swot-box swot-strengths">
+                <h4>✅ Punti di Forza</h4>
+                <ul>
+                    <li>Schacter è il manuale più aggiornato del mercato (ed. 2024) — vantaggio su Holt (2023) e Feldman (2021)</li>
+                    <li>Brand Zanichelli forte e riconosciuto anche nel settore educativo/scolastico</li>
+                    <li>Docenti "ponte" L-24→L-19 già adottanti (Bonavita a Benevento, Pirrone a Catania)</li>
+                    <li>Revlin posizionato nel segmento neuroscienze cognitive (Torino)</li>
+                    <li>Smith, Mackie (Psicol. Sociale) già presente a Padova come complementare</li>
+                    <li>Belsky (Psicol. dello Sviluppo, Zanichelli) potrebbe creare sinergie con lo Schacter nei corsi integrati</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-weaknesses">
+                <h4>⚠️ Punti di Debolezza</h4>
+                <ul>
+                    <li>Lo Schacter manca di contenuti specifici per l'educatore (infanzia 0-3, osservazione, progettazione)</li>
+                    <li>Assenza di una versione "breve" per corsi L-19 da 6-8 CFU — il Feldman (502 pp.) è più compatto</li>
+                    <li>Piattaforma digitale meno strutturata di Connect (McGraw-Hill)</li>
+                    <li>Il Revlin è datato (2014) — perde competitività vs manuali aggiornati</li>
+                    <li>Nessuna presenza nelle grandi telematiche L-19 (Pegaso, e-Campus) oltre a Benevento e Marconi (Holt)</li>
+                    <li>Assenza totale in LM-85bis nel campione censito</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-opportunities">
+                <h4>🚀 Opportunità</h4>
+                <ul>
+                    <li>Atenei con programma non disponibile (Bari, Cagliari) — finestre aperte</li>
+                    <li>Atenei "split" dove un canale è già Zanichelli (Modena: 1 su 2; Napoli Benincasa: 1 su 2) — puntare al secondo canale</li>
+                    <li>Docenti L-24 che insegnano anche in L-19 e già adottano Schacter (es. Catania-Pirrone: Holt in L-19, ma Holt anche in L-24?)</li>
+                    <li>L'Aquila: usa Schacter in L-24 ma Cherubini (Cortina) in L-19 — possibile conversione</li>
+                    <li>Mercato LM-85bis (41.729 iscritti) quasi interamente da esplorare</li>
+                    <li>Nuova edizione UTET 2025 del Coon-Mitterer potrebbe destabilizzare Roma Tre — momento per proporre alternativa</li>
+                    <li>Pacchetto Schacter + Belsky per corsi integrati Psicol. Generale + Sviluppo</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-threats">
+                <h4>🔶 Minacce</h4>
+                <ul>
+                    <li>McGraw-Hill con doppia linea (Holt + Feldman) e Connect presidia ~40% — posizione dominante</li>
+                    <li>Nuova ed. UTET 2025 (Coon-Mitterer) con curatori romani — potenziale espansione oltre Roma Tre</li>
+                    <li>Il Mulino forte con autori italiani (Girotto-Zorzi, Legrenzi, Anolli) e brand accademico</li>
+                    <li>Circoli chiusi autore=docente: Rullo a Siena (McGraw-Hill), Occhionero a Bologna (Carocci), curatori UTET a Roma Tre</li>
+                    <li>Inerzia accademica: in L-19 il manuale è spesso "ereditato" da una tradizione di cattedra</li>
+                    <li>Corsi telematici in forte crescita ma con logiche di adozione diverse (accordi istituzionali)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📋</div> Carta d'Identità del Manuale — Doppio Scenario</div>
+
+        <div class="id-card">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-blue);">📘</div>
+                <div>
+                    <h3>Scenario A — Potenziare lo Schacter per il segmento L-19</h3>
+                    <p>Come adattare il manuale esistente per competere nel mercato educativo</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>📌 Il problema centrale</h5>
+                <p>Lo Schacter è progettato per il curriculum psicologico (L-24) e la sua forza — l'approccio sperimentale integrato — diventa un limite in L-19, dove i docenti cercano testi più applicativi, più compatti e con riferimenti al contesto educativo. Non si tratta di cambiare il manuale, ma di fornire strumenti complementari che lo rendano appetibile anche per l'educatore.</p>
+            </div>
+            <div class="id-section">
+                <h5>🔧 Azioni concrete</h5>
+                <ul>
+                    <li><strong>Companion online "Psicologia per l'Educatore":</strong> Capitoli digitali aggiuntivi su: psicologia dell'infanzia 0-3 anni, osservazione del comportamento infantile, competenza socio-affettiva dell'educatore, applicazioni educative di ogni capitolo del manuale. Questo risponderebbe al bisogno dei corsi orientati all'infanzia (Bari, Modena, Perugia, Roma Tre, Viterbo) senza appesantire il volume cartaceo.</li>
+                    <li><strong>Guida "Percorsi di lettura per L-19":</strong> Un fascicolo (PDF scaricabile) che suggerisce ai docenti L-19 quali capitoli dello Schacter usare per corsi da 6, 8 o 10 CFU, con mappatura sui Descrittori di Dublino e sugli obiettivi formativi della classe L-19. Questo risolve il problema dell'eccessiva estensione segnalato da molti docenti.</li>
+                    <li><strong>Potenziamento risorse digitali:</strong> Quiz interattivi per capitolo, flashcard, video brevi sugli esperimenti classici — per competere con Connect (McGraw-Hill). Priorità: avere una piattaforma funzionante da presentare ai docenti delle telematiche (Benevento, Roma Marconi, Unicusano).</li>
+                    <li><strong>Pacchetto Schacter + Belsky:</strong> Per i corsi integrati Psicologia Generale + Sviluppo (frequenti in LM-85bis), proporre un bundle Zanichelli a prezzo ridotto. Questo sfrutterebbe la sinergia tra due titoli del catalogo.</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>🎯 Atenei target prioritari per lo Schacter in L-19</h5>
+                <p>In ordine di probabilità di successo: (1) completare la conversione degli atenei split (Modena canale A-L, Napoli Benincasa canale A-L); (2) convertire atenei dove Schacter è già adottato in L-24 dallo stesso docente (L'Aquila — Passafiume attualmente usa Cherubini); (3) aggredire cattedre con testi datati (Foggia — Anolli-Legrenzi; Messina — multi-testo frammentato).</p>
+            </div>
+        </div>
+
+        <div class="id-card scenario-b">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-accent);">📕</div>
+                <div>
+                    <h3>Scenario B — Nuovo manuale "Psicologia per l'Educazione"</h3>
+                    <p>Un testo nativo per L-19 e LM-85bis che non esiste ancora nel mercato italiano</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>🎯 L'opportunità di mercato</h5>
+                <p>Nessun manuale di Psicologia Generale presente nel campione è stato progettato specificamente per le classi L-19 / LM-85bis. Tutti i testi adottati (Holt, Feldman, Schacter, Atkinson, Girotto-Zorzi) nascono per il curriculum psicologico e vengono "adattati" dai docenti con selezioni di capitoli e testi complementari. Esiste uno spazio di mercato per un manuale che integri fin dall'origine i processi cognitivi fondamentali con le loro applicazioni educative, l'osservazione del comportamento infantile e la progettazione didattica. Un manuale del genere non avrebbe competitor diretti.</p>
+            </div>
+            <div class="id-section">
+                <h5>📌 Contenuti chiave del nuovo manuale</h5>
+                <ul>
+                    <li><strong>Parte I — Fondamenti:</strong> Metodo scientifico in psicologia, percezione, attenzione, apprendimento, memoria, pensiero, linguaggio, emozione e motivazione (il nucleo core, ma con esempi tratti da contesti educativi, non clinici o sperimentali)</li>
+                    <li><strong>Parte II — Sviluppo e apprendimento:</strong> Sviluppo cognitivo ed emotivo 0-11, attaccamento, funzioni esecutive, zone di sviluppo prossimale, scaffolding, carico cognitivo — il ponte tra psicologia generale e psicologia dello sviluppo che ogni corso L-19/LM-85bis cerca</li>
+                    <li><strong>Parte III — Applicazioni educative:</strong> Osservazione del comportamento, intelligenza emotiva e competenza socio-affettiva, gestione della classe e del gruppo, inclusione e BES/DSA, collaborazione educatore-famiglia, nativi digitali e tecnologie per l'apprendimento</li>
+                    <li><strong>Appendici operative:</strong> Griglie di osservazione, schede di progettazione, strumenti per l'educatore — il "valore aggiunto pratico" che nessun manuale generalista offre</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>👥 Profilo autori ideale</h5>
+                <p>Un team misto di <strong>psicologi generali/cognitivi + psicologi dello sviluppo + pedagogisti</strong> attivi in centri che formano educatori e insegnanti. Coinvolgere docenti che insegnano in L-19 (non solo in L-24) darebbe credibilità e accesso alla rete. Autori potenziali: docenti di atenei con corsi laboratoriali (Palermo, Roma Tre, Viterbo) o con corsi integrati (Padova, Siena). Il formato ideale: ~400 pagine, orientato a corsi da 8-10 CFU, con forte apparato didattico e risorse digitali native.</p>
+            </div>
+            <div class="id-section">
+                <h5>📐 Posizionamento competitivo</h5>
+                <p>Il nuovo manuale non cannibalizza lo Schacter (che resta per L-24 e per i docenti L-19 con profilo sperimentale) ma crea una seconda linea per il segmento educativo — esattamente come McGraw-Hill ha Holt + Feldman. Il target sono le ~20 cattedre L-19 che oggi usano Holt o Feldman "adattati" e le potenzialmente ~40 cattedre LM-85bis non ancora censite. Con 111.983 iscritti in L-19 + LM-85bis, anche una quota del 15% significherebbe ~16.800 studenti raggiunti.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Atenei Target — Priorità di intervento</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Priorità</th><th>Ateneo</th><th>Classe</th><th>Situazione attuale</th><th>Perché è un target</th><th>Azione suggerita</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Modena-RE (canale A-L)</td><td>L-19</td><td>Feldman (McGraw-Hill)</td><td>Il canale M-Z è già Schacter (Caffarra); effetto domino su Ciaramidaro</td><td>Copia saggio + incontro con Ciaramidaro; far leva sulla coerenza del corso</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Napoli Benincasa (canale A-L)</td><td>L-19</td><td>Holt (McGraw-Hill)</td><td>Il canale M-Z è già Schacter (Buonocore); 1.829 iscritti L-19 — alta posta</td><td>Contatto Gamboz; presentazione ed. 2024 e confronto Schacter vs Holt</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Bari</td><td>L-19</td><td>NON DISPONIBILE</td><td>796 iscritti; programma non noto — finestra aperta per proporre Schacter</td><td>Contatto esplorativo Brattico; copia saggio Schacter ed. 2024</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Cagliari</td><td>L-19</td><td>NON DISPONIBILE</td><td>738 iscritti; programma non noto — possibile che in L-24 usino Ciccarelli (Pearson)</td><td>Contatto esplorativo Ambu; copia saggio</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>L'Aquila</td><td>L-19</td><td>Cherubini (Cortina)</td><td>In L-24 lo stesso ateneo adotta Schacter; possibile allineamento</td><td>Contatto Passafiume; argomentare coerenza L-24/L-19</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Foggia</td><td>L-19</td><td>Anolli-Legrenzi (Il Mulino)</td><td>1.265 iscritti L-19; testo datato (Anolli è deceduto, testo non aggiornato)</td><td>Proposta Schacter come alternativa moderna; copia saggio</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Messina</td><td>L-19</td><td>Legrenzi + Eysenck + Holt (3 testi)</td><td>Programma frammentato su 3 testi; possibile semplificazione con testo unico</td><td>Proporre Schacter come sostituzione di tutti e 3; copia saggio</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Perugia</td><td>L-19</td><td>Legrenzi-Jacomuzzi (Il Mulino)</td><td>853 iscritti L-19; in L-24 usa Anolli (Il Mulino) — apertura possibile</td><td>Contatto Sensi; proposta Schacter + companion infanzia</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Roma Marconi</td><td>L-19</td><td>Holt (McGraw-Hill)</td><td>1.961 iscritti L-19; telematica in crescita; in L-24 già usa Feldman (McGraw-Hill)</td><td>Monitoraggio; demo piattaforma digitale Zanichelli</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Catania (2 canali)</td><td>L-19</td><td>Holt (McGraw-Hill) ×2</td><td>982 iscritti; Pirrone insegna anche in L-24 (Holt); blocco McGraw-Hill</td><td>Lungo termine; monitorare cambio docente</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Chieti (3 canali)</td><td>L-19</td><td>Holt (McGraw-Hill) ×3</td><td>421 iscritti; stessi docenti L-24 — bastione McGraw-Hill</td><td>Lungo termine; evento accademico</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>LM-85bis (tutte le sedi)</td><td>LM-85bis</td><td>Quasi interamente non censito</td><td>41.729 iscritti — mercato enorme da esplorare</td><td>Avviare indagine sistematica LM-85bis; mappatura completa</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">⚡</div> Quick Win — Azioni immediate</div>
+        <div class="highlight-box">
+            <h4>3 azioni a costo zero con impatto immediato</h4>
+            <p><strong>1. Completare gli split:</strong> Modena-RE (Ciaramidaro, canale A-L) e Napoli Benincasa (Gamboz, canale A-L) sono le due cattedre più facili da convertire: un canale è già Zanichelli, l'argomento della coerenza del corso è fortissimo. Risultato atteso: da 3 a 5 cattedre Schacter → quota dal 14% al ~19%.</p>
+            <p><strong>2. Allineare L'Aquila:</strong> In L-24 Tempesta adotta Schacter, in L-19 Passafiume adotta Cherubini (Cortina). Proporre l'allineamento come vantaggio per gli studenti e la segreteria.</p>
+            <p><strong>3. Esplorare i buchi:</strong> Bari (796 iscritti) e Cagliari (738 iscritti) hanno programmi non disponibili — contatto esplorativo con copia saggio per aprire la trattativa prima che altri editori si insedino.</p>
+        </div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Confronto L-24 vs L-19: il gap Zanichelli da colmare</h4>
+            <p>In L-24 lo Schacter è leader con 14 cattedre (25,5%). In L-19 è terzo con 3 cattedre come principale (~8,3% come solo Schacter, ~14% con Revlin e Smith). Il gap di 11 punti è il principale indicatore di potenziale inespresso. Se Zanichelli raggiungesse in L-19 la stessa quota della L-24, significherebbe circa 9 cattedre Schacter — il triplo di oggi. In un mercato da 111.983 iscritti, anche un incremento modesto (da 5 a 8 presenze) avrebbe un impatto commerciale molto significativo.</p>
+        </div>
+    </div>
+</div>
+
+</div><!-- /main-content -->
+
+<!-- ===================== FOOTER ===================== -->
+<div class="footer">
+    <p>Zanichelli Editore — Intelligence Report Psicologia Generale L-19 / LM-85bis | Febbraio 2026 | Dati raccolti da syllabi accademici A.A. 2024-2026</p>
+    <p style="margin-top:.3rem;">Dashboard generata per uso interno — Promozione Editoriale Universitaria</p>
+</div>
+
+<!-- ===================== CHARTS ===================== -->
+<script>
+const ZB='#003C82',ZL='#0068C8',ZA='#E63946',ZG='#2A9D8F',ZO='#F4A261',ZGo='#E9C46A',ZP='#7B2D8E';
+
+// Chart 1: Market Share Doughnut
+new Chart(document.getElementById('chartMarketShare'),{
+    type:'doughnut',
+    data:{labels:['McGraw-Hill (Holt+Feldman+Rullo)','Il Mulino (Girotto-Zorzi+Legrenzi+Anolli+Speltini+Boca)','Zanichelli (Schacter+Revlin+Smith)','UTET (Coon-Mitterer)','Pearson (Gerrig)','Piccin (Atkinson)','Cortina (Cherubini+Dehaene)','Carocci (Occhionero)','N.D.'],
+        datasets:[{data:[14,7,5,3,2,3,2,1,2],backgroundColor:['#F97316',ZG,ZA,'#64748B','#3B82F6','#8B5CF6','#EC4899','#14B8A6','#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},padding:8}},title:{display:true,text:'Distribuzione adozioni per editore (38 cattedre)',font:{size:14,weight:'bold'},color:ZB}}}
+});
+
+// Chart 2: Bar orizzontale editori
+new Chart(document.getElementById('chartEditoreBar'),{
+    type:'bar',
+    data:{labels:['McGraw-Hill','Il Mulino','Zanichelli','UTET','Piccin','Pearson','Cortina','Carocci','N.D.'],
+        datasets:[{label:'N° adozioni/presenze',data:[14,7,5,3,3,2,2,1,2],backgroundColor:['#F97316',ZG,ZA,'#64748B','#8B5CF6','#3B82F6','#EC4899','#14B8A6','#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'N° cattedre per editore',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,grid:{color:'#EDF2F7'}},y:{grid:{display:false}}}}
+});
+
+// Chart 3: L-19 vs LM-85bis
+new Chart(document.getElementById('chartClassi'),{
+    type:'doughnut',
+    data:{labels:['L-19 — Scienze dell\'Educazione (70.254)','LM-85bis — Formazione Primaria (41.729)'],
+        datasets:[{data:[70254,41729],backgroundColor:[ZB,ZGo],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},title:{display:true,text:'Iscritti per Classe di Laurea — 111.983 totali',font:{size:13,weight:'bold'},color:ZB}}}
+});
+// Chart 4: Distribuzione per semestre
+new Chart(document.getElementById('chartSemestre'),{
+    type:'pie',
+    data:{labels:['I Semestre','II Semestre','Annuale / N.D.'],
+        datasets:[{data:[17,9,12],backgroundColor:[ZB,ZG,ZO],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},title:{display:true,text:'Distribuzione per Semestre (38 cattedre)',font:{size:13,weight:'bold'},color:ZB}}}
+});
+
+// Chart 5: Prospettive teoriche
+new Chart(document.getElementById('chartTeorie'),{
+    type:'bar',
+    data:{labels:['Cognitivismo / HIP','Neuroscienze Cognitive','Gestalt / Comportamentismo','Psicologia Sociale applicata','Psicodinamica','Etologia / Attaccamento'],
+        datasets:[{label:'Diffusione nei programmi',data:[80,45,50,25,12,8],backgroundColor:[ZB,ZL,ZGo,ZG,ZP,'#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Diffusione prospettive teoriche nei programmi L-19/LM-85bis (%)',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,max:100,grid:{color:'#EDF2F7'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}}}
+});
+
+// Tab navigation
+function showTab(tabId){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// Collapsible toggle
+function toggleC(h){h.parentElement.classList.toggle('open')}
+
+// Table filter
+function filterTable(){
+    const s=document.getElementById('searchTable').value.toLowerCase();
+    const e=document.getElementById('filterEditore').value.toLowerCase();
+    const c=document.getElementById('filterClasse').value;
+    document.querySelectorAll('#mainTable tbody tr').forEach(r=>{
+        const t=r.textContent.toLowerCase();
+        const classMatch=!c||(c==='L-19'&&t.includes('l-19'))||(c==='LM-85bis'&&t.includes('lm-85bis'));
+        r.style.display=(!s||t.includes(s))&&(!e||t.includes(e))&&classMatch?'':'none';
+    });
+}
+
+// Table sort
+let sortDir={};
+function sortTable(c){
+    const tb=document.querySelector('#mainTable tbody');
+    const rows=Array.from(tb.querySelectorAll('tr'));
+    sortDir[c]=!sortDir[c];
+    rows.sort((a,b)=>{
+        const at=a.children[c].textContent.trim().toLowerCase();
+        const bt=b.children[c].textContent.trim().toLowerCase();
+        return sortDir[c]?at.localeCompare(bt):bt.localeCompare(at);
+    });
+    rows.forEach(r=>tb.appendChild(r));
+}
+</script>
+</body>
+</html>

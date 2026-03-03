@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Dashboard Psicologia Clinica L-24</title>
+<style>
+:root {
+    --zanichelli-blue: #003C82;
+    --zanichelli-light: #0068C8;
+    --zanichelli-accent: #E63946;
+    --zanichelli-green: #2A9D8F;
+    --zanichelli-orange: #F4A261;
+    --zanichelli-gold: #E9C46A;
+    --zanichelli-purple: #7B2D8E;
+    --bg-primary: #F0F4F8;
+    --bg-card: #FFFFFF;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A5568;
+    --border-color: #E2E8F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+.top-toolbar{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border-color);padding:10px 2rem;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.toolbar-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border-color);background:#fff;color:var(--text-primary);transition:all .2s;font-family:inherit}
+.toolbar-btn:hover{background:#F0F4FF;border-color:var(--zanichelli-blue);color:var(--zanichelli-blue)}
+.toolbar-btn.primary{background:var(--zanichelli-blue);color:#fff;border-color:var(--zanichelli-blue)}
+.toolbar-btn.primary:hover{background:var(--zanichelli-light)}
+.toolbar-spacer{flex:1}
+.toolbar-title{font-size:13px;color:var(--text-secondary);font-weight:500}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,var(--zanichelli-light) 100%);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.05);border-radius:50%}
+.header-content{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.logo-area{display:flex;align-items:center;gap:1rem}
+.logo-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700}
+.brand{font-size:1.4rem;font-weight:700;letter-spacing:.5px}
+.header-badge{background:rgba(255,255,255,.15);padding:.4rem 1rem;border-radius:20px;font-size:.85rem;backdrop-filter:blur(10px)}
+.header h1{font-size:1.9rem;font-weight:700;margin-bottom:.3rem}
+.header .subtitle{font-size:1rem;opacity:.9}
+.header-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem}
+.header-kpi{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,.15)}
+.header-kpi .kpi-value{font-size:1.8rem;font-weight:800}
+.header-kpi .kpi-label{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.nav-tabs{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;transform:translateY(-1.2rem)}
+.nav-tab{padding:.6rem 1.3rem;background:var(--bg-card);border:none;border-radius:10px 10px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-secondary);box-shadow:var(--shadow-sm);transition:all .3s}
+.nav-tab:hover{color:var(--zanichelli-blue)}
+.nav-tab.active{background:var(--zanichelli-blue);color:#fff}
+.main-content{max-width:1400px;margin:0 auto;padding:.5rem 2rem 3rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section{margin-bottom:2rem}
+.section-title{font-size:1.15rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--zanichelli-light);display:flex;align-items:center;gap:.5rem}
+.section-title .icon{width:28px;height:28px;background:var(--zanichelli-blue);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card{background:var(--bg-card);border-radius:14px;box-shadow:var(--shadow-md);padding:1.5rem;margin-bottom:1.2rem;border:1px solid var(--border-color);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1.2rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.chart-container{position:relative;width:100%;max-width:100%;margin:0 auto}
+.chart-container.chart-sm{height:280px}.chart-container.chart-md{height:360px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table th{background:var(--zanichelli-blue);color:#fff;padding:.7rem .8rem;text-align:left;font-weight:600;position:sticky;top:0;white-space:nowrap}
+.data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--border-color);vertical-align:top}
+.data-table tr:hover td{background:#F7FAFC}
+.data-table-wrapper{max-height:520px;overflow-y:auto;border-radius:10px;border:1px solid var(--border-color)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.badge-zanichelli{background:#E63946;color:#fff}
+.badge-zan{background:#FEE2E2;color:#991B1B}
+.badge-piccin{background:#FFEDD5;color:#9A3412}
+.badge-pearson{background:#DBEAFE;color:#1E40AF}
+.badge-cortina{background:#FCE7F3;color:#9D174D}
+.badge-fa{background:#EDE9FE;color:#5B21B6}
+.badge-carocci{background:#CCFBF1;color:#115E59}
+.badge-mulino{background:#D1FAE5;color:#065F46}
+.badge-astrolabio{background:#FEF3C7;color:#92400E}
+.badge-alt{background:#F1F5F9;color:#475569}
+.badge-blue{background:#DBEAFE;color:#1E40AF}
+.badge-green{background:#D1FAE5;color:#065F46}
+.badge-orange{background:#FEF3C7;color:#92400E}
+.badge-red{background:#FEE2E2;color:#991B1B}
+.badge-purple{background:#EDE9FE;color:#5B21B6}
+.metric-card{background:var(--bg-card);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border-color)}
+.metric-card .metric-value{font-size:2rem;font-weight:800;color:var(--zanichelli-blue)}
+.metric-card .metric-label{font-size:.8rem;color:var(--text-secondary);margin-top:.3rem}
+.highlight-box{background:linear-gradient(135deg,#EBF4FF 0%,#F0F7FF 100%);border-left:4px solid var(--zanichelli-blue);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.highlight-box.zanichelli-highlight{background:linear-gradient(135deg,#FFF5F5 0%,#FFF0F0 100%);border-left-color:var(--zanichelli-accent)}
+.highlight-box h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.highlight-box p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.competitor-card{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;border:1px solid var(--border-color);margin-bottom:.8rem;background:var(--bg-card)}
+.competitor-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.competitor-info{flex:1}
+.competitor-info .comp-title{font-weight:700;font-size:.92rem}
+.competitor-info .comp-publisher{font-size:.8rem;color:var(--text-secondary)}
+.competitor-info .comp-adoptions{font-size:.82rem;font-weight:600;color:var(--zanichelli-blue);margin-top:.2rem}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.swot-box{border-radius:12px;padding:1.2rem}
+.swot-box h4{font-size:.95rem;font-weight:700;margin-bottom:.6rem}
+.swot-box ul{list-style:none;padding:0}
+.swot-box ul li{padding:.3rem 0;font-size:.84rem;padding-left:1.2rem;position:relative}
+.swot-box ul li::before{content:'→';position:absolute;left:0;font-weight:700}
+.swot-strengths{background:#D1FAE5;border:1px solid #6EE7B7}.swot-strengths h4{color:#065F46}
+.swot-weaknesses{background:#FEE2E2;border:1px solid #FCA5A5}.swot-weaknesses h4{color:#991B1B}
+.swot-opportunities{background:#DBEAFE;border:1px solid #93C5FD}.swot-opportunities h4{color:#1E40AF}
+.swot-threats{background:#FEF3C7;border:1px solid #FCD34D}.swot-threats h4{color:#92400E}
+.collapsible{background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;color:var(--zanichelli-blue);user-select:none;transition:background .2s}
+.collapsible-header:hover{background:#F0F4FF}
+.collapsible-header .arrow{transition:transform .3s;font-size:12px}
+.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}
+.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.collapsible.open .collapsible-body{max-height:15000px}
+.cc{padding:0 22px 20px;font-size:.88rem;line-height:1.75;color:var(--text-primary)}
+.cc p{margin-bottom:10px}.cc ul{margin:8px 0 12px 18px}.cc ul li{margin-bottom:5px}
+.cc strong{color:var(--zanichelli-blue)}.cc h4{color:var(--zanichelli-light);margin:16px 0 8px;font-size:.95rem;font-weight:600}
+.spec-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}
+.spec-table th{background:var(--zanichelli-blue);color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}
+.spec-table td{padding:8px 10px;border-bottom:1px solid var(--border-color);vertical-align:top}
+.spec-table tr:hover{background:#F8FAFC}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;margin:1px}
+.tag-a{background:#D1FAE5;color:#065F46}.tag-m{background:#FEF3C7;color:#92400E}.tag-b{background:#FEE2E2;color:#991B1B}
+.pill-list{display:flex;flex-wrap:wrap;gap:.5rem}
+.pill{padding:.35rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.id-card{background:var(--bg-card);border-radius:14px;border:2px solid var(--zanichelli-blue);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-md)}
+.id-card.scenario-b{border-color:var(--zanichelli-accent)}
+.id-card-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:2px dashed var(--border-color)}
+.id-card-header .id-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}
+.id-card-header h3{font-size:1.05rem;font-weight:700}
+.id-card-header p{font-size:.82rem;color:var(--text-secondary)}
+.id-section{margin-bottom:1rem}
+.id-section h5{font-size:.88rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.id-section p,.id-section ul{font-size:.84rem;color:var(--text-secondary);line-height:1.65}
+.id-section ul{margin-left:1.2rem;margin-top:.3rem}.id-section ul li{margin-bottom:.3rem}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{padding:8px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--zanichelli-light)}
+.filter-bar input{width:240px}
+.filter-bar label{font-size:12px;color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.8rem;border-top:1px solid var(--border-color);max-width:1400px;margin:0 auto}
+@media print {
+    .tab-panel{display:block !important}
+    .nav-tabs,.top-toolbar,.filter-bar{display:none !important}
+    .data-table-wrapper{max-height:none !important;overflow:visible !important}
+    .data-table th{position:static !important}
+    body{background:#fff !important}
+    .header{break-after:avoid}
+    .card,.collapsible{box-shadow:none !important;border:1px solid #ccc !important;break-inside:avoid;transform:none !important}
+    .collapsible-body{max-height:none !important;overflow:visible !important}
+    .section,.chart-container,.competitor-card,.swot-grid,.id-card{break-inside:avoid}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr !important}
+    .tab-panel::before{display:block;font-size:1.3rem;font-weight:700;color:var(--zanichelli-blue);border-bottom:3px solid var(--zanichelli-blue);padding-bottom:.5rem;margin-bottom:1.5rem;margin-top:2rem}
+    #panoramica::before{content:'';margin-top:0}
+    #adozioni::before{content:'— MAPPA ADOZIONI —'}
+    #competitor::before{content:'— ANALISI COMPETITOR —'}
+    #contenuti::before{content:'— CONTENUTI & PROGRAMMI —'}
+    #zanichelli::before{content:'— POSIZIONAMENTO ZANICHELLI —'}
+    .badge{border:1px solid #999 !important}
+    .badge-zanichelli{background:#E63946 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    tr.zan-row{background:#FFF0F0 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .header,.header-kpi,.section-title .icon,.data-table th,.competitor-rank,.swot-box,.highlight-box,.id-card-header .id-icon{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .footer{border-top:2px solid #003C82;margin-top:2rem}
+}
+@media(max-width:768px){
+    .header h1{font-size:1.4rem}
+    .header-kpis{grid-template-columns:repeat(2,1fr)}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .nav-tabs{padding:0 1rem}
+    .main-content{padding:.5rem 1rem 2rem}
+    .swot-grid{grid-template-columns:1fr}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===================== TOOLBAR ===================== -->
+<div class="top-toolbar">
+    <a href="index.html" class="toolbar-btn primary">← Torna alla Dashboard</a>
+    <div class="toolbar-spacer"></div>
+    <span class="toolbar-title">Psicologia Clinica — L-24</span>
+    <button class="toolbar-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+</div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-top">
+            <div class="logo-area">
+                <div class="logo-icon">Z</div>
+                <span class="brand">ZANICHELLI</span>
+            </div>
+            <div class="header-badge">📊 Intelligence Report — Febbraio 2026</div>
+        </div>
+        <h1>Psicologia Clinica — L-24</h1>
+        <p class="subtitle">Analisi adozioni, competitor, contenuti e posizionamento nei corsi di Scienze e Tecniche Psicologiche</p>
+        <div class="header-kpis">
+            <div class="header-kpi"><div class="kpi-value">49</div><div class="kpi-label">Cattedre censite</div></div>
+            <div class="header-kpi"><div class="kpi-value">~30</div><div class="kpi-label">Atenei coinvolti</div></div>
+            <div class="header-kpi"><div class="kpi-value">7</div><div class="kpi-label">Adozioni Zanichelli (Kring)</div></div>
+            <div class="header-kpi"><div class="kpi-value">14%</div><div class="kpi-label">Quota Zanichelli</div></div>
+            <div class="header-kpi"><div class="kpi-value">~31%</div><div class="kpi-label">Piccin (Leader — Verrocchio)</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== NAV TABS ===================== -->
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('panoramica')">Panoramica</button>
+    <button class="nav-tab" onclick="showTab('adozioni')">Mappa Adozioni</button>
+    <button class="nav-tab" onclick="showTab('competitor')">Competitor</button>
+    <button class="nav-tab" onclick="showTab('contenuti')">Contenuti & Programmi</button>
+    <button class="nav-tab" onclick="showTab('zanichelli')">Posizionamento Zanichelli</button>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="main-content">
+
+<!-- ALERT ANALISI PONDERATA -->
+<div style="background:linear-gradient(135deg,#003865 0%,#0066B3 100%);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <div style="color:#fff;font-size:13.5px;line-height:1.6">
+    <strong style="font-size:14px">⚖️ Analisi Ponderata disponibile</strong><br>
+    <span style="opacity:.85">Le quote di mercato di questa materia pesate per numero di studenti effettivi sono ora consultabili nella dashboard principale.</span>
+  </div>
+  <a href="index.html?section=ponderata&materia=pond-psicli" style="display:inline-flex;align-items:center;gap:6px;background:#E63946;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;font-size:12.5px;font-weight:600;white-space:nowrap">Vai all'Analisi Ponderata →</a>
+</div>
+<!-- FINE ALERT -->
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-panel active" id="panoramica">
+    <div class="section">
+        <div class="section-title"><div class="icon">📈</div> Quadro di sintesi del mercato</div>
+        <div class="highlight-box">
+            <h4>Un mercato frammentato con un leader chiaro</h4>
+            <p>Psicologia Clinica è un insegnamento tipicamente collocato al <strong>2°-3° anno</strong> dei corsi L-24. Il mercato è dominato dal <strong>Verrocchio (Piccin)</strong> con circa il 31% delle cattedre (~15 su 49), seguito dall'<strong>Hooley (Pearson)</strong> al ~18% (~9 cattedre). Zanichelli è terza con il <strong>Kring & Johnson al 14%</strong> (7 cattedre). Il mercato è caratterizzato da un'elevata frammentazione: Cortina, Franco Angeli, Carocci e Astrolabio si dividono il restante ~37%, spesso con testi complementari o di nicchia psicodinamica. La McWilliams (Astrolabio) è il testo complementare più diffuso (~8 cattedre), presente trasversalmente come supporto psicodinamico.</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-orange);">Piccin</div><div class="metric-label">Leader — ~31% (Verrocchio)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:#AD1457;">Pearson</div><div class="metric-label">Secondo — ~18% (Hooley)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-accent);">Zanichelli</div><div class="metric-label">Terzo — 14% (Kring)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-blue);">Cortina</div><div class="metric-label">Quarto — ~14% (vari)</div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🏢</div> Market Share Editori</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartMarketShare"></canvas></div></div>
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartEditoreBar"></canvas></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-panel" id="adozioni">
+    <div class="section">
+        <div class="section-title"><div class="icon">🗺️</div> Adozioni per Ateneo — Dettaglio completo</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="filter-bar">
+                <label>🔍 Cerca:</label>
+                <input type="text" id="searchTable" placeholder="Ateneo, docente, testo..." oninput="filterTable()">
+                <label>Editore:</label>
+                <select id="filterEditore" onchange="filterTable()">
+                    <option value="">Tutti</option>
+                    <option value="Zanichelli">Zanichelli</option>
+                    <option value="Piccin">Piccin</option>
+                    <option value="Pearson">Pearson</option>
+                    <option value="Cortina">Cortina</option>
+                    <option value="Franco Angeli">Franco Angeli</option>
+                    <option value="Carocci">Carocci</option>
+                    <option value="Astrolabio">Astrolabio</option>
+                    <option value="Mulino">Il Mulino</option>
+                </select>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="mainTable">
+                    <thead><tr><th onclick="sortTable(0)">Ateneo ↕</th><th>Insegnamento</th><th onclick="sortTable(2)">Docente ↕</th><th>Anno/Sem</th><th>Testo Principale</th><th>Editore</th><th>Altri testi</th></tr></thead>
+                    <tbody>
+<tr><td>Bari</td><td>Psicologia Clinica</td><td>Alessandro Taurino</td><td>2 / II</td><td>Hooley et al. (2017)</td><td><span class="badge badge-pearson">Pearson</span></td><td>Cionini (Carocci), Beebe (Cortina), Taurino (×2)</td></tr>
+<tr><td>Benevento G. Fortunato</td><td>Psicol. Clinica e Tecn. Colloquio</td><td>Alessandro Germani</td><td>— / —</td><td>APA DSM-5-TR</td><td><span class="badge badge-cortina">Cortina</span></td><td>Del Corno (FA), Lingiardi PDM-2 (Cortina)</td></tr>
+<tr><td>Bergamo</td><td>Psicologia Clinica</td><td>Agostino Brugnera</td><td>3 / I</td><td>Materiali e slide</td><td><span class="badge badge-alt">N.D.</span></td><td>Parti selezionate</td></tr>
+<tr><td>Bologna</td><td>Psicologia Clinica</td><td>Sirri, Montebarocci</td><td>— / II</td><td>Hooley & Nock (2025)</td><td><span class="badge badge-pearson">Pearson</span></td><td>Lingiardi (Cortina), Gabbard (Cortina), Giromini (Mulino)</td></tr>
+<tr><td>Cagliari</td><td>Fond. di Psicologia Clinica</td><td>Donatella R. Petretto</td><td>3 / I</td><td>Hooley et al. (2017)</td><td><span class="badge badge-pearson">Pearson</span></td><td>—</td></tr>
+<tr><td>Campania Vanvitelli</td><td>Psicologia Clinica</td><td>Marina Cosenza</td><td>— / I</td><td>Hooley et al. (2017)</td><td><span class="badge badge-pearson">Pearson</span></td><td>Del Corno (FA), Grasso (Carocci), Lingiardi (Cortina)</td></tr>
+<tr><td>Catania (M-Z)</td><td>Psicologia Clinica</td><td>Pasquale Caponnetto</td><td>— / —</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Casu et al. (2024) AI Chatbots</td></tr>
+<tr><td>Catania (A-L)</td><td>Psicologia Clinica</td><td>M.C. Quattropani</td><td>— / —</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Quattropani et al. COVID (BMC)</td></tr>
+<tr><td>Catanzaro</td><td>Fond. Psicol. Clinica + Lab</td><td>Marianna Contrada</td><td>3 / I</td><td>Del Corno & Lang (2013)</td><td><span class="badge badge-fa">Franco Angeli</span></td><td>Scafidi Fonti (FA)</td></tr>
+<tr><td>Chieti (I-Z)</td><td>Psicologia Clinica</td><td>Chiara Conti</td><td>2 / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>—</td></tr>
+<tr><td>Chieti (A-H)</td><td>Psicologia Clinica</td><td>Maria Verrocchio</td><td>2 / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>—</td></tr>
+<tr><td>Enna Kore</td><td>Psicologia Clinica</td><td>Giuseppe Craparo</td><td>2 / II</td><td>Craparo & Mucci (2024)</td><td><span class="badge badge-alt">Giunti</span></td><td>Craparo (Cortina, FA), Gabbard (Cortina)</td></tr>
+<tr><td>Firenze</td><td>Psicologia Clinica</td><td>Claudio Sica</td><td>3 / II</td><td>Castonguay & Oltmanns (2023)</td><td><span class="badge badge-cortina">Cortina</span></td><td>Stanghellini (Edra), Lingiardi (Cortina), Sica (Erickson)</td></tr>
+<tr class="zan-row"><td><strong>Genova</strong></td><td>Psicologia Clinica</td><td>Monica Biggio</td><td>2 / I</td><td>Kring & Johnson (2023)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td><td>Slide AulaWeb</td></tr>
+<tr><td>Genova</td><td>Psicologia Clinica</td><td>Cecilia S. Pace</td><td>3 / I</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Grasso (Mulino), McWilliams (Astrol.), Gabbard (Cortina)</td></tr>
+<tr><td>L'Aquila</td><td>Psicol. Clinica e della Salute</td><td>Giulia Riccobono</td><td>3 / I</td><td>Rossi N. (2004)</td><td><span class="badge badge-mulino">Il Mulino</span></td><td>Materiale Moodle</td></tr>
+<tr><td>Lecce Salento</td><td>Psicologia Clinica</td><td>Claudia Venuleo</td><td>2 / I</td><td>Cordella et al. (2022)</td><td><span class="badge badge-carocci">Carocci</span></td><td>McWilliams (Astrolabio)</td></tr>
+<tr><td>Messina (Noto)</td><td>Fond. Psicol. Clinica</td><td>Simona Massimino</td><td>1 / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Lolli (FA)</td></tr>
+<tr><td>Messina</td><td>Fond. Psicol. Clinica</td><td>Flavia Marino</td><td>1 / II</td><td>—</td><td><span class="badge badge-alt">N.D.</span></td><td>—</td></tr>
+<tr><td>Milano Cattolica (BS)</td><td>Psicologia Clinica</td><td>Tamanza, Montanari</td><td>— / —</td><td>Lombardo (2005)</td><td><span class="badge badge-alt">Kappa</span></td><td>DSM-5, PDM-2, McWilliams (Astrol.)</td></tr>
+<tr><td>Milano Cattolica</td><td>Psicologia Clinica</td><td>Cavalera, Pietrabissa</td><td>— / —</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Volumi approfondimento a scelta</td></tr>
+<tr><td>Milano San Raffaele</td><td>Intro alla Psicol. Clinica</td><td>Giulia Gialdi</td><td>3 / I</td><td>Testi in Leganto</td><td><span class="badge badge-alt">N.D.</span></td><td>—</td></tr>
+<tr><td>Milano Statale</td><td>Psicol. Clinica di Base</td><td>Lamiani, Borghi</td><td>— / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>McWilliams (Astrolabio)</td></tr>
+<tr><td>Milano-Bicocca</td><td>Contesti e Metodi Psicol. Clinica</td><td>Rossella Di Pierro</td><td>— / —</td><td>Lingiardi (2024)</td><td><span class="badge badge-cortina">Cortina</span></td><td>Slides, articoli</td></tr>
+<tr><td>Modena-RE</td><td>Teorie e Tecn. Psicol. Clinica</td><td>Giorgia Varallo</td><td>2 / I</td><td>Kring et al. (2017)</td><td><span class="badge badge-cortina">Cortina</span></td><td>Anchisi (colloquio), Mini DSM-5 (Cortina)</td></tr>
+<tr><td>Napoli Benincasa</td><td>Psicologia Clinica</td><td>Gennaro Catone</td><td>— / —</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Gritti (Idelson Gnocchi)</td></tr>
+<tr><td>Napoli Federico II (A)</td><td>Psicologia Clinica</td><td>Anna Lisa Amodeo</td><td>2 / I</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>McWilliams (Astrol.), Bochicchio (Mulino)</td></tr>
+<tr><td>Napoli Federico II (B)</td><td>Psicologia Clinica</td><td>Cristiano Scandurra</td><td>2 / I</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>McWilliams (Astrol.), Bochicchio (Mulino)</td></tr>
+<tr><td>Padova (Cogn. Psicobiol.)</td><td>Psicologia Clinica</td><td>Claudio Gentili</td><td>2 / II</td><td>Hooley & Nock (2025)</td><td><span class="badge badge-pearson">Pearson</span></td><td>Slide Moodle</td></tr>
+<tr><td>Padova (Sviluppo/Pers.)</td><td>Psicologia Clinica</td><td>Sara Mondini</td><td>2 / II</td><td>Hooley & Nock (2025)</td><td><span class="badge badge-pearson">Pearson</span></td><td>Mondini & Tadioli (Carocci)</td></tr>
+<tr class="zan-row"><td><strong>Padova (Soc. Lavoro)</strong></td><td>Psicologia Clinica</td><td>Sonia Montemurro</td><td>2 / I</td><td>Turchi & Vendramini (2021)</td><td><span class="badge badge-alt">Univ. Press</span></td><td><strong>Kring & Johnson (Zanichelli)</strong> + 4 altri testi</td></tr>
+<tr class="zan-row"><td><strong>Padova (Sc. Tecn.)</strong></td><td>Psicologia Clinica</td><td>Caterina Novara</td><td>2 / II</td><td>Kring & Johnson (2023)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td><td>Testo a scelta per tesina</td></tr>
+<tr><td>Palermo (Lab.)</td><td>Psicol. Clinica e Laboratorio</td><td>Cecilia Giordano</td><td>2 / II</td><td>Del Corno & Lang (2013)</td><td><span class="badge badge-fa">Franco Angeli</span></td><td>Verrocchio (Piccin), Dazzi (Cortina)</td></tr>
+<tr><td>Palermo</td><td>Psicologia Clinica</td><td>Salerno, Lo Coco</td><td>2 / II</td><td>Del Corno & Lang (2013)</td><td><span class="badge badge-fa">Franco Angeli</span></td><td>Verrocchio (Piccin), Dazzi (Cortina)</td></tr>
+<tr><td>Parma</td><td>Elem. Psicol. Clinica e Psicopatol.</td><td>Christian Franceschini</td><td>2 / I</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Mini DSM-5-TR (Cortina)</td></tr>
+<tr><td>Pavia</td><td>Psicologia Clinica</td><td>Gian Mauro Manzoni</td><td>2 / I</td><td>Hooley & Nock (2025)</td><td><span class="badge badge-pearson">Pearson</span></td><td>Slide e articoli KIRO</td></tr>
+<tr><td>Roma Europea</td><td>Fond. Psicol. Clinica e Psicopat.</td><td>Contardi, Tamburello</td><td>1 / I</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Sims (Cortina), Boniwell (Mulino)</td></tr>
+<tr class="zan-row"><td><strong>Roma Marconi</strong></td><td>Psicologia Clinica</td><td>Chiara Baglioni</td><td>— / —</td><td>Kring et al. (2023)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td><td>Perdighe (Cortina), Mancini (Cortina)</td></tr>
+<tr><td>Roma Sapienza (Salute)</td><td>Psicologia Clinica</td><td>Barbara Cordella</td><td>2 / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Grasso (Carocci), Cordella (Carocci), Grasso (FA)</td></tr>
+<tr><td>Roma Sapienza (Sc.Tecn.)</td><td>Psicologia Clinica</td><td>Carlo Lai</td><td>2 / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>DSM-5</td></tr>
+<tr class="zan-row"><td><strong>Roma Sapienza (Proc.Soc.)</strong></td><td>Psicologia Clinica</td><td>Ottaviani, Panasiti</td><td>2 / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td><strong>Kring & Johnson (Zanichelli)</strong> complemento</td></tr>
+<tr><td>Roma Tor Vergata</td><td>Psicol. e Psicofisiologia Clinica</td><td>Rodolfo Rossi</td><td>— / —</td><td>Hooley & Nock</td><td><span class="badge badge-pearson">Pearson</span></td><td>—</td></tr>
+<tr class="zan-row"><td><strong>Roma Unicusano</strong></td><td>Psicologia Clinica</td><td>Nicoletta Vegni</td><td>2 / —</td><td>Kring et al. (2017)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td><td>Gabbard (Cortina), Dispense</td></tr>
+<tr class="zan-row"><td><strong>Sassari</strong></td><td>Psicologia Clinica</td><td>Mauro Enna</td><td>3 / I</td><td>Kring, Psicologia Clinica</td><td><span class="badge badge-zanichelli">Zanichelli</span></td><td>Dipietro (educ. razionale emotiva), Slide</td></tr>
+<tr><td>Torino (A-K)</td><td>Psicologia Clinica A</td><td>Castelli, Di Tella</td><td>2 / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Semi (Cortina)</td></tr>
+<tr><td>Torino (I-Z)</td><td>Psicologia Clinica B</td><td>Tesio, Civilotti</td><td>2 / II</td><td>Verrocchio (2023)</td><td><span class="badge badge-piccin">Piccin</span></td><td>Semi (Cortina)</td></tr>
+<tr class="zan-row"><td><strong>Trento</strong></td><td>Psicologia Clinica</td><td>Corazza, Bertamini</td><td>2 / II</td><td>Kring & Johnson (2023)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td><td>Corazza & Esposito (2025) Zanichelli</td></tr>
+<tr><td>Trieste</td><td>Psicologia Clinica</td><td>Barbara Penolazzi</td><td>3 / A</td><td>—</td><td><span class="badge badge-alt">N.D.</span></td><td>—</td></tr>
+<tr><td>Urbino</td><td>Psicologia Clinica</td><td>Alessandra D'Agostino</td><td>3 / I</td><td>Hooley & Nock (2025)</td><td><span class="badge badge-pearson">Pearson</span></td><td>Rossi Monti (Carocci), Borgna (Einaudi)</td></tr>
+<tr><td>Valle d'Aosta</td><td>Psicol. Clinica e Tecn. Colloquio</td><td>Laura Ferro</td><td>3 / I</td><td>Lingiardi & Gazzillo (2014)</td><td><span class="badge badge-cortina">Cortina</span></td><td>Lang (Cortina), Del Corno (FA ×2)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Cattedre con presenza Zanichelli</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>7 cattedre con presenza Zanichelli (Kring & Johnson) — dettaglio</h4>
+            <p><strong>Kring come testo principale (5 cattedre):</strong> Genova (Biggio), Padova Sc.Tecn. (Novara), Roma Marconi (Baglioni), Sassari (Enna), Trento (Corazza/Bertamini).<br>
+            <strong>Kring come testo complementare (2 cattedre):</strong> Padova Soc.Lavoro (Montemurro), Roma Sapienza Proc.Soc. (Ottaviani/Panasiti).<br>
+            <strong>Nota:</strong> A Trento è adottato anche Corazza & Esposito (2025), <em>Psicologia e psicopatologia delle nuove dipendenze</em>, Zanichelli — doppia presenza. A Roma Unicusano l'edizione in uso è ancora la 2017 (precedente alla 6ª ed. 2023). A Modena è adottata un'edizione Kring pubblicata da Cortina (2017), non Zanichelli.<br>
+            <strong>Totale Zanichelli: 7 cattedre (14%).</strong></p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-panel" id="competitor">
+    <div class="section">
+        <div class="section-title"><div class="icon">⚔️</div> Ranking Manuali per numero di adozioni</div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-orange);">1</div><div class="competitor-info"><div class="comp-title">Verrocchio M.C. — <em>Manuale di Psicologia Clinica</em> (Piccin, 2023)</div><div class="comp-publisher">Piccin</div><div class="comp-adoptions">~15 cattedre — Leader assoluto (~31%)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#AD1457;">2</div><div class="competitor-info"><div class="comp-title">Hooley J.M. & Nock M.K. — <em>Psicopatologia e Psicologia Clinica</em> (Pearson)</div><div class="comp-publisher">Pearson — ed. 2017 / 2025</div><div class="comp-adoptions">~9 cattedre — Bari, Bologna, Cagliari, Campania, Padova (×2), Pavia, Roma Tor Vergata, Urbino</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-accent);">3</div><div class="competitor-info"><div class="comp-title">Kring A.M. & Johnson S.L. — <em>Psicologia Clinica</em> (Zanichelli, 6ª ed. 2023)</div><div class="comp-publisher">Zanichelli</div><div class="comp-adoptions">7 cattedre (5 principale + 2 complemento) — Genova, Padova, Roma Marconi, Sapienza, Sassari, Trento, Unicusano</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#1565C0;">4</div><div class="competitor-info"><div class="comp-title">Vari autori — Cortina (Castonguay, Lingiardi, DSM-5-TR)</div><div class="comp-publisher">Raffaello Cortina</div><div class="comp-adoptions">~7 cattedre come principale — Benevento, Firenze, Milano-Bicocca, Modena, Valle d'Aosta + onnipresente come complemento</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#7B1FA2;">5</div><div class="competitor-info"><div class="comp-title">Del Corno & Lang — <em>Elementi di Psicologia Clinica</em> (Franco Angeli, 2013)</div><div class="comp-publisher">Franco Angeli</div><div class="comp-adoptions">~5 cattedre — Catanzaro, Palermo (×2) + complemento in molti atenei</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#4E342E;">6</div><div class="competitor-info"><div class="comp-title">McWilliams N. — <em>La Diagnosi Psicoanalitica</em> (Astrolabio)</div><div class="comp-publisher">Astrolabio — Testo complementare dominante</div><div class="comp-adoptions">~8 cattedre come complemento — Trasversale in corsi a orientamento psicodinamico</div></div></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📚</div> Analisi comparativa dei manuali</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">Verrocchio — Manuale di Psicologia Clinica (Piccin, 2023)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Adottato in circa la metà degli atenei. L'autrice (Chieti) è docente di riferimento nel settore, il che favorisce la diffusione accademica.</p>
+                <p><strong>Punti di forza:</strong> Manuale italiano di nuova generazione, pensato per il contesto formativo L-24. Approccio integrato: fondamenti epistemologici, assessment, psicopatologia e intervento. Aggiornamento recente (2023), copertura completa del programma-tipo.</p>
+                <p><strong>Punti di debolezza:</strong> Diffusione prevalentemente italiana; minore tradizione internazionale rispetto ai competitor anglosassoni tradotti.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Hooley & Nock — Psicopatologia e Psicologia Clinica (Pearson)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Testo internazionale centrato sulla psicopatologia descrittiva e l'approccio evidence-based. La nuova edizione 2025 è già adottata a Bologna, Padova, Pavia e Urbino.</p>
+                <p><strong>Punti di forza:</strong> Autorevolezza internazionale; forte aggiornamento empirico; approccio sistematico alla psicopatologia.</p>
+                <p><strong>Punti di debolezza:</strong> Minore copertura della dimensione clinico-relazionale e degli aspetti processuali della diagnosi; spesso affiancato da testi psicodinamici complementari.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Kring & Johnson — Psicologia Clinica (Zanichelli, 6ª ed. 2023)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Approccio integrato biopsicosociale, con forte impianto di ricerca empirica. La 6ª edizione 2023 è aggiornata al DSM-5-TR. A Trento è presente anche una seconda adozione Zanichelli: Corazza & Esposito (2025).</p>
+                <p><strong>Punti di forza:</strong> Rigore scientifico; approccio evidence-based; eccellente apparato didattico; brand Zanichelli.</p>
+                <p><strong>Punti di debolezza:</strong> Quota di mercato ancora inferiore al potenziale; compete direttamente con Hooley (Pearson) per lo stesso segmento evidence-based; la versione Unicusano è datata 2017.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">McWilliams — La Diagnosi Psicoanalitica (Astrolabio)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Non un manuale di psicologia clinica in senso stretto, ma il testo di riferimento per la diagnosi psicodinamica. Viene sistematicamente affiancato a un manuale principale (spesso Verrocchio o Hooley) per integrare la prospettiva funzionale/idiografica.</p>
+                <p><strong>Punti di forza:</strong> Indispensabile per i corsi a orientamento psicodinamico; autorevolezza internazionale; profondità clinica.</p>
+                <p><strong>Punti di debolezza:</strong> Non copre assessment, psicopatologia descrittiva né interventi evidence-based. Sempre testo complementare, mai unico.</p>
+            </div></div>
+        </div>
+    </div>
+</div>
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-panel" id="contenuti">
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Nucleo Minimo di Contenuti (presenza >90%)</div>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid var(--zanichelli-blue);"><h4 style="color:var(--zanichelli-blue);margin-bottom:.5rem;">Fondamenti & Epistemologia</h4><p style="font-size:.85rem;color:var(--text-secondary);">Definizione della disciplina, evoluzione storica (Freud, Witmer), distinzione modello clinico vs modello medico. Presente in quasi tutti i programmi.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-green);"><h4 style="color:var(--zanichelli-green);margin-bottom:.5rem;">Diagnosi & Assessment</h4><p style="font-size:.85rem;color:var(--text-secondary);">Uso del DSM-5-TR, tecniche di colloquio clinico, primo contatto con il paziente. Area di massima convergenza tra i programmi.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-orange);"><h4 style="color:var(--zanichelli-orange);margin-bottom:.5rem;">Psicopatologia Speciale</h4><p style="font-size:.85rem;color:var(--text-secondary);">Disturbi d'ansia, dell'umore, della personalità e dello spettro schizofrenico. Corpo centrale della maggior parte dei programmi.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-accent);"><h4 style="color:var(--zanichelli-accent);margin-bottom:.5rem;">Modelli di Intervento</h4><p style="font-size:.85rem;color:var(--text-secondary);">Panoramica dei principali orientamenti psicoterapeutici (psicodinamico, CBT, sistemico) e teoria della relazione terapeutica.</p></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📑</div> Nucleo Esteso (presenza 30-60%)</div>
+        <div class="card">
+            <div class="pill-list">
+                <span class="pill" style="background:#DBEAFE;color:#1E40AF;">PDM-2 (Manuale Diagnostico Psicodinamico)</span>
+                <span class="pill" style="background:#D1FAE5;color:#065F46;">Attaccamento e Trauma</span>
+                <span class="pill" style="background:#FEF3C7;color:#92400E;">Ricerca in Clinica (EBPP)</span>
+                <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Etica e Deontologia</span>
+                <span class="pill" style="background:#FEE2E2;color:#991B1B;">Diagnosi funzionale vs nosografica</span>
+                <span class="pill" style="background:#E0F2FE;color:#075985;">Neuropsicologia clinica</span>
+                <span class="pill" style="background:#FCE7F3;color:#9D174D;">Personalità e disturbi</span>
+                <span class="pill" style="background:#F0FDF4;color:#166534;">Colloquio clinico</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🔬</div> Specificità, Variazioni e Approfondimenti</div>
+
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">1. Specificità e Variazioni tematiche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Intelligenza Artificiale e Telepsicologia:</strong> Approfondimento specifico a Catania e Padova (Montemurro).</p>
+                <p><strong>Focus LGBT e Identità di Genere:</strong> Tematica centrale a Bari e Napoli Federico II.</p>
+                <p><strong>Neuropsicologia Clinica e Danni Cerebrali:</strong> Modulo specialistico che caratterizza Padova (Mondini, Zoia) e Catania.</p>
+                <p><strong>Psicologia Clinica dello Sport:</strong> Approfondimento unico offerto a Genova (Biggio).</p>
+                <p><strong>Psicologia Positiva e Scienza della Felicità:</strong> Inclusione rara di temi come ottimismo e benessere eudemonico a Roma Europea.</p>
+                <p><strong>Diagnosi Relazionale e Modelli Ecologici:</strong> Focus sui pionieri della terapia familiare (Minuchin, Bowen) e Bronfenbrenner a Roma Unicusano.</p>
+                <p><strong>Clinica del Sociale e Terzo Settore:</strong> Prospettiva orientata alla prevenzione in contesti educativi e sociali a Lecce Salento.</p>
+                <p><strong>Nuove Dipendenze:</strong> Trattazione specifica delle dipendenze comportamentali a Trento.</p>
+                <p><strong>Validazione Strumenti di Assessment (CCT/IRT):</strong> Approfondimento tecnico avanzato sulla validazione dei test a Chieti.</p>
+            </div></div>
+        </div>
+
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">2. Prospettive / Scuole Teoriche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <table class="spec-table">
+                    <thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Atenei di Riferimento</th></tr></thead>
+                    <tbody>
+                        <tr><td>Psicodinamica</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Bari, Bologna, Enna, Genova, Milano Cattolica, Napoli FII, Palermo, Sapienza, Urbino</td></tr>
+                        <tr><td>Cognitivo-Comportamentale</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Bergamo, Catania, Chieti, Modena, Roma Marconi, Sassari</td></tr>
+                        <tr><td>Sistemico-Relazionale</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Bari, Chieti, Milano Cattolica, Padova, Roma Unicusano</td></tr>
+                        <tr><td>Biopsicosociale</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Catania, Milano Cattolica, Palermo</td></tr>
+                        <tr><td>Fenomenologica / Ermeneutica</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Firenze, Urbino</td></tr>
+                        <tr><td>Umanistico-Esperienziale</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Bari, Catania, Chieti, Milano Statale</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">3. Modelli di Strutturazione del Corso<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Modello Tripartito (Fondamenti–Diagnosi–Patologia):</strong> Struttura più frequente. Esempi: Bari, Bergamo, Chieti, Modena, Palermo, Sapienza.</p>
+                <p><strong>Modello Binario (Teoria–Tecnica):</strong> Divisione netta tra quadri teorici e metodologia del colloquio/strumenti. Esempi: Benevento, Catanzaro, Pavia, Torino, Valle d'Aosta.</p>
+                <p><strong>Modello Integrato con Laboratorio (EPG):</strong> Prevede ore obbligatorie di esercitazioni su casi clinici e simulate. Esempi: Bari, Catanzaro, Milano Cattolica, Padova, Sapienza, Trento.</p>
+            </div></div>
+        </div>
+
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">4. Diagnosi Clinica — Tra Nosografia e Funzionamento Psichico<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <h4>Diagnosi Nosografica (Descrittiva)</h4>
+                <p>Approccio nomotetico volto alla categorizzazione del disturbo entro classi predefinite (DSM-5-TR, ICD). Centrata sui segni e sintomi manifesti. Finalità: etichettamento diagnostico, comunicazione tra professionisti, fini epidemiologici.</p>
+                <h4>Diagnosi Funzionale (Interpretativa)</h4>
+                <p>Approccio idiografico focalizzato sulla singolarità del caso. Cerca il "senso" del sintomo nella struttura di personalità. Strumenti: PDM, meccanismi di difesa, regolazione degli affetti, livelli di organizzazione della personalità, dinamiche dell'attaccamento. Finalità: pianificazione del trattamento.</p>
+                <h4>Diffusione nei Programmi</h4>
+                <p><strong>Distinzione esplicita "Nosografica vs Funzionale":</strong> Campania Vanvitelli, Milano Statale, Genova (Pace), Napoli Benincasa, Napoli Federico II, Parma.</p>
+                <p><strong>Terminologia equivalente (Nomotetico vs Idiografico):</strong> Palermo, Urbino, San Raffaele.</p>
+                <p><strong>Confronto attraverso strumenti (DSM vs PDM):</strong> Milano Cattolica (Brescia), Bologna, Pavia, Benevento.</p>
+                <p><strong>Prevalenza approccio nosografico:</strong> Sassari, Torino, Bergamo.</p>
+            </div></div>
+        </div>
+
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">5. L'Integrazione Clinica tra DSM e PDM<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Integrazione Nomotetico-Idiografico (Palermo):</strong> Considerata fondamentale per far dialogare l'approccio nomotetico con quello idiografico, per comprendere la sofferenza specifica della persona.</p>
+                <p><strong>Dare "senso" alla diagnosi (Bologna):</strong> L'uso congiunto di DSM-5 e PDM-2 trasforma la valutazione da lista di criteri a comprensione clinica profonda.</p>
+                <p><strong>Comprensione del funzionamento psichico (Milano Statale):</strong> L'integrazione permette una diagnosi funzionale che include livelli di organizzazione della personalità e meccanismi di funzionamento psichico.</p>
+                <p><strong>Migliore pianificazione dell'intervento (Milano Cattolica, Brescia):</strong> L'applicazione di entrambi i modelli consente un percorso diagnostico-valutativo che include ipotesi interpretative per un intervento personalizzato.</p>
+                <p><strong>Analisi della personalità e dei meccanismi di difesa (Chieti, Valle d'Aosta):</strong> Permette di affiancare alla classificazione dei sintomi del DSM lo studio delle strutture di personalità e dei meccanismi di difesa.</p>
+            </div></div>
+        </div>
+
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">6. Neuroscienze e Valutazione Clinica<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <h4>Neuroscienze come Paradigma Esplicativo</h4>
+                <p>Pavia e Bologna includono esplicitamente il "paradigma delle neuroscienze" tra i modelli interpretativi. Milano Cattolica (Brescia) dedica un'unità specifica. Roma Marconi approfondisce il ruolo dei fattori neurali e genetici.</p>
+                <h4>Integrazione della Valutazione Neuropsicologica</h4>
+                <p>Padova (Mondini, Zoia) dedica parte consistente alla neuropsicologia clinica, inclusa l'analisi di danni cerebrali acquisiti e l'uso di test neuropsicologici. Catania prevede metodi per la valutazione neuropsicologica. Benevento include la conoscenza dei test di valutazione cognitiva.</p>
+                <h4>Indicatori Psicofisiologici</h4>
+                <p>Chieti cita espressamente gli indici psicofisiologici tra i metodi di assessment. Roma Tor Vergata pone l'accento sulla base biologica e fisiologica dell'attività psichica. Trento presenta i punti di contatto tra psicologia clinica e neuroscienze.</p>
+                <h4>Dialogo tra Neuroscienze e Altri Modelli</h4>
+                <p>Enna approfondisce il dialogo tra neuroscienze e psicoanalisi (inconscio non rimosso, memoria implicita). Milano Cattolica propone un'ottica biopsicosociale con riferimenti a Damasio. Cagliari richiede prerequisiti di neuropsicologia e fisiologia del sistema nervoso.</p>
+            </div></div>
+        </div>
+
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">7. Focus per Ateneo — Orientamento e Specificità<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <div style="overflow-x:auto">
+                <table class="spec-table">
+                    <thead><tr><th>Ateneo</th><th>Orientamento</th><th>Testo Riferimento</th><th>Specificità / Note</th></tr></thead>
+                    <tbody>
+<tr><td>Bari</td><td>Psicodinamico / Relazionale</td><td>Hooley (Pearson)</td><td>Focus LGBT e identità di genere; testi del docente</td></tr>
+<tr><td>Benevento</td><td>Diagnostico integrato</td><td>DSM-5-TR (Cortina)</td><td>Confronto DSM / PDM; colloquio e questionari</td></tr>
+<tr><td>Bergamo</td><td>Non determinabile</td><td>Solo slide</td><td>Bibliografia non specificata</td></tr>
+<tr><td>Bologna</td><td>Psicodinamico / Integrato</td><td>Hooley (Pearson)</td><td>PDM-2 e Rorschach; forte apparato psicodinamico</td></tr>
+<tr><td>Cagliari</td><td>Descrittivo / Nosografico</td><td>Hooley (Pearson)</td><td>Unico testo; prerequisiti neuropsicologia</td></tr>
+<tr><td>Campania Vanvitelli</td><td>Integrato</td><td>Hooley (Pearson)</td><td>Sistemi nosografico vs interpretativo</td></tr>
+<tr><td>Catania (×2)</td><td>Integrato / Neuroscienze</td><td>Verrocchio (Piccin)</td><td>AI e telepsicologia; neuropsicologia clinica</td></tr>
+<tr><td>Catanzaro</td><td>Clinico-diagnostico</td><td>Del Corno (Franco Angeli)</td><td>Laboratorio psicodiagnostico integrato</td></tr>
+<tr><td>Chieti (×2)</td><td>CBT / Assessment avanzato</td><td>Verrocchio (Piccin)</td><td>CCT/IRT; indici psicofisiologici; autrice in sede</td></tr>
+<tr><td>Enna Kore</td><td>Psicodinamico</td><td>Craparo (Giunti/Cortina)</td><td>Inconscio non rimosso; neuroscienze-psicoanalisi</td></tr>
+<tr><td>Firenze</td><td>Fenomenologico / Integrato</td><td>Castonguay (Cortina)</td><td>Stanghellini; Q-PAD</td></tr>
+<tr><td><strong>Genova (Biggio)</strong></td><td>Clinico applicato</td><td><strong>Kring (Zanichelli)</strong></td><td>Psicologia clinica dello sport</td></tr>
+<tr><td>Genova (Pace)</td><td>Psicodinamico</td><td>Verrocchio (Piccin)</td><td>McWilliams, Grasso, Gabbard</td></tr>
+<tr><td>L'Aquila</td><td>Sanitario</td><td>Rossi (Mulino, 2004)</td><td>Testo molto datato</td></tr>
+<tr><td>Lecce Salento</td><td>Clinica del sociale</td><td>Cordella (Carocci)</td><td>Prevenzione contesti educativi; McWilliams</td></tr>
+<tr><td>Messina</td><td>Misto / Incompleto</td><td>Verrocchio (Piccin)</td><td>Sede Noto; Marino: dati assenti</td></tr>
+<tr><td>MI Cattolica (BS)</td><td>Storico / Psicodinamico</td><td>Lombardo (Kappa, 2005)</td><td>DSM-5, PDM-2, McWilliams; testo datato</td></tr>
+<tr><td>MI Cattolica</td><td>Integrato</td><td>Verrocchio (Piccin)</td><td>3 docenti; volumi approfondimento a scelta</td></tr>
+<tr><td>MI San Raffaele</td><td>Non determinabile</td><td>Leganto</td><td>Bibliografia non accessibile</td></tr>
+<tr><td>MI Statale</td><td>Integrato nosograf.-funzionale</td><td>Verrocchio (Piccin)</td><td>McWilliams; diagnosi nosografica e funzionale</td></tr>
+<tr><td>MI Bicocca</td><td>Personalità / Psicodinamico</td><td>Lingiardi (Cortina, 2024)</td><td>Focus su personalità e disturbi</td></tr>
+<tr><td>Modena</td><td>CBT / Nosografico</td><td>Kring (Cortina, ed. 2017)</td><td>Ediz. Cortina (non Zanichelli); colloquio; Mini DSM-5</td></tr>
+<tr><td>NA Benincasa</td><td>Integrato</td><td>Verrocchio (Piccin)</td><td>DCA (Gritti)</td></tr>
+<tr><td>NA Federico II (×2)</td><td>Integrato / Identità genere</td><td>Verrocchio (Piccin)</td><td>McWilliams; Bochicchio identità genere</td></tr>
+<tr><td>Padova (Gentili)</td><td>Descrittivo</td><td>Hooley (Pearson, 2025)</td><td>Nuovo testo Pearson</td></tr>
+<tr><td>Padova (Mondini)</td><td>Neuropsicologico</td><td>Hooley (Pearson, 2025)</td><td>Neuropsicologia pratica clinica</td></tr>
+<tr><td><strong>Padova (Montemurro)</strong></td><td>Interazionista / Critico</td><td>Turchi (Univ. Press)</td><td><strong>Kring (Zanichelli) complemento</strong>; 6 testi</td></tr>
+<tr><td><strong>Padova (Novara)</strong></td><td>Evidence-based</td><td><strong>Kring (Zanichelli)</strong></td><td>Testo principale + tesina</td></tr>
+<tr><td>Palermo (×2)</td><td>Integrato</td><td>Del Corno (Franco Angeli)</td><td>Verrocchio complemento; Dazzi (Cortina)</td></tr>
+<tr><td>Parma</td><td>Nosografico</td><td>Verrocchio (Piccin)</td><td>Mini DSM-5-TR (Cortina)</td></tr>
+<tr><td>Pavia</td><td>Descrittivo</td><td>Hooley (Pearson, 2025)</td><td>Slide e articoli KIRO</td></tr>
+<tr><td>Roma Europea</td><td>Integrato / Positivo</td><td>Verrocchio (Piccin)</td><td>Psicologia positiva (Boniwell)</td></tr>
+<tr><td><strong>Roma Marconi</strong></td><td>CBT</td><td><strong>Kring (Zanichelli)</strong></td><td>Perdighe e Mancini (Cortina): CBT avanzata</td></tr>
+<tr><td>Roma Sapienza (Cordella)</td><td>Clinico-processuale</td><td>Verrocchio (Piccin)</td><td>Grasso, Cordella (Carocci)</td></tr>
+<tr><td>Roma Sapienza (Lai)</td><td>Nosografico</td><td>Verrocchio (Piccin)</td><td>DSM-5 bibliografia</td></tr>
+<tr><td><strong>Roma Sapienza (Ottaviani)</strong></td><td>Integrato</td><td>Verrocchio (Piccin)</td><td><strong>Kring (Zanichelli) complemento</strong></td></tr>
+<tr><td>Roma Tor Vergata</td><td>Psicofisiologico</td><td>Hooley (Pearson)</td><td>Base biologica e fisiologica</td></tr>
+<tr><td><strong>Roma Unicusano</strong></td><td>Ecologico / Relazionale</td><td><strong>Kring (Zanichelli, 2017)</strong></td><td>Edizione datata; Gabbard (Cortina)</td></tr>
+<tr><td><strong>Sassari</strong></td><td>CBT / Educativo</td><td><strong>Kring (Zanichelli)</strong></td><td>Educazione razionale emotiva</td></tr>
+<tr><td>Torino (×2)</td><td>Nosografico / Colloquio</td><td>Verrocchio (Piccin)</td><td>Semi (Cortina) per il colloquio</td></tr>
+<tr><td><strong>Trento</strong></td><td>Evidence-based / Nuove dip.</td><td><strong>Kring (Zanichelli)</strong></td><td>+ Corazza & Esposito (2025) Zanichelli</td></tr>
+<tr><td>Trieste</td><td>Non determinabile</td><td>—</td><td>Nessun dato disponibile</td></tr>
+<tr><td>Urbino</td><td>Fenomenologico / Descrittivo</td><td>Hooley (Pearson, 2025)</td><td>Borgna (Einaudi); autolesionismo</td></tr>
+<tr><td>Valle d'Aosta</td><td>Psicodinamico / Colloquio</td><td>Lingiardi (Cortina)</td><td>Del Corno (FA ×2); Lang colloquio</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div></div>
+        </div>
+
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">8. Limiti dell'Analisi<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>L'analisi risente della mancanza di dati sui CFU in alcuni programmi (es. Genova Biggio, Catania), impedendo di valutare il peso specifico di certi argomenti. Esistono ambiguità terminologiche tra i sillabi (es. l'uso alternato di "assessment", "psicodiagnostica" e "valutazione") che potrebbero mascherare differenze tecniche effettive. In alcuni atenei (es. Messina Marino, Trieste), le informazioni bibliografiche o i contenuti dettagliati sono assenti o incompleti nei documenti forniti.</p>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-panel" id="zanichelli">
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Situazione attuale — Kring & Johnson, "Psicologia Clinica"</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli è terza con 7 cattedre (14%) — potenziale di crescita significativo</h4>
+            <p>Il Kring & Johnson è adottato come testo principale in 5 cattedre (Genova, Padova Sc.Tecn., Roma Marconi, Sassari, Trento) e come complemento in 2 (Padova Soc.Lavoro, Roma Sapienza Proc.Soc.). A Trento è presente anche il Corazza & Esposito (2025), seconda adozione Zanichelli. Il leader Verrocchio (Piccin) ha ~31% e Hooley (Pearson) ~18%. Il Kring compete direttamente con l'Hooley per il segmento evidence-based/biopsicosociale, ma il vero dominatore è il Verrocchio, manuale italiano che ha conquistato il mercato con la strategia dell'autrice in sede (Chieti) e la copertura completa del programma-tipo L-24.</p>
+        </div>
+
+        <div class="swot-grid">
+            <div class="swot-box swot-strengths">
+                <h4>✅ Punti di Forza</h4>
+                <ul>
+                    <li>Approccio integrato biopsicosociale — il più completo tra i testi internazionali</li>
+                    <li>6ª edizione 2023 aggiornata al DSM-5-TR</li>
+                    <li>Forte impianto di ricerca empirica ed evidence-based</li>
+                    <li>Eccellente apparato didattico</li>
+                    <li>Brand Zanichelli riconosciuto</li>
+                    <li>Presenza a Trento (centro d'eccellenza) con doppia adozione</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-weaknesses">
+                <h4>⚠️ Punti di Debolezza</h4>
+                <ul>
+                    <li>Quota di mercato (14%) lontana dal leader Verrocchio (31%)</li>
+                    <li>Assente nei grandi atenei del Sud (Napoli, Catania, Torino, Palermo)</li>
+                    <li>Compete nello stesso segmento dell'Hooley (Pearson) che ha la nuova ed. 2025</li>
+                    <li>Mancanza di una componente psicodinamica: molti corsi richiedono testi complementari (McWilliams, Gabbard)</li>
+                    <li>Unicusano ancora su edizione 2017</li>
+                    <li>Modena adotta il Kring edizione Cortina (2017), non Zanichelli</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-opportunities">
+                <h4>🚀 Opportunità</h4>
+                <ul>
+                    <li>L'Aquila: testo Rossi (2004) estremamente datato — finestra aperta</li>
+                    <li>Bergamo, Milano San Raffaele, Trieste, Messina (Marino): nessun testo dichiarato</li>
+                    <li>Milano Cattolica Brescia: testo Lombardo (2005) molto datato</li>
+                    <li>Modena: già adotta il Kring (ed. Cortina) — possibile conversione a edizione Zanichelli 2023</li>
+                    <li>Atenei Hooley con edizione 2017 non ancora aggiornata (Bari, Cagliari, Campania)</li>
+                    <li>Crescente interesse per nuove dipendenze (Trento già con Corazza & Esposito Zanichelli)</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-threats">
+                <h4>🔶 Minacce</h4>
+                <ul>
+                    <li>Verrocchio (Piccin) in forte espansione: autrice italiana, in sede a Chieti, rete accademica solida</li>
+                    <li>Hooley nuova edizione 2025 già adottata in 4 atenei — effetto novità</li>
+                    <li>Cortina dominante come editore complementare (DSM-5, Lingiardi, Gabbard, McWilliams referenze)</li>
+                    <li>Inerzia accademica: chi ha adottato Verrocchio difficilmente cambia</li>
+                    <li>Il segmento psicodinamico (forte in Italia) non è coperto da nessun testo Zanichelli</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📋</div> Carta d'Identità del Manuale — Doppio Scenario</div>
+
+        <div class="id-card">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-blue);">📘</div>
+                <div>
+                    <h3>Scenario 1 — Evoluzione del Kring & Johnson (prossima edizione)</h3>
+                    <p>Come dovrebbe essere la 7ª edizione per crescere dal 14% attuale</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>📌 Contenuti irrinunciabili (già presenti nel Kring)</h5>
+                <p>Il Kring copre già bene: fondamenti epistemologici, assessment e diagnosi DSM-5-TR, psicopatologia speciale (ansia, umore, personalità, schizofrenia), modelli di intervento evidence-based, approccio biopsicosociale. Questo nucleo va mantenuto intatto.</p>
+            </div>
+            <div class="id-section">
+                <h5>🔧 Contenuti da rafforzare / aggiungere</h5>
+                <ul>
+                    <li><strong>Diagnosi funzionale e PDM-2:</strong> Circa un terzo dei programmi insegna esplicitamente il confronto DSM vs PDM. Il Kring è forte sul DSM ma debole sulla diagnosi psicodinamica — aggiungere un capitolo o sezione su diagnosi funzionale, livelli di organizzazione della personalità e meccanismi di difesa colmerebbe il gap con il Verrocchio</li>
+                    <li><strong>Colloquio clinico:</strong> Il colloquio è presente in quasi tutti i programmi ma spesso richiede testi dedicati (Semi, Lang, Del Corno). Un modulo pratico integrato eviterebbe il ricorso a testi complementari</li>
+                    <li><strong>Neuropsicologia clinica:</strong> Tema forte a Padova, Catania, Benevento. Una sezione sui danni cerebrali acquisiti e i test neuropsicologici renderebbe il Kring più competitivo in questi atenei</li>
+                    <li><strong>Nuove dipendenze comportamentali:</strong> Tema emergente (Trento già con Corazza & Esposito). Integrare nel testo principale</li>
+                    <li><strong>Telepsicologia e AI:</strong> Presente a Catania e Padova. Sezione sulle applicazioni digitali in ambito clinico</li>
+                    <li><strong>Identità di genere e diversità:</strong> Tema centrale a Bari e Napoli Federico II. Sezione su psicologia clinica e popolazioni LGBT+</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>🎓 Innovazioni didattiche suggerite</h5>
+                <ul>
+                    <li><strong>Casi clinici strutturati:</strong> Il modello con laboratorio (EPG) è diffuso — includere casi clinici commentati per ogni disturbo, utilizzabili in esercitazioni</li>
+                    <li><strong>Piattaforma digitale:</strong> Quiz per capitolo, video di colloqui clinici simulati, schede di assessment compilabili — risposta al Verrocchio che è forte sulla didattica italiana</li>
+                    <li><strong>Sezione "DSM vs PDM a confronto":</strong> Tabelle sinottiche che mostrano lo stesso disturbo analizzato con entrambi i sistemi — risponderebbe alla richiesta esplicita di ~10 atenei</li>
+                    <li><strong>Companion online sulla storia della psicologia clinica:</strong> Per i corsi che richiedono la dimensione storico-epistemologica senza appesantire il testo</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>📐 Formato e struttura consigliati</h5>
+                <p>Mantenere la struttura biopsicosociale che differenzia il Kring dal Verrocchio (più clinico-italiano) e dall'Hooley (più descrittivo). Il modello tripartito (Fondamenti–Diagnosi–Patologia) è il più diffuso: la struttura del Kring è già coerente. Valutare una versione con "percorsi di lettura" per corsi da 6, 8 e 10 CFU. Il punto chiave: il Kring deve diventare il testo che fa tutto — assessment, psicopatologia, intervento E diagnosi funzionale — eliminando la necessità di testi complementari.</p>
+            </div>
+        </div>
+
+        <div class="id-card scenario-b">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-accent);">📕</div>
+                <div>
+                    <h3>Scenario 2 — Nuovo manuale (diverso dal Kring)</h3>
+                    <p>Che tipo di testo pubblicare per intercettare segmenti non coperti</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>🎯 Segmento target: il filone clinico-relazionale italiano</h5>
+                <p>Esiste un ampio segmento (~15-20 cattedre) che utilizza testi complementari di impianto psicodinamico e relazionale (McWilliams, Lingiardi, Gabbard, Del Corno, Grasso) che nessun editore riesce a coprire con un singolo manuale. Il Verrocchio ci prova (ed è il motivo del suo successo), ma resta un testo prevalentemente nosografico. Un manuale italiano che integri realmente diagnosi descrittiva E diagnosi funzionale, con competenze cliniche pratiche (colloquio, relazione terapeutica, casi), potrebbe competere direttamente con il Verrocchio e sostituire la coppia "manuale principale + McWilliams".</p>
+            </div>
+            <div class="id-section">
+                <h5>📌 Contenuti chiave del nuovo manuale</h5>
+                <ul>
+                    <li><strong>Doppia diagnosi integrata:</strong> Ogni disturbo presentato sia in chiave DSM-5-TR sia in chiave PDM-2 con tabelle sinottiche — risponde alla richiesta esplicita di ~15 atenei</li>
+                    <li><strong>Colloquio clinico:</strong> Modulo pratico integrato con trascrizioni di sedute e analisi della relazione terapeutica — elimina la necessità del Semi (Cortina) o del Lang</li>
+                    <li><strong>Casi clinici italiani:</strong> Casi tratti dalla pratica clinica italiana, non americana — differenziazione rispetto ai manuali tradotti</li>
+                    <li><strong>Personalità e meccanismi di difesa:</strong> Capitoli dedicati alla struttura di personalità, ai livelli di organizzazione e ai meccanismi di difesa — il cuore della formazione clinica italiana</li>
+                    <li><strong>Contesti applicativi:</strong> Psicologia clinica nei servizi sanitari, nel terzo settore, nelle scuole — coprirebbe la richiesta di Lecce, Milano, e degli atenei a orientamento sociale</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>👥 Profilo autori ideale</h5>
+                <p>Un team di <strong>autori italiani</strong> con competenze trasversali: un clinico psicodinamico (profilo Lingiardi/Gabbard), un cognitivista clinico (profilo Sica/Perdighe), e un esperto di assessment (profilo Verrocchio/Giromini). La forza del Verrocchio è che l'autrice è anche docente a Chieti — lo stesso modello potrebbe essere replicato coinvolgendo docenti con reti accademiche ampie. L'obiettivo è creare il "manuale italiano di riferimento" che faccia concorrenza diretta al Verrocchio con una proposta più integrata.</p>
+            </div>
+            <div class="id-section">
+                <h5>📐 Formato suggerito</h5>
+                <p>Testo medio (~450-500 pp.), orientato a corsi da 8-10 CFU, struttura tripartita (Fondamenti–Assessment–Psicopatologia) con sezione finale su Intervento e Contesti. Forte apparato di casi clinici per ogni capitolo. Risorse digitali native: video di colloqui, schede di assessment, quiz. Differenziazione: dove il Kring è internazionale e biopsicosociale, il nuovo testo sarebbe italiano, clinico-relazionale e pratico.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Atenei Target — Priorità di intervento</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Priorità</th><th>Ateneo</th><th>Situazione attuale</th><th>Perché è un target</th><th>Azione suggerita</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>L'Aquila</td><td>Rossi (Il Mulino, 2004)</td><td>Testo datato di 22 anni; massima probabilità di cambio</td><td>Visita docente, copia saggio Kring 2023</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Modena-RE</td><td>Kring (ed. Cortina, 2017)</td><td>Già adotta il Kring ma edizione Cortina datata — conversione naturale</td><td>Contatto diretto: proposta upgrade a ed. Zanichelli 2023</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Milano Cattolica (BS)</td><td>Lombardo (Kappa, 2005)</td><td>Testo datato di 21 anni; programma ricco di complementi</td><td>Proposta pacchetto Kring + risorse digitali</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Bergamo</td><td>Solo slide e materiali</td><td>Nessun manuale adottato; finestra aperta</td><td>Contatto docente Brugnera, copia saggio</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Trieste</td><td>Nessun dato</td><td>Nessun testo dichiarato; finestra aperta</td><td>Contatto docente Penolazzi, copia saggio</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Messina (Marino)</td><td>Nessun dato</td><td>Nessun testo dichiarato</td><td>Contatto docente</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Bari</td><td>Hooley (Pearson, 2017)</td><td>Edizione datata; orientamento psicodinamico potrebbe accogliere Kring integrato</td><td>Contatto in fase di revisione programma</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Cagliari</td><td>Hooley (Pearson, 2017)</td><td>Unico testo, edizione datata</td><td>Proposta Kring come alternativa aggiornata</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Campania Vanvitelli</td><td>Hooley (Pearson, 2017)</td><td>Edizione datata; programma integrato</td><td>Contatto esplorativo</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Milano San Raffaele</td><td>Leganto — testi non accessibili</td><td>Nessun dato; possibile scouting</td><td>Contatto docente Gialdi</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Torino (2 canali)</td><td>Verrocchio (Piccin, 2023)</td><td>Grande ateneo; 2 canali; alto impatto se uno cambia</td><td>Monitoraggio; evento accademico; target per Scenario 2</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Napoli Federico II (2 canali)</td><td>Verrocchio (Piccin, 2023)</td><td>Grande ateneo; focus identità genere — differenziazione possibile</td><td>Monitoraggio; target per Scenario 2</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- /main-content -->
+
+<!-- ===================== FOOTER ===================== -->
+<div class="footer">
+    <p>Zanichelli Editore — Intelligence Report Psicologia Clinica L-24 | Febbraio 2026 | Dati raccolti da syllabi accademici A.A. 2024-2026</p>
+    <p style="margin-top:.3rem;">Dashboard generata per uso interno — Promozione Editoriale Universitaria</p>
+</div>
+
+<!-- ===================== CHARTS & SCRIPTS ===================== -->
+<script>
+const ZB='#003C82',ZL='#0068C8',ZA='#E63946',ZG='#2A9D8F',ZO='#F4A261',ZP='#7B2D8E';
+
+new Chart(document.getElementById('chartMarketShare'),{
+    type:'doughnut',
+    data:{labels:['Piccin (Verrocchio)','Pearson (Hooley)','Zanichelli (Kring)','Cortina (vari)','Franco Angeli','Carocci','Astrolabio (McWilliams)','Il Mulino','Altro / N.D.'],
+        datasets:[{data:[15,9,7,7,5,2,3,1,5],backgroundColor:[ZO,'#EC4899',ZA,'#3B82F6',ZP,ZG,'#92400E','#10B981','#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},padding:10}},title:{display:true,text:'Distribuzione adozioni per editore (49 cattedre)',font:{size:14,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartEditoreBar'),{
+    type:'bar',
+    data:{labels:['Piccin','Pearson','Zanichelli','Cortina','Franco Angeli','Astrolabio','Carocci','Il Mulino','Altro'],
+        datasets:[{label:'N° adozioni',data:[15,9,7,7,5,3,2,1,5],backgroundColor:[ZO,'#EC4899',ZA,'#3B82F6',ZP,'#92400E',ZG,'#10B981','#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'N° cattedre per editore',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,grid:{color:'#EDF2F7'}},y:{grid:{display:false}}}}
+});
+
+function showTab(tabId){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+function toggleC(h){h.parentElement.classList.toggle('open')}
+function filterTable(){
+    const s=document.getElementById('searchTable').value.toLowerCase();
+    const e=document.getElementById('filterEditore').value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(r=>{
+        const t=r.textContent.toLowerCase();
+        r.style.display=(!s||t.includes(s))&&(!e||t.includes(e))?'':'none';
+    });
+}
+let sortDir={};
+function sortTable(c){
+    const tb=document.querySelector('#mainTable tbody');
+    const rows=Array.from(tb.querySelectorAll('tr'));
+    sortDir[c]=!sortDir[c];
+    rows.sort((a,b)=>{
+        const at=a.children[c].textContent.trim().toLowerCase();
+        const bt=b.children[c].textContent.trim().toLowerCase();
+        return sortDir[c]?at.localeCompare(bt):bt.localeCompare(at);
+    });
+    rows.forEach(r=>tb.appendChild(r));
+}
+</script>
+</body>
+</html>

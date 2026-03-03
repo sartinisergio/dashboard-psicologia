@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psicologia Sociale — L-19 / LM-85bis | Zanichelli Market Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+    --zanichelli-blue: #003C82;
+    --zanichelli-blue-light: #0055B8;
+    --zanichelli-blue-pale: #E8F0FE;
+    --zanichelli-accent: #E63946;
+    --zanichelli-accent-light: #FDEAEC;
+    --zanichelli-green: #2A9D8F;
+    --zanichelli-green-light: #E6F5F3;
+    --zanichelli-yellow: #E9C46A;
+    --zanichelli-yellow-light: #FFF8E7;
+    --zanichelli-orange: #F4A261;
+    --zanichelli-purple: #6C5CE7;
+    --zanichelli-purple-light: #F0EEFF;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+}
+/* TOOLBAR */
+.toolbar {
+    position: sticky; top:0; z-index:1000;
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+}
+.toolbar a, .toolbar button {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-xs);
+    font-size: 13px; font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.toolbar a {
+    color: var(--zanichelli-blue);
+    border: 1px solid var(--zanichelli-blue);
+    background: white;
+}
+.toolbar a:hover { background: var(--zanichelli-blue-pale); }
+.toolbar button {
+    color: white;
+    background: var(--zanichelli-blue);
+    border: 1px solid var(--zanichelli-blue);
+}
+.toolbar button:hover { background: var(--zanichelli-blue-light); }
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, var(--zanichelli-blue) 0%, #001F44 100%);
+    color: white;
+    padding: 40px 24px 30px;
+}
+.header-inner { max-width: 1280px; margin: 0 auto; }
+.header h1 { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.header .subtitle { font-size: 14px; opacity: 0.8; margin-bottom: 24px; }
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+.kpi-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+}
+.kpi-card .kpi-value { font-size: 28px; font-weight: 800; }
+.kpi-card .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; margin-top:2px; }
+.kpi-accent { color: var(--zanichelli-accent); }
+.kpi-green { color: #4ADE80; }
+.kpi-yellow { color: var(--zanichelli-yellow); }
+.kpi-orange { color: var(--zanichelli-orange); }
+/* TABS */
+.tabs-container {
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky; top: 52px; z-index: 999;
+    box-shadow: var(--shadow-sm);
+}
+.tabs {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+}
+.tab-btn {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-500);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--zanichelli-blue); background: var(--zanichelli-blue-pale); }
+.tab-btn.active { color: var(--zanichelli-blue); border-bottom-color: var(--zanichelli-blue); }
+/* CONTENT */
+.content { max-width: 1280px; margin: 0 auto; padding: 24px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* CARDS & BOXES */
+.highlight-box {
+    background: linear-gradient(135deg, var(--zanichelli-blue-pale), #F0F4FF);
+    border-left: 4px solid var(--zanichelli-blue);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+.highlight-box.accent {
+    background: linear-gradient(135deg, var(--zanichelli-accent-light), #FFF0F1);
+    border-left-color: var(--zanichelli-accent);
+}
+.highlight-box.green {
+    background: linear-gradient(135deg, var(--zanichelli-green-light), #F0FAF8);
+    border-left-color: var(--zanichelli-green);
+}
+.highlight-box strong { color: var(--zanichelli-blue); }
+.highlight-box.accent strong { color: var(--zanichelli-accent); }
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gray-200);
+}
+.metric-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.metric-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+.metric-card .mc-label { font-size: 12px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; }
+.metric-card .mc-value { font-size: 24px; font-weight: 800; color: var(--gray-900); margin: 4px 0; }
+.metric-card .mc-sub { font-size: 12px; color: var(--gray-500); }
+.chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+.chart-box {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+.chart-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--gray-800); }
+/* TABLE */
+.table-wrapper {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+}
+.table-controls {
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--gray-200);
+    background: var(--gray-50);
+}
+.table-controls select, .table-controls input {
+    padding: 8px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-xs);
+    font-size: 13px;
+    background: white;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+th {
+    background: var(--zanichelli-blue);
+    color: white;
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+th:hover { background: var(--zanichelli-blue-light); }
+td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: top;
+}
+tr:hover { background: var(--gray-50); }
+tr.zan-row { background: var(--zanichelli-accent-light) !important; }
+tr.zan-row:hover { background: #FDD !important; }
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.badge-l19 { background: #DBEAFE; color: #1E40AF; }
+.badge-lm85 { background: #D1FAE5; color: #065F46; }
+.badge-zan { background: var(--zanichelli-accent); color: white; }
+.badge-alta { background: var(--zanichelli-accent); color: white; }
+.badge-media { background: var(--zanichelli-orange); color: white; }
+.badge-develop { background: var(--zanichelli-blue); color: white; }
+/* COMPETITOR CARDS */
+.competitor-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+.competitor-rank {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--zanichelli-blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+.competitor-rank.gold { background: #F59E0B; }
+.competitor-rank.silver { background: #94A3B8; }
+.competitor-rank.bronze { background: #CD7F32; }
+.competitor-info { flex: 1; }
+.competitor-info h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.competitor-info .ci-meta { font-size: 12px; color: var(--gray-500); margin-bottom: 8px; }
+.competitor-info .ci-desc { font-size: 13px; color: var(--gray-600); line-height: 1.5; }
+.competitor-info .ci-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 6px;
+    margin-top: 8px;
+}
+/* COLLAPSIBLE */
+.collapsible {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+.collapsible-header {
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--gray-50);
+    transition: background 0.2s;
+}
+.collapsible-header:hover { background: var(--gray-100); }
+.collapsible-header::after { content: '▸'; transition: transform 0.2s; font-size: 16px; }
+.collapsible.open .collapsible-header::after { transform: rotate(90deg); }
+.collapsible-body {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+.collapsible.open .collapsible-body {
+    padding: 16px 20px;
+    max-height: 3000px;
+}
+/* CONTENT CARDS */
+.core-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.core-card {
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-size: 13px;
+}
+.core-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+.cc-blue { background: var(--zanichelli-blue-pale); border-left: 3px solid var(--zanichelli-blue); }
+.cc-green { background: var(--zanichelli-green-light); border-left: 3px solid var(--zanichelli-green); }
+.cc-orange { background: var(--zanichelli-yellow-light); border-left: 3px solid var(--zanichelli-orange); }
+.cc-purple { background: var(--zanichelli-purple-light); border-left: 3px solid var(--zanichelli-purple); }
+.cc-red { background: var(--zanichelli-accent-light); border-left: 3px solid var(--zanichelli-accent); }
+.cc-gray { background: var(--gray-100); border-left: 3px solid var(--gray-400); }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.pill {
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+/* SPEC TABLE */
+.spec-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 13px; }
+.spec-table th { background: var(--gray-700); font-size: 12px; }
+.spec-table td { padding: 10px 14px; }
+.tag { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+.tag-alta { background: #DCFCE7; color: #166534; }
+.tag-media { background: #FEF3C7; color: #92400E; }
+.tag-bassa { background: #FEE2E2; color: #991B1B; }
+/* SWOT */
+.swot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.swot-box {
+    border-radius: var(--radius);
+    padding: 20px;
+}
+.swot-box h4 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.swot-box ul { padding-left: 18px; font-size: 13px; }
+.swot-box li { margin-bottom: 6px; }
+.swot-s { background: #DCFCE7; border: 1px solid #86EFAC; }
+.swot-s h4 { color: #166534; }
+.swot-w { background: #FEE2E2; border: 1px solid #FCA5A5; }
+.swot-w h4 { color: #991B1B; }
+.swot-o { background: #DBEAFE; border: 1px solid #93C5FD; }
+.swot-o h4 { color: #1E40AF; }
+.swot-t { background: #FEF3C7; border: 1px solid #FDE68A; }
+.swot-t h4 { color: #92400E; }
+/* ID CARD */
+.id-card {
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+}
+.id-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+.id-card-blue { background: linear-gradient(135deg, #EBF4FF, #DBEAFE); border: 2px solid var(--zanichelli-blue); }
+.id-card-blue h4 { color: var(--zanichelli-blue); }
+.id-card-red { background: linear-gradient(135deg, #FFF0F1, var(--zanichelli-accent-light)); border: 2px solid var(--zanichelli-accent); }
+.id-card-red h4 { color: var(--zanichelli-accent); }
+.id-field { margin-bottom: 10px; font-size: 13px; }
+.id-field strong { color: var(--gray-700); }
+/* TARGET TABLE */
+.target-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+.target-table th { background: var(--zanichelli-blue); color: white; padding: 10px 14px; text-align: left; font-size: 12px; text-transform: uppercase; }
+.target-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-100); }
+.target-table tr:hover { background: var(--gray-50); }
+/* QUICK WIN */
+.qw-box {
+    background: linear-gradient(135deg, #FFF8E7, #FFFBF0);
+    border: 2px solid var(--zanichelli-yellow);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+}
+.qw-box h4 { color: #92400E; font-size: 15px; margin-bottom: 10px; }
+.qw-box ul { padding-left: 18px; font-size: 13px; }
+.qw-box li { margin-bottom: 6px; }
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--gray-400);
+    border-top: 1px solid var(--gray-200);
+    margin-top: 40px;
+}
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .chart-grid { grid-template-columns: 1fr; }
+    .swot-grid { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .header h1 { font-size: 22px; }
+}
+@media print {
+    .toolbar, .tabs-container { display: none; }
+    .tab-panel { display: block !important; page-break-inside: avoid; }
+    .header { padding: 20px; }
+    body { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+    <a href="index.html">← Torna alla Dashboard</a>
+    <button onclick="window.print()">🖨 Stampa / Salva PDF</button>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-inner">
+        <h1>📊 Psicologia Sociale</h1>
+        <div class="subtitle">Analisi di Mercato Editoriale — Classi L-19 / LM-85bis | Aggiornamento Febbraio 2026</div>
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:#4ADE80">10</div>
+                <div class="kpi-label">Cattedre Analizzate</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:var(--zanichelli-yellow)">9</div>
+                <div class="kpi-label">Atenei Coinvolti</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:var(--zanichelli-orange)">5</div>
+                <div class="kpi-label">Manuali Principali</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value kpi-accent">0%</div>
+                <div class="kpi-label">Quota Zanichelli</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:#F87171">100%</div>
+                <div class="kpi-label">Solo L-19 (no LM-85bis)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('panoramica')">Panoramica</button>
+        <button class="tab-btn" onclick="switchTab('mappa')">Mappa Adozioni</button>
+        <button class="tab-btn" onclick="switchTab('competitor')">Competitor</button>
+        <button class="tab-btn" onclick="switchTab('contenuti')">Contenuti & Programmi</button>
+        <button class="tab-btn" onclick="switchTab('posizionamento')">Posizionamento Zanichelli</button>
+    </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- TAB PANORAMICA -->
+<div id="panoramica" class="tab-panel active">
+    <div class="highlight-box">
+        <strong>Sintesi:</strong> La Psicologia Sociale nei corsi L-19 è un insegnamento frammentato tra 3 editori principali. <strong>Il Mulino</strong> e <strong>Pearson</strong> si spartiscono la leadership a pari merito (33,3% ciascuno), seguiti da <strong>Carocci</strong> (22,2%). Zanichelli è <strong>completamente assente</strong> con il manuale Smith, Mackie & Claypool (3ª ed. 2016), nonostante sia un titolo consolidato nella L-24. Non si registrano adozioni nella classe LM-85bis. Il mercato è dominato da testi italiani (Boca et al., Andrighetto & Riva, Gattino et al.) costruiti sulle specificità dell'educatore. Il campo complementare è un feudo de Il Mulino con oltre 11 citazioni.
+    </div>
+
+    <div class="metric-cards">
+        <div class="metric-card">
+            <div class="mc-label">Leader — Il Mulino</div>
+            <div class="mc-value" style="color:var(--zanichelli-blue)">33,3%</div>
+            <div class="mc-sub">3 adozioni principali su 9 note</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">Co-Leader — Pearson</div>
+            <div class="mc-value" style="color:#F59E0B">33,3%</div>
+            <div class="mc-sub">3 adozioni (Hogg & Vaughan + Kenrick)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">Terzo — Carocci</div>
+            <div class="mc-value" style="color:var(--zanichelli-green)">22,2%</div>
+            <div class="mc-sub">2 adozioni (Gattino et al.)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">Zanichelli</div>
+            <div class="mc-value" style="color:var(--zanichelli-accent)">0,0%</div>
+            <div class="mc-sub">Nessuna adozione rilevata</div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-box">
+            <h3>Market Share — Manuali Principali</h3>
+            <canvas id="chartDoughnut" height="260"></canvas>
+        </div>
+        <div class="chart-box">
+            <h3>Adozioni per Editore (principali + complementari)</h3>
+            <canvas id="chartBar" height="260"></canvas>
+        </div>
+    </div>
+
+    <h2 class="section-title">Distribuzione Temporale</h2>
+    <div class="metric-cards">
+        <div class="metric-card">
+            <div class="mc-label">I Semestre</div>
+            <div class="mc-value">3</div>
+            <div class="mc-sub">Genova, Torino (×2)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">II Semestre</div>
+            <div class="mc-value">5</div>
+            <div class="mc-sub">Bologna (×2), Reggio C., LUMSA, Roma Tre (×2)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">Non Indicato</div>
+            <div class="mc-value">2</div>
+            <div class="mc-sub">Cattolica, Torino (1 caso)</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Contesto L-19 / LM-85bis</h2>
+    <div class="highlight-box green">
+        <strong>Nota importante:</strong> Tutte le 10 cattedre rilevate appartengono alla classe <strong>L-19</strong> (Scienze dell'Educazione). Non sono state rilevate adozioni nella classe LM-85bis (Scienze della Formazione Primaria), dove la Psicologia Sociale è spesso inserita in insegnamenti integrati oppure non prevista come esame autonomo. Il bacino potenziale è di <strong>70.254 iscritti L-19</strong> (di cui 41,5% in telematiche). L'insegnamento è collocato prevalentemente al 2°-3° anno con carichi didattici compresi tra 4 e 9 CFU.
+    </div>
+</div>
+
+<!-- TAB MAPPA ADOZIONI -->
+<div id="mappa" class="tab-panel">
+    <h2 class="section-title">Mappa Completa delle Adozioni</h2>
+    <div class="table-wrapper">
+        <div class="table-controls">
+            <select id="filterEditore" onchange="filterTable()">
+                <option value="">Tutti gli editori</option>
+                <option value="Il Mulino">Il Mulino</option>
+                <option value="Pearson">Pearson</option>
+                <option value="Carocci">Carocci</option>
+                <option value="N.D.">N.D.</option>
+            </select>
+            <select id="filterClasse" onchange="filterTable()">
+                <option value="">Tutte le classi</option>
+                <option value="L-19">L-19</option>
+                <option value="LM-85bis">LM-85bis</option>
+            </select>
+            <input type="text" id="filterSearch" placeholder="🔍 Cerca ateneo o docente..." oninput="filterTable()" style="flex:1;min-width:200px;">
+        </div>
+        <div style="overflow-x:auto">
+        <table id="adozioniTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Ateneo</th>
+                    <th onclick="sortTable(1)">Classe</th>
+                    <th onclick="sortTable(2)">Corso</th>
+                    <th onclick="sortTable(3)">Insegnamento</th>
+                    <th onclick="sortTable(4)">Docente</th>
+                    <th onclick="sortTable(5)">Anno</th>
+                    <th onclick="sortTable(6)">Sem.</th>
+                    <th onclick="sortTable(7)">Manuale Principale</th>
+                    <th onclick="sortTable(8)">Editore</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Bologna</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Educatore sociale e culturale</td>
+                    <td>Psicologia Sociale</td>
+                    <td>Giannino Melotti</td>
+                    <td>—</td>
+                    <td>II</td>
+                    <td>Speltini, <em>L'età giovanile</em> (2016)</td>
+                    <td>Il Mulino</td>
+                </tr>
+                <tr>
+                    <td>Bologna</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Educatore sociale e culturale</td>
+                    <td>Psicologia Sociale</td>
+                    <td>Stefano Passini</td>
+                    <td>—</td>
+                    <td>II</td>
+                    <td>Boca, Bocchiaro, Scaffidi Abbate, <em>Introduzione alla Psicologia Sociale</em></td>
+                    <td>Il Mulino</td>
+                </tr>
+                <tr>
+                    <td>Genova</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Scienze dell'educazione e della formazione</td>
+                    <td>Psicologia Sociale</td>
+                    <td>Luca Andrighetto</td>
+                    <td>3</td>
+                    <td>I</td>
+                    <td>Andrighetto & Riva, <em>Psicologia Sociale. Fondamenti teorici ed empirici</em> (2020)</td>
+                    <td>Il Mulino</td>
+                </tr>
+                <tr>
+                    <td>Milano Cattolica</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Scienze dell'educazione e della formazione</td>
+                    <td>Psicologia sociale</td>
+                    <td>Camillo Regalia</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>Kenrick et al., <em>Psicologia sociale</em></td>
+                    <td>Pearson</td>
+                </tr>
+                <tr>
+                    <td>Reggio Calabria Mediterranea</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Scienze dell'educazione — Educatore socio-pedagogico</td>
+                    <td>Psicologia Sociale</td>
+                    <td>Chirico Doriana</td>
+                    <td>3</td>
+                    <td>II</td>
+                    <td><em>Non indicato</em></td>
+                    <td>N.D.</td>
+                </tr>
+                <tr>
+                    <td>Roma LUMSA</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Scienze dell'educazione — Educatori sociopedagogici e scolastici</td>
+                    <td>Psicologia Sociale</td>
+                    <td>Scopelliti Massimiliano</td>
+                    <td>3</td>
+                    <td>II</td>
+                    <td>Boca, Bocchiaro, Scaffidi Abbate, <em>Introduzione alla Psicologia Sociale</em> (2017)</td>
+                    <td>Il Mulino</td>
+                </tr>
+                <tr>
+                    <td>Roma Tre</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Scienze dell'educazione per Educatori e Formatori</td>
+                    <td>Psicologia sociale</td>
+                    <td>Carrus Giuseppe</td>
+                    <td>2</td>
+                    <td>II</td>
+                    <td>Hogg & Vaughan, <em>Psicologia sociale</em> (2023, 9ª ed.)</td>
+                    <td>Pearson</td>
+                </tr>
+                <tr>
+                    <td>Roma Tre</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Scienze dell'educazione</td>
+                    <td>Psicologia sociale</td>
+                    <td>Tiberio Lorenza</td>
+                    <td>2</td>
+                    <td>II</td>
+                    <td>Hogg & Vaughan, <em>Psicologia sociale</em> (2023, 9ª ed.)</td>
+                    <td>Pearson</td>
+                </tr>
+                <tr>
+                    <td>Torino</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Scienze dell'Educazione</td>
+                    <td>Psicologia sociale e dei gruppi</td>
+                    <td>Mara Martini</td>
+                    <td>2</td>
+                    <td>I</td>
+                    <td>Gattino, Miglietta, Converso, <em>Introduzione alla psicologia sociale</em> (2008)</td>
+                    <td>Carocci</td>
+                </tr>
+                <tr>
+                    <td>Torino</td>
+                    <td><span class="badge badge-l19">L-19</span></td>
+                    <td>Educazione Professionale — Savigliano</td>
+                    <td>Psicologia sociale e di comunità</td>
+                    <td>Erica Viola</td>
+                    <td>3</td>
+                    <td>I</td>
+                    <td>Gattino, Miglietta, Converso, <em>Introduzione alla psicologia sociale</em> (2008)</td>
+                    <td>Carocci</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <h2 class="section-title">Cattedre con Presenza Zanichelli</h2>
+    <div class="highlight-box accent">
+        <strong>Nessuna cattedra</strong> presenta attualmente un titolo Zanichelli tra i testi d'esame. Il manuale <em>Smith, Mackie & Claypool — Psicologia sociale</em> (3ª ed. 2016, Zanichelli) non risulta adottato in nessuno dei 9 atenei analizzati per le classi L-19 / LM-85bis. L'ultima edizione italiana risale al 2016 (basata sulla 4ª ed. americana del 2015).
+    </div>
+</div>
+
+<!-- TAB COMPETITOR -->
+<div id="competitor" class="tab-panel">
+    <h2 class="section-title">Ranking Manuali Principali</h2>
+
+    <div class="competitor-card">
+        <div class="competitor-rank gold">1</div>
+        <div class="competitor-info">
+            <h4>Boca, Bocchiaro, Scaffidi Abbate — Introduzione alla Psicologia Sociale</h4>
+            <div class="ci-meta">Il Mulino | 3ª ed. 2017 | 312 pp. | ~€ 29</div>
+            <div class="ci-desc">
+                Manuale agile e focalizzato sui temi classici della disciplina: Sé come costrutto psicosociale, cognizione sociale, atteggiamenti, influenza sociale e relazioni intergruppi. Apprezzato per la chiarezza espositiva e la sintesi efficace, è il testo più citato nei programmi L-19 (adottato a Bologna-Passini e LUMSA). Ideale per corsi da 4-6 CFU che richiedono una panoramica solida senza appesantire lo studente.
+            </div>
+            <span class="ci-badge" style="background:#DBEAFE;color:#1E40AF">2 adozioni principali</span>
+            <span class="ci-badge" style="background:#E0E7FF;color:#4338CA">+ complementare a Bologna-Melotti</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank gold">1</div>
+        <div class="competitor-info">
+            <h4>Hogg & Vaughan — Psicologia sociale. Teorie e applicazioni</h4>
+            <div class="ci-meta">Pearson | 9ª ed. 2023 | ~600 pp. | ~€ 49</div>
+            <div class="ci-desc">
+                Il più completo e aggiornato manuale di riferimento internazionale, con un'impostazione ampia che copre processi di gruppo, cognizione, identità sociale e applicazioni. La 9ª edizione (2023) è la più recente sul mercato italiano. Adottato nelle due cattedre di Roma Tre (Carrus e Tiberio). Più adatto a corsi con CFU elevati. Prezzo significativamente più alto.
+            </div>
+            <span class="ci-badge" style="background:#FEF3C7;color:#92400E">2 adozioni a Roma Tre</span>
+            <span class="ci-badge" style="background:#DBEAFE;color:#1E40AF">Edizione più recente</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank gold">1</div>
+        <div class="competitor-info">
+            <h4>Gattino, Miglietta, Converso — Introduzione alla psicologia sociale</h4>
+            <div class="ci-meta">Carocci | 2008 (rist.) | 308 pp. | ~€ 27</div>
+            <div class="ci-desc">
+                Manuale specificamente progettato per gli operatori dell'educazione e della cura. Sottotitolo: "Teorie e strumenti per gli operatori de'educazione e della cultura". Adottato nelle due cattedre di Torino (Martini e Viola). Punto di forza: taglio professionalizzante unico nel panorama. Punto debole: datato (2008), non aggiornato su temi digitali e nuove correnti.
+            </div>
+            <span class="ci-badge" style="background:#D1FAE5;color:#065F46">2 adozioni a Torino</span>
+            <span class="ci-badge" style="background:#FEE2E2;color:#991B1B">Datato (2008)</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank">4</div>
+        <div class="competitor-info">
+            <h4>Andrighetto & Riva (a cura di) — Psicologia Sociale. Fondamenti teorici ed empirici</h4>
+            <div class="ci-meta">Il Mulino | 2020 | 404 pp. | ~€ 35</div>
+            <div class="ci-desc">
+                Manuale di nuova generazione, curato da docenti emergenti, con contributi dei migliori studiosi italiani. Solida base teorica integrata da evidenze empiriche recenti. Adottato a Genova (dove il curatore Andrighetto è anche docente del corso). Approccio modulare con sezioni su influenza sociale, pregiudizio, relazioni e prosocialità. Potenziale di crescita alto.
+            </div>
+            <span class="ci-badge" style="background:#DBEAFE;color:#1E40AF">1 adozione (auto-adozione)</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank">5</div>
+        <div class="competitor-info">
+            <h4>Kenrick, Neuberg, Cialdini — Psicologia sociale</h4>
+            <div class="ci-meta">Pearson | 7ª ed. 2021 | 512 pp. | ~€ 38</div>
+            <div class="ci-desc">
+                Manuale americano con taglio evoluzionistico e orientamento ai "Goals in Interaction". Unico nel mettere al centro la motivazione e il comportamento goal-directed. Adottato alla Cattolica (Regalia). Meno diffuso nella L-19 rispetto alla L-24, dove gode di maggiore penetrazione.
+            </div>
+            <span class="ci-badge" style="background:#FEF3C7;color:#92400E">1 adozione (Cattolica)</span>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Analisi Comparativa Dettagliata dei Manuali</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:12px"><strong>Dimensionamento e prezzo:</strong> Il mercato si divide tra manuali "agili" (300 pp., ~€27-29: Boca et al. e Gattino et al.) e manuali "completi" (400-600 pp., ~€35-49: Andrighetto & Riva, Kenrick, Hogg & Vaughan). I corsi da 4-6 CFU tendono verso i manuali agili, quelli da 8-9 CFU verso quelli completi.</p>
+            <p style="margin-bottom:12px"><strong>Aggiornamento:</strong> Hogg & Vaughan (2023) è il più recente; Andrighetto & Riva (2020) è ragionevolmente aggiornato; Boca et al. (2017) inizia a datare; Gattino et al. (2008) è il più datato. Il manuale Zanichelli (Smith et al., 2016) si colloca nella fascia intermedia ma necessita di una nuova edizione.</p>
+            <p style="margin-bottom:12px"><strong>Target professionalizzante:</strong> Solo Gattino et al. è esplicitamente pensato per gli educatori. Boca et al. e Andrighetto & Riva sono manuali generalisti. Hogg & Vaughan e Kenrick sono pensati primariamente per psicologi. Esiste uno spazio per un manuale internazionale con curvatura educativa.</p>
+            <p><strong>Complementari:</strong> Il Mulino domina con Speltini (<em>L'età giovanile</em>, <em>Stare in gruppo</em>), Miceli (<em>Sentirsi soli</em>), Pacilli, Santinello, Fruggeri. Carocci è forte con Romito/Feresin, Passafaro/Carrus. Laterza presente con Voci e Volpato. Il panorama complementare è estremamente frammentato.</p>
+        </div>
+    </div>
+</div>
+
+<!-- TAB CONTENUTI & PROGRAMMI -->
+<div id="contenuti" class="tab-panel">
+    <h2 class="section-title">Nucleo Minimo di Contenuti Comuni</h2>
+    <div class="core-cards">
+        <div class="core-card cc-blue">
+            <h4>Fondamenti</h4>
+            Definizione della disciplina e metodi di ricerca empirica in psicologia sociale
+        </div>
+        <div class="core-card cc-green">
+            <h4>Cognizione Sociale</h4>
+            Percezione sociale, schemi, euristiche, attribuzione causale
+        </div>
+        <div class="core-card cc-purple">
+            <h4>Sé e Identità</h4>
+            Costruzione dell'identità personale e sociale, concetto di sé
+        </div>
+        <div class="core-card cc-orange">
+            <h4>Atteggiamenti</h4>
+            Formazione, struttura e mutamento degli atteggiamenti
+        </div>
+        <div class="core-card cc-red">
+            <h4>Influenza Sociale</h4>
+            Conformismo, obbedienza, dinamiche di gruppo
+        </div>
+        <div class="core-card cc-gray">
+            <h4>Pregiudizio</h4>
+            Stereotipi, discriminazione, relazioni intergruppi
+        </div>
+    </div>
+
+    <h2 class="section-title">Nucleo Esteso (variabile per curriculum)</h2>
+    <div class="pills">
+        <span class="pill">Aggressività</span>
+        <span class="pill">Altruismo / Prosocialità</span>
+        <span class="pill">Comunicazione e persuasione</span>
+        <span class="pill">Burnout e stress operatore</span>
+        <span class="pill">Devianza minorile</span>
+        <span class="pill">Dipendenze</span>
+        <span class="pill">Processi migratori</span>
+        <span class="pill">Social media e tecnologie</span>
+        <span class="pill">Educazione ambientale</span>
+        <span class="pill">Psicologia di comunità</span>
+        <span class="pill">Teoria dell'attaccamento</span>
+        <span class="pill">Genere e maschilismo</span>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Specificità Tematiche per Ateneo</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px"><strong>Bologna (Melotti / Passini):</strong> Forte curvatura professionalizzante con focus su disagio giovanile, bullismo nel web, solitudine. Include temi di rischio, resilienza e burnout per le professioni d'aiuto. Approccio ecologico (nicchia, transizione psicosociale).</p>
+            <p style="margin-bottom:10px"><strong>Genova (Andrighetto):</strong> Impostazione modulare — fondamenti + monografico sul pregiudizio. Include moduli specifici sull'influenza dei social media e media digitali.</p>
+            <p style="margin-bottom:10px"><strong>Cattolica (Regalia):</strong> Insegnamento integrato con psicologia dello sviluppo; modulo su sviluppo infantile 0-3 anni e attaccamento. Include media digitali nei processi di conoscenza.</p>
+            <p style="margin-bottom:10px"><strong>LUMSA (Scopelliti):</strong> Focus su processi di gruppo e relazioni intergruppi con testo complementare Voci (Laterza).</p>
+            <p style="margin-bottom:10px"><strong>Roma Tre (Carrus):</strong> Unico programma con applicazioni alla sostenibilità sociale e all'educazione ambientale, coerente con il profilo di ricerca del docente.</p>
+            <p style="margin-bottom:10px"><strong>Torino (Martini):</strong> Modello epistemologico-storico con 9 CFU. Ampio approfondimento su storia della disciplina, rappresentazioni sociali e dinamiche di gruppo (Speltini, Brown, Quaglino).</p>
+            <p><strong>Torino (Viola):</strong> Estensione alla psicologia di comunità, ricerca-intervento, lavoro di rete. Ampio ventaglio di complementari su genere, molestie sessuali, sieropositività, maschilismo.</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">Prospettive Teoriche</h2>
+    <table class="spec-table">
+        <thead>
+            <tr>
+                <th>Prospettiva Teorica</th>
+                <th>Presenza</th>
+                <th>Modalità</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Social Cognition</td>
+                <td><span class="tag tag-alta">Alta</span></td>
+                <td>Esplicita</td>
+                <td>Paradigma dominante in quasi tutti i programmi</td>
+            </tr>
+            <tr>
+                <td>Gestalt / Comportamentismo</td>
+                <td><span class="tag tag-media">Media</span></td>
+                <td>Esplicita</td>
+                <td>Basi storiche, soprattutto Bologna e Torino</td>
+            </tr>
+            <tr>
+                <td>Prospettiva Ecologica</td>
+                <td><span class="tag tag-media">Media</span></td>
+                <td>Esplicita</td>
+                <td>Molto presente a Bologna (nicchia, transizione psicosociale)</td>
+            </tr>
+            <tr>
+                <td>Rappresentazioni Sociali</td>
+                <td><span class="tag tag-media">Media</span></td>
+                <td>Esplicita</td>
+                <td>Fondamentale nei programmi di Torino</td>
+            </tr>
+            <tr>
+                <td>Psicologia Dinamica (Attaccamento)</td>
+                <td><span class="tag tag-bassa">Bassa</span></td>
+                <td>Esplicita</td>
+                <td>Limitata al corso integrato della Cattolica</td>
+            </tr>
+            <tr>
+                <td>Interazionismo Simbolico</td>
+                <td><span class="tag tag-media">Media</span></td>
+                <td>Implicita</td>
+                <td>Desumibile dal focus sulla costruzione sociale del Sé</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="chart-box" style="margin-bottom:24px">
+        <h3>Presenza delle Prospettive Teoriche nei Programmi</h3>
+        <canvas id="chartProspettive" height="200"></canvas>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Modelli di Strutturazione del Corso</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px"><strong>Modello Modulare (Generalista + Monografico):</strong> Diviso in "fondamenti" + "approfondimento" tematico. Es.: il pregiudizio a Genova, la famiglia alla Cattolica. Tipico dei corsi da 6-8 CFU.</p>
+            <p style="margin-bottom:10px"><strong>Modello Professionalizzante Tematico:</strong> Contenuti selezionati in funzione della loro utilità diretta per l'educatore: rischio, resilienza, burnout. Tipico di Bologna.</p>
+            <p><strong>Modello Epistemologico-Storico:</strong> Segue l'evoluzione della disciplina dai modelli classici alle applicazioni contemporanee. Tipico dei corsi con più CFU come Torino (Martini, 9 CFU).</p>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Specificità LM-85bis</div>
+        <div class="collapsible-body">
+            <p>Non sono state rilevate adozioni nella classe LM-85bis (Scienze della Formazione Primaria). La Psicologia Sociale in LM-85bis è tipicamente assorbita in insegnamenti integrati di Psicologia Sociale e dello Sviluppo oppure non prevista come esame autonomo. Questo limita la visibilità della disciplina ma potrebbe rappresentare un'opportunità per proposte mirate se si dovessero aprire nuove cattedre o sdoppiamenti.</p>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Focus per Ateneo — Variazione CFU</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px">L'escursione nel carico didattico è notevole:</p>
+            <p style="margin-bottom:8px"><strong>4 CFU — Bologna:</strong> Programma compatto, focalizzato su tematiche di disagio giovanile e strumenti per l'educatore.</p>
+            <p style="margin-bottom:8px"><strong>6 CFU — Genova, LUMSA, Cattolica:</strong> Copertura equilibrata dei fondamenti con un approfondimento monografico.</p>
+            <p style="margin-bottom:8px"><strong>8 CFU — Roma Tre, Torino (Viola):</strong> Ampio spazio per applicazioni (educazione ambientale, comunità).</p>
+            <p><strong>9 CFU — Torino (Martini):</strong> Il programma più esteso, con approfondimento storico-epistemologico e dinamiche di gruppo avanzate.</p>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Limiti dell'Analisi</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px">L'analisi risente della disomogeneità nella descrizione dei contenuti tra i vari programmi: mentre alcuni Atenei (Roma Tre, Torino, Genova) forniscono dettagli analitici sui moduli, altri (Reggio Calabria) riportano solo dati amministrativi senza indicare testi d'esame.</p>
+            <p style="margin-bottom:10px">In alcuni casi le prospettive teoriche sono solo implicite nella scelta dei testi e non dichiarate negli obiettivi. Non è sempre possibile distinguere nettamente tra L-19 e LM-85bis poiché molti documenti si limitano alla dicitura "Scienze dell'Educazione".</p>
+            <p>Il campione di 10 cattedre su 9 atenei è limitato rispetto ai 75 corsi L-19 attivi, suggerendo un'ampia area inesplorata soprattutto nelle telematiche (41,5% degli iscritti L-19).</p>
+        </div>
+    </div>
+</div>
+
+<!-- TAB POSIZIONAMENTO ZANICHELLI -->
+<div id="posizionamento" class="tab-panel">
+    <div class="highlight-box accent">
+        <strong>Situazione attuale:</strong> Zanichelli è <strong>completamente assente</strong> dal mercato L-19 della Psicologia Sociale. Il manuale Smith, Mackie & Claypool (3ª ed. italiana, 2016) non ha prodotto adozioni in questo segmento, dove la competizione è dominata da testi italiani (Il Mulino, Carocci) e dall'internazionale Hogg & Vaughan (Pearson). L'edizione 2016 è basata sulla 4ª ed. americana del 2015, ormai datata. Nella L-24, il titolo ha una presenza limitata ma costante. La sfida per Zanichelli è decidere se investire in un aggiornamento mirato o valutare una nuova proposta editoriale.
+    </div>
+
+    <h2 class="section-title">Analisi SWOT</h2>
+    <div class="swot-grid">
+        <div class="swot-box swot-s">
+            <h4>⬆ Punti di Forza (Strengths)</h4>
+            <ul>
+                <li>Titolo riconosciuto a livello internazionale (Smith, Mackie, Claypool è un classico americano)</li>
+                <li>Approccio basato sui "processi interconnessi" — unico framework didattico</li>
+                <li>Rete commerciale Zanichelli consolidata negli atenei italiani</li>
+                <li>Piattaforma digitale Zanichelli (ZTE, risorse online) come vantaggio competitivo</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-w">
+            <h4>⬇ Punti di Debolezza (Weaknesses)</h4>
+            <ul>
+                <li>Edizione italiana datata (2016, 10 anni — la più vecchia dopo Gattino 2008)</li>
+                <li>Nessuna curvatura per le professioni educative — il testo è pensato per psicologi</li>
+                <li>Prezzo nella fascia media-alta senza un vantaggio di contenuto specifico per L-19</li>
+                <li>Zero adozioni nel segmento: nessun "campione" interno che lo promuova</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-o">
+            <h4>→ Opportunità (Opportunities)</h4>
+            <ul>
+                <li>Gattino et al. (2008) è molto datato: Torino è un target naturale per un sostituto</li>
+                <li>Boca et al. (2017) inizia a invecchiare: finestra per proposta aggiornata</li>
+                <li>Reggio Calabria non ha testo indicato: cattedra scoperta</li>
+                <li>LM-85bis completamente inesplorata: spazio per primo entrante</li>
+                <li>Bacino di 70.254 iscritti L-19 — mercato più grande della L-24</li>
+                <li>Telematiche (41,5% iscritti) non ancora analizzate: enorme potenziale sommerso</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-t">
+            <h4>⚠ Minacce (Threats)</h4>
+            <ul>
+                <li>Il Mulino e Pearson hanno posizioni consolidate e agende attive di aggiornamento</li>
+                <li>Hogg & Vaughan (9ª ed. 2023) è il manuale più recente e completo</li>
+                <li>Andrighetto & Riva (2020, Il Mulino) è percepito come "la nuova generazione"</li>
+                <li>Auto-adozione forte: Andrighetto a Genova, Gattino a Torino = difficile da scalzare</li>
+                <li>Il campo complementare è un monopolio de Il Mulino: barricata difensiva</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2 class="section-title">Carta d'Identità Competitiva — Doppio Scenario</h2>
+
+    <div class="id-card id-card-blue">
+        <h4>📘 Scenario A — Aggiornamento dell'Esistente</h4>
+        <div class="id-field"><strong>Titolo:</strong> Smith, Mackie, Claypool — <em>Psicologia sociale</em> (4ª ed. italiana, dalla 5ª ed. americana)</div>
+        <div class="id-field"><strong>Strategia:</strong> Nuova edizione italiana aggiornata con una curatela italiana forte che integri capitoli applicativi per le professioni educative (es. "La psicologia sociale nel lavoro dell'educatore")</div>
+        <div class="id-field"><strong>Target primario:</strong> Corsi L-19 da 6-8 CFU — Genova, Roma Tre, LUMSA</div>
+        <div class="id-field"><strong>Punti chiave:</strong> Aggiornamento su social media e identità digitale, casi studio italiani, piattaforma ZTE integrata</div>
+        <div class="id-field"><strong>Prezzo indicativo:</strong> €35-39 (fascia competitiva rispetto a Hogg & Vaughan €49)</div>
+        <div class="id-field"><strong>Timeline ideale:</strong> Pubblicazione entro 2027 per intercettare il prossimo ciclo di adozioni</div>
+        <div class="id-field"><strong>Rischio:</strong> Se non si differenzia con contenuti educativi, rischia di restare un "secondo Hogg & Vaughan"</div>
+    </div>
+
+    <div class="id-card id-card-red">
+        <h4>📕 Scenario B — Nuova Proposta Editoriale Italiana</h4>
+        <div class="id-field"><strong>Concept:</strong> Manuale di psicologia sociale con taglio educativo e professionalizzante — "Psicologia sociale per le professioni educative"</div>
+        <div class="id-field"><strong>Strategia:</strong> Coinvolgere curatori italiani attivi nella L-19 (es. docenti di Torino, Bologna, Roma Tre) per costruire un testo nativamente pensato per educatori</div>
+        <div class="id-field"><strong>Differenziazione:</strong> Superare Gattino et al. (2008) offrendo aggiornamento + casi professionali + risorse digitali</div>
+        <div class="id-field"><strong>Target primario:</strong> Torino (sostituzione Gattino datato), Bologna (corsi professionalizzanti), telematiche</div>
+        <div class="id-field"><strong>Punti chiave:</strong> Burnout e benessere dell'educatore, cyberbullismo, diversità e inclusione, psicologia di comunità, risorse digitali</div>
+        <div class="id-field"><strong>Prezzo indicativo:</strong> €27-32 (fascia agile, competitivo con Boca et al. e Gattino et al.)</div>
+        <div class="id-field"><strong>Timeline:</strong> Più lunga (2027-2028), ma valore strategico alto</div>
+        <div class="id-field"><strong>Rischio:</strong> Necessità di trovare curatori disponibili e di non cannibalizzare Smith et al. nella L-24</div>
+    </div>
+
+    <h2 class="section-title">Atenei Target — Piano d'Azione</h2>
+    <table class="target-table">
+        <thead>
+            <tr>
+                <th>Ateneo</th>
+                <th>Docente</th>
+                <th>Testo Attuale</th>
+                <th>Editore</th>
+                <th>Vulnerabilità</th>
+                <th>Priorità</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Reggio Calabria Mediterranea</td>
+                <td>Chirico Doriana</td>
+                <td><em>Non indicato</em></td>
+                <td>N.D.</td>
+                <td>Cattedra scoperta — massima apertura a proposte</td>
+                <td><span class="badge badge-alta">ALTA</span></td>
+            </tr>
+            <tr>
+                <td>Torino</td>
+                <td>Mara Martini</td>
+                <td>Gattino et al. (2008)</td>
+                <td>Carocci</td>
+                <td>Manuale datato (18 anni) — necessità di aggiornamento</td>
+                <td><span class="badge badge-alta">ALTA</span></td>
+            </tr>
+            <tr>
+                <td>Torino</td>
+                <td>Erica Viola</td>
+                <td>Gattino et al. (2008)</td>
+                <td>Carocci</td>
+                <td>Stesso testo datato, ma corso molto esteso con 8 complementari</td>
+                <td><span class="badge badge-alta">ALTA</span></td>
+            </tr>
+            <tr>
+                <td>Roma LUMSA</td>
+                <td>Scopelliti Massimiliano</td>
+                <td>Boca et al. (2017)</td>
+                <td>Il Mulino</td>
+                <td>Testo in invecchiamento (9 anni); possibile apertura a alternative aggiornate</td>
+                <td><span class="badge badge-media">MEDIA</span></td>
+            </tr>
+            <tr>
+                <td>Bologna</td>
+                <td>Stefano Passini</td>
+                <td>Boca et al.</td>
+                <td>Il Mulino</td>
+                <td>Forte legame con Il Mulino (Speltini è curatore bolognese), ma testo che invecchia</td>
+                <td><span class="badge badge-media">MEDIA</span></td>
+            </tr>
+            <tr>
+                <td>Roma Tre</td>
+                <td>Carrus / Tiberio</td>
+                <td>Hogg & Vaughan (2023)</td>
+                <td>Pearson</td>
+                <td>Edizione recentissima — difficile da scalzare a breve</td>
+                <td><span class="badge badge-develop">DEVELOP</span></td>
+            </tr>
+            <tr>
+                <td>Genova</td>
+                <td>Luca Andrighetto</td>
+                <td>Andrighetto & Riva (2020)</td>
+                <td>Il Mulino</td>
+                <td>Auto-adozione del curatore — praticamente inamovibile</td>
+                <td><span class="badge badge-develop">DEVELOP</span></td>
+            </tr>
+            <tr>
+                <td>Milano Cattolica</td>
+                <td>Camillo Regalia</td>
+                <td>Kenrick et al.</td>
+                <td>Pearson</td>
+                <td>Corso integrato con sviluppo; Pearson consolidato</td>
+                <td><span class="badge badge-develop">DEVELOP</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="qw-box">
+        <h4>⚡ Quick Win — Azioni Immediate</h4>
+        <ul>
+            <li><strong>Reggio Calabria (Chirico Doriana):</strong> Primo contatto commerciale per presentare il catalogo Zanichelli. Cattedra senza testo indicato = massima ricettività. Inviare copia saggio di Smith et al. con proposta di supporto didattico.</li>
+            <li><strong>Torino (Martini + Viola):</strong> Proporre un aggiornamento rispetto al datato Gattino (2008). Evidenziare il framework dei "processi interconnessi" di Smith come evoluzione del modello educativo. Se disponibile una nuova edizione, Torino è il primo target.</li>
+            <li><strong>LUMSA (Scopelliti):</strong> Monitorare la prossima adozione: Boca et al. (2017) ha quasi 10 anni. Preparare una proposta comparativa che evidenzi i vantaggi del titolo Zanichelli (piattaforma digitale, risorse online).</li>
+            <li><strong>Telematiche:</strong> Mappare le adozioni di Psicologia Sociale nelle principali telematiche L-19 (Pegaso, eCampus, Mercatorum, Unitelma). Con 41,5% degli iscritti, è un mercato sommerso potenzialmente decisivo.</li>
+            <li><strong>Raccogliere intelligence LM-85bis:</strong> Verificare se esistono cattedre autonome di Psicologia Sociale nei corsi di Formazione Primaria, potenzialmente nascoste sotto denominazioni integrate.</li>
+        </ul>
+    </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- FOOTER -->
+<div class="footer">
+    Zanichelli Market Intelligence — Psicologia Sociale L-19 / LM-85bis | Dati aggiornati al 27/02/2026 | Promotore: Sergio — Funzionario Commerciale
+</div>
+
+<script>
+// TAB SWITCHING
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// COLLAPSIBLE
+function toggleCollapsible(el) {
+    el.classList.toggle('open');
+}
+
+// TABLE FILTER
+function filterTable() {
+    const editore = document.getElementById('filterEditore').value.toLowerCase();
+    const classe = document.getElementById('filterClasse').value.toLowerCase();
+    const search = document.getElementById('filterSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#adozioniTable tbody tr');
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowEditore = cells[8]?.textContent.toLowerCase() || '';
+        const rowClasse = cells[1]?.textContent.toLowerCase() || '';
+        const rowText = row.textContent.toLowerCase();
+        const matchEditore = !editore || rowEditore.includes(editore);
+        const matchClasse = !classe || rowClasse.includes(classe);
+        const matchSearch = !search || rowText.includes(search);
+        row.style.display = (matchEditore && matchClasse && matchSearch) ? '' : 'none';
+    });
+}
+
+// TABLE SORT
+let sortDir = {};
+function sortTable(col) {
+    const table = document.getElementById('adozioniTable');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    sortDir[col] = !sortDir[col];
+    rows.sort((a, b) => {
+        const aVal = a.querySelectorAll('td')[col]?.textContent.trim() || '';
+        const bVal = b.querySelectorAll('td')[col]?.textContent.trim() || '';
+        return sortDir[col] ? aVal.localeCompare(bVal, 'it') : bVal.localeCompare(aVal, 'it');
+    });
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+// CHARTS
+const zBlue = '#003C82';
+const zAccent = '#E63946';
+const zGreen = '#2A9D8F';
+const zYellow = '#E9C46A';
+const zOrange = '#F4A261';
+const zPurple = '#6C5CE7';
+const gray400 = '#9CA3AF';
+
+// Doughnut — Market Share Manuali Principali
+new Chart(document.getElementById('chartDoughnut').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Il Mulino (33,3%)', 'Pearson (33,3%)', 'Carocci (22,2%)', 'N.D. (11,1%)'],
+        datasets: [{
+            data: [33.3, 33.3, 22.2, 11.1],
+            backgroundColor: [zBlue, zOrange, zGreen, gray400],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 12 } }
+        },
+        cutout: '55%'
+    }
+});
+
+// Bar — Adozioni per editore (principali + complementari)
+new Chart(document.getElementById('chartBar').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: ['Il Mulino', 'Carocci', 'Pearson', 'Laterza', 'Cortina', 'Liguori', 'Zanichelli'],
+        datasets: [
+            {
+                label: 'Manuali principali',
+                data: [3, 2, 3, 0, 0, 0, 0],
+                backgroundColor: zBlue
+            },
+            {
+                label: 'Testi complementari',
+                data: [8, 3, 0, 2, 1, 1, 0],
+                backgroundColor: zGreen
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        indexAxis: 'y',
+        scales: {
+            x: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } },
+            y: { stacked: true }
+        },
+        plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 12 } } }
+        }
+    }
+});
+
+// Bar — Prospettive Teoriche
+new Chart(document.getElementById('chartProspettive').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: ['Social Cognition', 'Gestalt/Comportam.', 'Prospettiva Ecologica', 'Rappr. Sociali', 'Psicol. Dinamica', 'Interaz. Simbolico'],
+        datasets: [{
+            label: 'Livello di presenza (1=Bassa, 2=Media, 3=Alta)',
+            data: [3, 2, 2, 2, 1, 2],
+            backgroundColor: [zAccent, zBlue, zGreen, zOrange, zPurple, zYellow],
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true, max: 3, ticks: { stepSize: 1, callback: v => ['','Bassa','Media','Alta'][v] } },
+            x: { ticks: { font: { size: 11 } } }
+        },
+        plugins: { legend: { display: false } }
+    }
+});
+</script>
+
+</body>
+</html>

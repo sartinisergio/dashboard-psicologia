@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psicologia dello Sviluppo — L-19 / LM-85bis | Dashboard Zanichelli</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root{--zanichelli-blue:#003C82;--zanichelli-dark:#00244d;--zanichelli-light:#e8f0fe;--zanichelli-accent:#E63946;--zanichelli-green:#2a9d8f;--zanichelli-orange:#f4a261;--zanichelli-purple:#7b2d8e;--zanichelli-gray:#6c757d;--zanichelli-bg:#f5f7fa;--zanichelli-card:#ffffff;--zanichelli-border:#dee2e6;--zanichelli-gold:#e9c46a;--zanichelli-teal:#264653;--radius:12px;--shadow:0 4px 20px rgba(0,60,130,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--zanichelli-bg);color:#212529;line-height:1.6}
+/* TOOLBAR */
+.toolbar{position:sticky;top:0;z-index:1000;background:var(--zanichelli-dark);padding:8px 24px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.toolbar a,.toolbar button{color:#fff;text-decoration:none;font-size:.85rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:6px 16px;border-radius:6px;cursor:pointer;transition:.2s}
+.toolbar a:hover,.toolbar button:hover{background:rgba(255,255,255,.25)}
+/* HEADER */
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,#0057b8 50%,var(--zanichelli-dark) 100%);color:#fff;padding:48px 24px 36px;text-align:center}
+.header h1{font-size:2.2rem;margin-bottom:8px;font-weight:800;letter-spacing:-.5px}
+.header .subtitle{opacity:.85;font-size:1.05rem;max-width:720px;margin:0 auto 28px}
+.badge-cl{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge-l19{background:#2a9d8f;color:#fff}
+.badge-lm85{background:var(--zanichelli-orange);color:#fff}
+.badge-zan{background:var(--zanichelli-accent);color:#fff}
+.badge-alta{background:var(--zanichelli-accent);color:#fff}
+.badge-media{background:var(--zanichelli-orange);color:#fff}
+.badge-develop{background:var(--zanichelli-blue);color:#fff}
+/* KPI */
+.kpi-row{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:-28px;padding:0 24px;position:relative;z-index:10}
+.kpi-card{background:#fff;border-radius:var(--radius);padding:20px 24px;text-align:center;min-width:160px;flex:1;max-width:220px;box-shadow:var(--shadow)}
+.kpi-card .num{font-size:2rem;font-weight:800;color:var(--zanichelli-blue)}
+.kpi-card .num.accent{color:var(--zanichelli-accent)}
+.kpi-card .label{font-size:.78rem;color:var(--zanichelli-gray);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+/* TABS */
+.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:0;background:#fff;border-bottom:2px solid var(--zanichelli-border);padding:0 16px;position:sticky;top:44px;z-index:900}
+.tab-btn{padding:14px 22px;cursor:pointer;border:none;background:none;font-size:.88rem;font-weight:600;color:var(--zanichelli-gray);border-bottom:3px solid transparent;transition:.2s}
+.tab-btn:hover{color:var(--zanichelli-blue)}
+.tab-btn.active{color:var(--zanichelli-blue);border-bottom-color:var(--zanichelli-accent)}
+.tab-content{display:none;padding:32px 24px;max-width:1200px;margin:0 auto}
+.tab-content.active{display:block}
+/* CARDS */
+.card{background:#fff;border-radius:var(--radius);padding:24px;margin-bottom:24px;box-shadow:var(--shadow)}
+.card h3{color:var(--zanichelli-blue);margin-bottom:16px;font-size:1.15rem}
+.highlight-box{background:linear-gradient(135deg,#e8f0fe 0%,#f0f4ff 100%);border-left:4px solid var(--zanichelli-blue);border-radius:var(--radius);padding:24px;margin-bottom:28px}
+.highlight-box.warning{background:linear-gradient(135deg,#fff3e0 0%,#fff8f0 100%);border-left-color:var(--zanichelli-orange)}
+.highlight-box.danger{background:linear-gradient(135deg,#ffeef0 0%,#fff5f5 100%);border-left-color:var(--zanichelli-accent)}
+.highlight-box h3{margin-bottom:10px}
+.highlight-box p{font-size:.95rem;line-height:1.7}
+/* METRIC CARDS */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px}
+.metric-card{background:#fff;border-radius:var(--radius);padding:20px;border-top:4px solid var(--zanichelli-blue);box-shadow:var(--shadow);text-align:center}
+.metric-card .mc-num{font-size:1.8rem;font-weight:800;color:var(--zanichelli-blue)}
+.metric-card .mc-title{font-size:.88rem;font-weight:700;margin-bottom:4px}
+.metric-card .mc-sub{font-size:.78rem;color:var(--zanichelli-gray)}
+.metric-card.mcg{border-top-color:var(--zanichelli-green)}
+.metric-card.mcg .mc-num{color:var(--zanichelli-green)}
+.metric-card.mco{border-top-color:var(--zanichelli-orange)}
+.metric-card.mco .mc-num{color:var(--zanichelli-orange)}
+.metric-card.mcr{border-top-color:var(--zanichelli-accent)}
+.metric-card.mcr .mc-num{color:var(--zanichelli-accent)}
+/* CHART */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px}
+.chart-box{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+.chart-box h4{text-align:center;color:var(--zanichelli-blue);margin-bottom:12px;font-size:.95rem}
+.chart-box canvas{max-height:320px}
+/* TABLE */
+.table-wrap{overflow-x:auto;margin-bottom:20px}
+table.data-table{width:100%;border-collapse:collapse;font-size:.82rem}
+table.data-table th{background:var(--zanichelli-blue);color:#fff;padding:10px 12px;text-align:left;white-space:nowrap;position:sticky;top:0}
+table.data-table td{padding:9px 12px;border-bottom:1px solid #eee}
+table.data-table tr:hover{background:#f0f7ff}
+table.data-table tr.zan-row{background:#fff0f2;font-weight:600}
+table.data-table tr.zan-row:hover{background:#ffe0e4}
+.filter-bar{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;align-items:center}
+.filter-bar select,.filter-bar input{padding:8px 14px;border:1px solid var(--zanichelli-border);border-radius:8px;font-size:.85rem}
+.filter-bar select{min-width:180px}
+.filter-bar input{flex:1;min-width:200px}
+/* COMPETITOR CARDS */
+.competitor-card{background:#fff;border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow);border-left:5px solid var(--zanichelli-blue)}
+.competitor-card.rank1{border-left-color:var(--zanichelli-accent)}
+.competitor-card.rank2{border-left-color:var(--zanichelli-orange)}
+.competitor-card.rank3{border-left-color:var(--zanichelli-gold)}
+.competitor-card .cc-header{display:flex;align-items:center;gap:16px;cursor:pointer}
+.competitor-card .cc-rank{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:#fff;background:var(--zanichelli-blue);flex-shrink:0}
+.competitor-card.rank1 .cc-rank{background:var(--zanichelli-accent)}
+.competitor-card.rank2 .cc-rank{background:var(--zanichelli-orange)}
+.competitor-card.rank3 .cc-rank{background:var(--zanichelli-gold);color:#333}
+.competitor-card .cc-info h4{margin:0;font-size:1rem;color:#212529}
+.competitor-card .cc-info .cc-meta{font-size:.8rem;color:var(--zanichelli-gray)}
+.cc-body{display:none;margin-top:16px;padding-top:16px;border-top:1px solid #eee;font-size:.9rem;line-height:1.7}
+.cc-body.open{display:block}
+/* CONTENT TAB */
+.core-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.core-card{border-radius:var(--radius);padding:18px;color:#fff;font-size:.88rem}
+.core-card h4{font-size:.95rem;margin-bottom:6px}
+.pill-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.pill{display:inline-block;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;background:var(--zanichelli-light);color:var(--zanichelli-blue)}
+.spec-table{width:100%;border-collapse:collapse;font-size:.84rem;margin-bottom:20px}
+.spec-table th{background:var(--zanichelli-light);padding:10px 14px;text-align:left;color:var(--zanichelli-blue)}
+.spec-table td{padding:10px 14px;border-bottom:1px solid #eee}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:700}
+.tag-alta{background:#d4edda;color:#155724}
+.tag-media{background:#fff3cd;color:#856404}
+.tag-bassa{background:#f8d7da;color:#721c24}
+/* COLLAPSIBLE */
+.collapsible{cursor:pointer;padding:14px 20px;background:var(--zanichelli-light);border:none;width:100%;text-align:left;font-size:.92rem;font-weight:600;color:var(--zanichelli-blue);border-radius:8px;margin-bottom:4px;transition:.2s}
+.collapsible:hover{background:#d6e4f7}
+.collapsible::after{content:'+';float:right;font-weight:700;font-size:1.1rem}
+.collapsible.open::after{content:'−'}
+.coll-content{display:none;padding:16px 20px;background:#fff;border:1px solid var(--zanichelli-border);border-radius:0 0 8px 8px;margin-bottom:16px;font-size:.9rem;line-height:1.7}
+.coll-content.open{display:block}
+/* SWOT */
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.swot-box{border-radius:var(--radius);padding:20px}
+.swot-box h4{margin-bottom:10px;font-size:.95rem}
+.swot-box ul{list-style:none;padding:0}
+.swot-box ul li{padding:6px 0;font-size:.88rem;border-bottom:1px solid rgba(0,0,0,.06)}
+.swot-box ul li::before{content:'→ ';font-weight:700}
+.swot-s{background:#d4edda;color:#155724}
+.swot-w{background:#f8d7da;color:#721c24}
+.swot-o{background:#cce5ff;color:#004085}
+.swot-t{background:#fff3cd;color:#856404}
+/* ID CARD */
+.id-card{border-radius:var(--radius);padding:28px;margin-bottom:24px;box-shadow:var(--shadow)}
+.id-card.scenario-a{background:linear-gradient(135deg,#e8f0fe,#f0f4ff);border:2px solid var(--zanichelli-blue)}
+.id-card.scenario-b{background:linear-gradient(135deg,#fff0f2,#fff5f5);border:2px solid var(--zanichelli-accent)}
+.id-card h3{margin-bottom:14px}
+.id-card .id-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.id-card .id-item{font-size:.88rem}
+.id-card .id-item strong{display:block;font-size:.78rem;text-transform:uppercase;color:var(--zanichelli-gray);margin-bottom:2px}
+/* TARGET TABLE */
+table.target-table{width:100%;border-collapse:collapse;font-size:.84rem;margin-bottom:24px}
+table.target-table th{background:var(--zanichelli-blue);color:#fff;padding:10px 14px;text-align:left}
+table.target-table td{padding:10px 14px;border-bottom:1px solid #eee}
+table.target-table tr:hover{background:#f0f7ff}
+/* FOOTER */
+.footer{background:var(--zanichelli-dark);color:rgba(255,255,255,.7);text-align:center;padding:24px;font-size:.8rem;margin-top:40px}
+/* RESPONSIVE */
+@media(max-width:768px){
+.chart-row{grid-template-columns:1fr}
+.swot-grid{grid-template-columns:1fr}
+.id-card .id-grid{grid-template-columns:1fr}
+.header h1{font-size:1.6rem}
+.kpi-row{flex-direction:column;align-items:center}
+.tab-btn{padding:10px 14px;font-size:.8rem}
+}
+@media print{
+.toolbar,.tabs{display:none}
+.tab-content{display:block!important;page-break-inside:avoid}
+body{font-size:11px}
+.card,.competitor-card,.chart-box{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+<a href="index.html">← Torna alla Dashboard</a>
+<button onclick="window.print()">Stampa / Salva PDF</button>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+<h1>Psicologia dello Sviluppo</h1>
+<p class="subtitle">Analisi delle adozioni nei corsi <span class="badge-cl badge-l19">L-19</span> <span class="badge-cl badge-lm85">LM-85bis</span> — Mercato, competitor, contenuti e strategie per Zanichelli</p>
+</div>
+
+<!-- KPI -->
+<div class="kpi-row">
+<div class="kpi-card"><div class="num">56</div><div class="label">Cattedre analizzate</div></div>
+<div class="kpi-card"><div class="num">26 / 30</div><div class="label">L-19 / LM-85bis</div></div>
+<div class="kpi-card"><div class="num accent">1,8%</div><div class="label">Quota Zanichelli</div></div>
+<div class="kpi-card"><div class="num">~55%</div><div class="label">Quota McGraw-Hill</div></div>
+<div class="kpi-card"><div class="num">111.983</div><div class="label">Studenti L-19+LM-85bis</div></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs" id="tabBar">
+<button class="tab-btn active" data-tab="panoramica">Panoramica</button>
+<button class="tab-btn" data-tab="mappa">Mappa Adozioni</button>
+<button class="tab-btn" data-tab="competitor">Competitor</button>
+<button class="tab-btn" data-tab="contenuti">Contenuti &amp; Programmi</button>
+<button class="tab-btn" data-tab="posizionamento">Posizionamento Zanichelli</button>
+</div>
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-content active" id="panoramica">
+
+<div class="highlight-box danger">
+<h3>⚡ Sintesi strategica</h3>
+<p><strong>Psicologia dello Sviluppo è LA materia-chiave per L-19 e LM-85bis</strong> — presente in tutti i corsi come insegnamento obbligatorio. Con 56 cattedre mappate e ~112.000 studenti potenziali, rappresenta il mercato singolo più ampio per Zanichelli in quest'area. Tuttavia la quota attuale è drammaticamente bassa: <strong>solo 1 adozione complementare su 56 cattedre (1,8%)</strong>. McGraw-Hill domina con un duopolio Santrock + Leman che copre il 55% del mercato. Il Belsky (Zanichelli, 2ª ed. 2020) non compare in nessuna adozione L-19/LM-85bis, mentre il D'Amico-Piccardi "Psicologia per insegnare" appare come testo complementare a Cagliari. La 5ª edizione di Santrock (McGraw-Hill, gennaio 2026) consoliderà ulteriormente la posizione dominante del competitor. <strong>Serve un intervento strategico urgente</strong>: aggiornamento del Belsky e/o sviluppo di un prodotto mirato per formazione primaria e educazione.</p>
+</div>
+
+<div class="metric-grid">
+<div class="metric-card mcr">
+<div class="mc-title">McGraw-Hill</div>
+<div class="mc-num">~55%</div>
+<div class="mc-sub">31 cattedre · Santrock + Leman</div>
+</div>
+<div class="metric-card mco">
+<div class="mc-title">Il Mulino</div>
+<div class="mc-num">~18%</div>
+<div class="mc-sub">10 cattedre · Caravita + Berti-Bombi</div>
+</div>
+<div class="metric-card mcg">
+<div class="mc-title">Carocci</div>
+<div class="mc-num">~9%</div>
+<div class="mc-sub">5 cattedre · Barone + complementari</div>
+</div>
+<div class="metric-card">
+<div class="mc-title">Zanichelli</div>
+<div class="mc-num">1,8%</div>
+<div class="mc-sub">1 cattedra · solo complementare</div>
+</div>
+</div>
+
+<div class="chart-row">
+<div class="chart-box">
+<h4>Market Share per Editore (testo principale)</h4>
+<canvas id="chartShare"></canvas>
+</div>
+<div class="chart-box">
+<h4>Editori — N° cattedre con adozione</h4>
+<canvas id="chartBar"></canvas>
+</div>
+</div>
+
+<div class="card">
+<h3>Distribuzione per semestre e anno</h3>
+<p>La maggioranza delle cattedre eroga l'insegnamento al <strong>I o II semestre del 1° o 2° anno</strong>, confermandone il carattere propedeutico. In LM-85bis prevale il <strong>1° anno</strong> (18 cattedre su 30), mentre in L-19 la collocazione è più variabile (1°, 2° e talvolta 3° anno). Il semestre di erogazione è equamente distribuito tra I e II semestre, con una leggera prevalenza del II semestre nei corsi LM-85bis.</p>
+</div>
+
+<div class="card">
+<h3>Contesto L-19 vs LM-85bis</h3>
+<p>Nei <strong>corsi L-19</strong> (Scienze dell'educazione) l'insegnamento assume spesso un taglio applicativo focalizzato sulla fascia 0-6 anni, con laboratori di osservazione del comportamento infantile e attenzione ai contesti educativi come nido e scuola dell'infanzia. Nei <strong>corsi LM-85bis</strong> (Scienze della formazione primaria) l'orientamento è verso i processi di apprendimento scolastico (6-11 anni), con approfondimenti su prerequisiti di lettura, scrittura e calcolo, relazione insegnante-alunno e sviluppo atipico ai fini dell'inclusione. Questa biforcazione ha implicazioni importanti per il posizionamento editoriale: un manuale ideale per questo mercato dovrebbe coprire entrambe le prospettive o essere modulare.</p>
+</div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-content" id="mappa">
+
+<div class="highlight-box">
+<h3>📋 Mappa completa delle adozioni</h3>
+<p>56 cattedre analizzate in 42 atenei italiani. Usa i filtri per esplorare per editore, classe di laurea o cercare un ateneo specifico. Le righe Zanichelli sono evidenziate in rosso.</p>
+</div>
+
+<div class="filter-bar">
+<select id="filterEditore">
+<option value="">Tutti gli editori</option>
+<option value="McGraw-Hill">McGraw-Hill</option>
+<option value="Il Mulino">Il Mulino</option>
+<option value="Carocci">Carocci</option>
+<option value="UTET">UTET</option>
+<option value="Raffaello Cortina">Raffaello Cortina</option>
+<option value="Pearson">Pearson</option>
+<option value="Zanichelli">Zanichelli</option>
+<option value="Franco Angeli">Franco Angeli</option>
+<option value="Altro">Altro</option>
+</select>
+<select id="filterClasse">
+<option value="">Tutte le classi</option>
+<option value="L-19">L-19</option>
+<option value="LM-85bis">LM-85bis</option>
+</select>
+<input type="text" id="filterSearch" placeholder="Cerca ateneo, docente...">
+</div>
+
+<div class="table-wrap">
+<table class="data-table" id="adozioniTable">
+<thead>
+<tr><th>Ateneo</th><th>Classe</th><th>Insegnamento</th><th>Docente</th><th>Testo principale</th><th>Editore</th><th>Anno/Sem</th></tr>
+</thead>
+<tbody>
+<tr data-editore="n/d" data-classe="LM-85bis"><td>Bari</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello Sviluppo</td><td>Pasquale Musso</td><td><em>Non indicato</em></td><td>—</td><td>2° / I</td></tr>
+<tr data-editore="n/d" data-classe="L-19"><td>Bari</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo (infanzia 0-3)</td><td>Fabiola Silletti</td><td><em>Non indicato</em></td><td>—</td><td>1° / II</td></tr>
+<tr data-editore="Il Mulino" data-classe="L-19"><td>Basilicata</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo e dell'educazione</td><td>Maria Grazia Lo Cricchio</td><td>Berti & Surian — Fondamenti di psic. dello sviluppo</td><td>Il Mulino</td><td>— / I</td></tr>
+<tr data-editore="n/d" data-classe="LM-85bis"><td>Basilicata</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Giuseppe Mininni</td><td><em>Non indicato</em></td><td>—</td><td>— / I</td></tr>
+<tr data-editore="Carocci" data-classe="L-19"><td>Benevento G. Fortunato</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo e dell'educazione</td><td>Fabrizio Stasolla</td><td>Ligorio & Cacciamani — Psicologia dell'Educazione</td><td>Carocci</td><td>2° / I</td></tr>
+<tr data-editore="n/d" data-classe="L-19"><td>Bergamo</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia del ciclo di vita</td><td>Eleonora Florio</td><td><em>Non indicato</em></td><td>—</td><td>1° / II</td></tr>
+<tr data-editore="n/d" data-classe="LM-85bis"><td>Bergamo</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td><em>Non indicato</em></td><td><em>Non indicato</em></td><td>—</td><td>1° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Bologna</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Consuelo Mameli</td><td>Santrock — Psicologia dello Sviluppo (2021)</td><td>McGraw-Hill</td><td>— / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Bologna</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Maria Cristina Matteucci</td><td>Santrock — Psicologia dello Sviluppo (2020)</td><td>McGraw-Hill</td><td>— / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Bologna</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Alessandra Sansavini</td><td>Santrock — Psicologia dello Sviluppo (2021)</td><td>McGraw-Hill</td><td>— / II</td></tr>
+<tr data-editore="Pearson" data-classe="L-19"><td>Bologna</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo (Infanzia)</td><td>Alessandra Sansavini</td><td>Gillibrand et al. — Psicologia dello sviluppo (2019)</td><td>Pearson</td><td>— / I</td></tr>
+<tr data-editore="Il Mulino" data-classe="LM-85bis"><td>Bolzano</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e educazione 1</td><td>Taverna, Sangiuliano, Rovatti</td><td>Berti & Bombi — Corso di psic. dello sviluppo (2013)</td><td>Il Mulino</td><td>1° / II</td></tr>
+<tr class="zan-row" data-editore="Zanichelli" data-classe="LM-85bis"><td>Cagliari</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Roberta Fadda</td><td>Santrock — Psic. dello Sviluppo (2021) + <span class="badge-cl badge-zan">Zanichelli</span> D'Amico-Piccardi</td><td>McGraw-Hill + Zanichelli</td><td>— / I</td></tr>
+<tr data-editore="UTET" data-classe="L-19"><td>Cagliari</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Maria Chiara Fastame</td><td>Vianello et al. — Psicologia dello Sviluppo (2019)</td><td>UTET</td><td>1° / I</td></tr>
+<tr data-editore="Il Mulino" data-classe="LM-85bis"><td>Campania Vanvitelli</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e educazione</td><td>Roberto Marcone</td><td>Caravita et al. — Psic. Sviluppo e Educazione (2018)</td><td>Il Mulino</td><td>— / —</td></tr>
+<tr data-editore="Il Mulino" data-classe="L-19"><td>Catania</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dell'educazione e dello sviluppo (A-L)</td><td>Rossella Falanga</td><td>Berti & Bombi — Corso di psic. dello sviluppo</td><td>Il Mulino</td><td>— / —</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Catania</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo e dell'educazione</td><td>Alessandra Geraci</td><td>Santrock — Psicologia dello sviluppo (2021)</td><td>McGraw-Hill</td><td>— / —</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Enna Kore</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. Sviluppo e Educazione</td><td>Concettina Caparello</td><td>Santrock et al. — Psicologia dello Sviluppo (2021)</td><td>McGraw-Hill</td><td>1° / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Ferrara</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Damiano Menin</td><td>Leman et al. — Psicologia dello sviluppo (2023)</td><td>McGraw-Hill</td><td>2° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Firenze</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e educazione (A-L)</td><td>Enrica Ciucci</td><td>Santrock et al. — Psic. sviluppo e educazione (2022)</td><td>McGraw-Hill</td><td>1° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Firenze</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo + Lab</td><td>Nocentini, Palladino</td><td>Leman et al. — Psicologia dello sviluppo (2019)</td><td>McGraw-Hill</td><td>1° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Firenze</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e educazione (M-Z)</td><td>Christian Tarchi</td><td>Leman et al. — Psicologia dello sviluppo (2023)</td><td>McGraw-Hill</td><td>1° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Foggia</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Francesco Sulla</td><td>Leman et al. — Psicologia dello Sviluppo (2023)</td><td>McGraw-Hill</td><td>3° / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Genova</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo e ped. sperimentale</td><td>Carlotta Rivella</td><td>Leman et al. — Psicologia dello sviluppo (2023)</td><td>McGraw-Hill</td><td>— / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Genova</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Usai, Viterbori</td><td>Santrock — Psicologia dello sviluppo (2021)</td><td>McGraw-Hill</td><td>1° / I</td></tr>
+<tr data-editore="Carocci" data-classe="LM-85bis"><td>Macerata</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo (MZ)</td><td>Sonia Del Savio</td><td>Barone — Manuale di psicologia dello sviluppo</td><td>Carocci</td><td>— / —</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Macerata</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Morena Muzi</td><td>Leman et al. — Psicologia dello sviluppo (2019)</td><td>McGraw-Hill</td><td>— / —</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Messina</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Cristina Carrozza</td><td>Santrock — Psicologia dello sviluppo</td><td>McGraw-Hill</td><td>3° / II</td></tr>
+<tr data-editore="Franco Angeli" data-classe="L-19"><td>Messina</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Mariano Indelicato</td><td>Castelli & Sbattella — Psic. del Ciclo di Vita</td><td>Franco Angeli</td><td>3° / II</td></tr>
+<tr data-editore="n/d" data-classe="LM-85bis"><td>Milano Bicocca</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello Sviluppo</td><td>Ilaria Chirico</td><td><em>Non indicato</em></td><td>—</td><td>— / II</td></tr>
+<tr data-editore="Il Mulino" data-classe="LM-85bis"><td>Milano Bicocca</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello Sviluppo</td><td>Veronica Maria Ornaghi</td><td>Caravita et al. — Psic. sviluppo e educazione (2024)</td><td>Il Mulino</td><td>— / II</td></tr>
+<tr data-editore="Carocci" data-classe="L-19"><td>Milano Bicocca</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Eleonora Farina</td><td>Barone — Manuale di psicologia dello sviluppo</td><td>Carocci</td><td>— / I</td></tr>
+<tr data-editore="Il Mulino" data-classe="L-19"><td>Milano Cattolica (Piacenza)</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psic. Sviluppo e Relazioni Sociali</td><td>Miraglia, Ranieri</td><td>Caravita et al. — Psic. Sviluppo e Educazione</td><td>Il Mulino</td><td>— / —</td></tr>
+<tr data-editore="Raffaello Cortina" data-classe="LM-85bis"><td>Milano Cattolica (Brescia)</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Edoardo A. Bracaglia</td><td>Miller — Teorie dello sviluppo psicologico + Harris — Psicologia del bambino</td><td>Il Mulino + R. Cortina</td><td>1° / —</td></tr>
+<tr data-editore="Raffaello Cortina" data-classe="LM-85bis"><td>Milano Cattolica (Milano)</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Antonella Marchetti</td><td>Miller — Teorie dello sviluppo + Harris — Psicologia del bambino</td><td>Il Mulino + R. Cortina</td><td>1° / —</td></tr>
+<tr data-editore="Il Mulino" data-classe="LM-85bis"><td>Milano Cattolica (Piacenza)</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello Sviluppo</td><td>Annalisa Valle</td><td>Caravita et al. — Psic. Sviluppo e Educazione (2018)</td><td>Il Mulino</td><td>— / A</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Modena e Reggio E.</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia 1</td><td>Erika Benassi</td><td>Leman et al. — Psicologia dello sviluppo</td><td>McGraw-Hill</td><td>1° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Molise</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e apprendimento</td><td>Francesca Baralla</td><td>Leman et al. — Psicologia dello sviluppo (2023)</td><td>McGraw-Hill</td><td>— / II</td></tr>
+<tr data-editore="Altro" data-classe="L-19"><td>Napoli Benincasa</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo infantile</td><td>Letizia Maria Drammis</td><td>Shaffer & Kipp — Psicologia dello Sviluppo</td><td>Piccin</td><td>— / —</td></tr>
+<tr data-editore="Altro" data-classe="LM-85bis"><td>Napoli Benincasa</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Roberto Militerni</td><td>Militerni et al. — Psicologia dello sviluppo</td><td>Idelson-Gnocchi</td><td>— / —</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Padova</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e educazione</td><td>Lucangeli, Lunghi</td><td>Lucangeli & Vicari — Psic. dello Sviluppo (Mondadori) + Santrock — Psic. educazione (2025)</td><td>Mondadori + McGraw-Hill</td><td>2° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Palermo</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo e educazione + Lab</td><td>Polizzi, Maltese, Falletta</td><td>Perricone et al. — Psic. Sviluppo e Educazione (2021)</td><td>McGraw-Hill</td><td>1° / A</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Parma</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Ada Cigala</td><td>Santrock — Psicologia dello Sviluppo (2021)</td><td>McGraw-Hill</td><td>1° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Perugia</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Andrea Baroncelli</td><td>Santrock & Baroncelli — Psicologia del ciclo di vita (2026)</td><td>McGraw-Hill</td><td>1° / II</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Pisa</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Francesca Lemmi</td><td>Santrock et al. — Psic. dello sviluppo (2021) + Barone (Carocci)</td><td>McGraw-Hill + Carocci</td><td>1° / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Reggio Calabria</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Giulio D'Urso</td><td>Santrock et al. — Psicologia dello Sviluppo (2021)</td><td>McGraw-Hill</td><td>1° / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Reggio Calabria</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psic. sviluppo e educazione</td><td>Giulio D'Urso</td><td>Santrock et al. — Psicologia dello Sviluppo (2021)</td><td>McGraw-Hill</td><td>1° / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Roma Europea</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e educazione</td><td>Rebecca Honorati</td><td>Santrock et al. — Psicologia dello sviluppo (2021)</td><td>McGraw-Hill</td><td>— / A</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Roma Lumsa</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psic. sviluppo + Lab osservazione</td><td>Menna, Angelini</td><td>Leman et al. — Psicologia dello sviluppo (2023)</td><td>McGraw-Hill</td><td>2° / A</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Roma Marconi</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Carolina Lunetti</td><td>Leman et al. — Psicologia dello sviluppo (2023)</td><td>McGraw-Hill</td><td>— / —</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Roma Sapienza</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e educazione</td><td>Di Norcia, Cannoni</td><td>Leman et al. — Psicologia dello sviluppo (2023)</td><td>McGraw-Hill</td><td>1° / II</td></tr>
+<tr data-editore="Raffaello Cortina" data-classe="L-19"><td>Roma Tre</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Bello, Vecchio</td><td>Schaffer — Psicologia dello sviluppo</td><td>Raffaello Cortina</td><td>2° / A</td></tr>
+<tr data-editore="Raffaello Cortina" data-classe="LM-85bis"><td>Roma Tre</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. sviluppo e educazione</td><td>Paola Perucchini</td><td>Schaffer — Psicologia dello sviluppo</td><td>Raffaello Cortina</td><td>2° / A</td></tr>
+<tr data-editore="Carocci" data-classe="LM-85bis"><td>Roma Unilink</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psic. Sviluppo e Educazione</td><td>Michele Giannotti</td><td>Barone — Manuale di psicologia dello sviluppo</td><td>Carocci</td><td>1° / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="LM-85bis"><td>Salerno</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Monica Mollo</td><td>Santrock et al. — Psicologia dello sviluppo (2021)</td><td>McGraw-Hill</td><td>4° / I</td></tr>
+<tr data-editore="Altro" data-classe="L-19"><td>Sassari</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia Generale</td><td>Maria Lidia Mascia</td><td>Legrenzi — Storia della psicologia + Ciccarelli — Psic. generale</td><td>Il Mulino + Pearson</td><td>— / I</td></tr>
+<tr data-editore="McGraw-Hill" data-classe="L-19"><td>Siena</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Laura Occhini</td><td>Leman et al. — Psicologia dello sviluppo (2023)</td><td>McGraw-Hill</td><td>1° / II</td></tr>
+<tr data-editore="UTET" data-classe="L-19"><td>Torino</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psicologia dello sviluppo</td><td>Arace, Prino</td><td>Vianello et al. — Psicologia dello sviluppo (2019)</td><td>UTET</td><td>2° / II</td></tr>
+<tr data-editore="Il Mulino" data-classe="LM-85bis"><td>Torino</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Bulgarelli, Gastaldi, Prino</td><td>Berti & Bombi — Corso di psic. dello sviluppo (2018)</td><td>Il Mulino</td><td>1° / A</td></tr>
+<tr data-editore="Il Mulino" data-classe="LM-85bis"><td>Trieste</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Pellizzoni, Cuder</td><td>Caravita et al. — Psic. Sviluppo e Educazione (2024)</td><td>Il Mulino</td><td>— / II</td></tr>
+<tr data-editore="n/d" data-classe="L-19"><td>Udine</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psic. sviluppo e educazione</td><td>Marina Camodeca</td><td><em>Non indicato</em></td><td>—</td><td>— / I</td></tr>
+<tr data-editore="Altro" data-classe="LM-85bis"><td>Valle d'Aosta</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Psicologia dello sviluppo</td><td>Elena Cattelino</td><td>Bonino & Reffieuna — Psic. sviluppo e scuola primaria</td><td>Giunti</td><td>1° / I</td></tr>
+<tr data-editore="Pearson" data-classe="L-19"><td>Verona</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Psic. sviluppo e educazione</td><td>Elena Florit</td><td>Gillibrand et al. — Psicologia dello Sviluppo (2019)</td><td>Pearson</td><td>— / II</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h3>Presenza Zanichelli nel dettaglio</h3>
+<p><strong>1 sola cattedra con titolo Zanichelli</strong> — Università di Cagliari (LM-85bis), docente Roberta Fadda: il testo complementare è <em>D'Amico, S., Piccardi, L. (2018). Psicologia per insegnare. Zanichelli</em>, affiancato al Santrock (McGraw-Hill) come manuale principale. Il Belsky non è adottato in nessuna cattedra L-19/LM-85bis tra le 56 analizzate. Nella L-24, la quota Zanichelli era del 3,9% — in L-19/LM-85bis scende ulteriormente all'1,8%, confermando che il Belsky non intercetta il target educativo/formativo.</p>
+</div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-content" id="competitor">
+
+<div class="highlight-box">
+<h3>🏆 Ranking manuali per numero di adozioni</h3>
+<p>I manuali sono ordinati per numero di adozioni come testo principale (primo o secondo testo indicato). McGraw-Hill possiede i primi 2 titoli, che insieme coprono oltre il 55% del mercato.</p>
+</div>
+
+<!-- RANK 1 -->
+<div class="competitor-card rank1">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank">1</div>
+<div class="cc-info">
+<h4>Santrock, J.W. — Psicologia dello sviluppo (McGraw-Hill)</h4>
+<div class="cc-meta">~19 adozioni · 33,9% · 4ª ed. 2021 → 5ª ed. 2026 · €53 · McGraw-Hill</div>
+</div>
+</div>
+<div class="cc-body">
+<p><strong>Leader assoluto.</strong> Il manuale di John Santrock è il testo più adottato in assoluto sia in L-19 che LM-85bis, con circa 19 adozioni su 56 cattedre. È organizzato per <strong>domini tematici</strong> (fisico, cognitivo, socioemotivo) e copre l'intero arco di vita dall'infanzia all'adolescenza. La <strong>5ª edizione italiana</strong> (gennaio 2026) è condotta da Deater-Deckard, Lansford e curata da Dolores Rollo, con aggiornamenti su neuroscienze, diversità culturale e tecnologie digitali. Punti di forza: enorme apparato didattico digitale con piattaforma Connect, casi di studio, materiali per docenti, quiz interattivi. Ogni capitolo integra ricerche recenti e boxed features (es. "Diversità nello sviluppo", "Connessioni con il mondo reale"). A Perugia è uscita una versione co-autoriale Santrock & Baroncelli "Psicologia del ciclo di vita" (2026), segno di una strategia di localizzazione aggressiva. <strong>Vulnerabilità:</strong> il formato "one-size-fits-all" non differenzia tra target L-19 e LM-85bis; la prospettiva è prevalentemente nordamericana, il che può essere percepito come un limite per chi cerca contenuti sul sistema educativo italiano.</p>
+</div>
+</div>
+
+<!-- RANK 2 -->
+<div class="competitor-card rank2">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank">2</div>
+<div class="cc-info">
+<h4>Leman, P. et al. — Psicologia dello sviluppo (McGraw-Hill)</h4>
+<div class="cc-meta">~12 adozioni · 21,4% · 2ª ed. 2023 · ~€45 · McGraw-Hill</div>
+</div>
+</div>
+<div class="cc-body">
+<p><strong>Il secondo brand McGraw-Hill</strong>, complementare al Santrock e in forte crescita. Con 12 adozioni, il Leman si posiziona come alternativa più compatta e con un taglio maggiormente europeo. L'edizione italiana è curata da Francesco Sulla e Laura Traverso — il primo è docente a Foggia (L-19) e il secondo a Genova, entrambi adottanti del testo, a dimostrazione della strategia di "curatore-adottante" di McGraw-Hill. Il manuale segue un approccio <strong>cronologico</strong> (prenatale → adolescenza) e integra ricerche sia americane che europee. Rispetto al Santrock, è più snello (~500 pp.) e adatto a corsi con meno CFU. Ha la piattaforma Connect come il Santrock. <strong>Vulnerabilità:</strong> ancora percepito come il "secondo" titolo McGraw-Hill; meno noto del Santrock presso i docenti di lunga esperienza.</p>
+</div>
+</div>
+
+<!-- RANK 3 -->
+<div class="competitor-card rank3">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank">3</div>
+<div class="cc-info">
+<h4>Caravita, S. et al. — Psicologia dello sviluppo e dell'educazione (Il Mulino)</h4>
+<div class="cc-meta">~5 adozioni · 8,9% · Nuova ed. 2024 · €32,30 · Il Mulino</div>
+</div>
+</div>
+<div class="cc-body">
+<p><strong>Il manuale italiano di riferimento per chi vuole integrare sviluppo e educazione in un unico volume.</strong> Curato da Caravita, Milani e Traficante (tutti della Cattolica di Milano), unisce sistematicamente la psicologia evolutiva alla psicologia dell'educazione — una scelta strategica perfetta per L-19 e LM-85bis dove il binomio "sviluppo + educazione" è nel titolo stesso dell'insegnamento in molti atenei. La nuova edizione (2024) aggiorna contenuti su neurodivergenze, inclusione e didattica innovativa. Adottato in 5 cattedre, tutte in area Cattolica/Lombardia e Sud. <strong>Vulnerabilità:</strong> diffusione prevalentemente concentrata nell'asse Cattolica; percepito come "troppo cattolico" da alcuni atenei laici; assenza di piattaforma digitale comparabile a Connect.</p>
+</div>
+</div>
+
+<!-- RANK 4 -->
+<div class="competitor-card">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank">4</div>
+<div class="cc-info">
+<h4>Berti, A.E. & Bombi, A.S. — Corso di psicologia dello sviluppo (Il Mulino)</h4>
+<div class="cc-meta">~5 adozioni · 8,9% · 4ª ed. 2018 · €38 · Il Mulino</div>
+</div>
+</div>
+<div class="cc-body">
+<p><strong>Il classico italiano.</strong> Organizzato in modo <strong>cronologico</strong> (dalla nascita all'adolescenza), con un taglio rigoroso e una struttura chiara per aree di sviluppo all'interno di ogni fascia d'età. È stato per decenni il manuale italiano di riferimento e resta molto adottato, soprattutto in LM-85bis (Bolzano, Torino, Pisa). La sua forza è la chiarezza espositiva e la profondità teorica, con una buona copertura del contesto italiano. Esiste anche una versione focalizzata sulla prima infanzia (Berti & Surian, 2022) usata in L-19 alla Basilicata. <strong>Vulnerabilità:</strong> la 4ª edizione risale al 2018 e inizia a mostrare l'età; la piattaforma Pandoracampus de Il Mulino è meno ricca di Connect; assenza di un apparato didattico interattivo comparabile.</p>
+</div>
+</div>
+
+<!-- RANK 5 -->
+<div class="competitor-card">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank">5</div>
+<div class="cc-info">
+<h4>Barone, L. (a cura di) — Manuale di psicologia dello sviluppo (Carocci)</h4>
+<div class="cc-meta">~4 adozioni · 7,1% · 2ª ed. 2019 (rist. 2025) · €41 · Carocci</div>
+</div>
+</div>
+<div class="cc-body">
+<p><strong>Il manuale modulare per eccellenza.</strong> Curato da Lavinia Barone con contributi di numerosi autori italiani, la sua struttura a capitoli indipendenti lo rende ideale per docenti che vogliono costruire un programma personalizzato. Ogni capitolo è un saggio autocontenuto su un tema specifico (attaccamento, cognizione, linguaggio, morale, ecc.). Adottato a Macerata, Milano Bicocca, Pisa e Roma Unilink. La 2ª edizione (2019) è stata ristampata nel 2025, segno di continua domanda. Carocci pubblica anche una terza edizione (2024) con nuovi capitoli su neurodivergenze e inclusione. <strong>Vulnerabilità:</strong> la struttura modulare può risultare frammentaria; assenza di una piattaforma digitale integrata; meno adatto a studenti che preferiscono una narrazione unitaria.</p>
+</div>
+</div>
+
+<!-- RANK 6 -->
+<div class="competitor-card">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank">6</div>
+<div class="cc-info">
+<h4>Vianello, R. et al. — Psicologia dello sviluppo (UTET)</h4>
+<div class="cc-meta">~3 adozioni · 5,4% · 3ª ed. 2019 · €36 · UTET</div>
+</div>
+</div>
+<div class="cc-body">
+<p>Testo italiano solido, adottato a Cagliari (L-19), Torino (L-19) e in parte a Padova. Scritto da Vianello, Gini e Lanfranchi, offre un approccio equilibrato tra teoria e ricerca empirica. La 3ª edizione (2019) è completa ma non ha subito aggiornamenti recenti. UTET (De Agostini/Mondadori) non ha una piattaforma digitale universitaria comparabile a Connect. Il testo ha una buona diffusione nel Nordest. <strong>Vulnerabilità:</strong> edizione non recentissima; minore visibilità promozionale.</p>
+</div>
+</div>
+
+<!-- RANK 7 -->
+<div class="competitor-card">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank">7</div>
+<div class="cc-info">
+<h4>Schaffer, H.R. — Psicologia dello sviluppo (Raffaello Cortina)</h4>
+<div class="cc-meta">~2 adozioni · 3,6% · Ed. 2005 · ~€36 · Raffaello Cortina</div>
+</div>
+</div>
+<div class="cc-body">
+<p>Un classico della letteratura evolutiva, apprezzato per il rigore metodologico e la centralità data allo sviluppo sociale. Adottato a Roma Tre sia in L-19 che LM-85bis. L'edizione italiana risale al 2005, il che rappresenta un limite significativo. Resta apprezzato per lo stile chiaro e la struttura accessibile. <strong>Vulnerabilità:</strong> edizione molto datata; nessun supporto digitale; rischio di sostituzione imminente da parte dei docenti.</p>
+</div>
+</div>
+
+<!-- RANK 8 -->
+<div class="competitor-card">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank">8</div>
+<div class="cc-info">
+<h4>Gillibrand, R. et al. — Psicologia dello sviluppo (Pearson)</h4>
+<div class="cc-meta">~2 adozioni · 3,6% · 2ª ed. 2019, 3ª ed. 2025 · ~€36 · Pearson</div>
+</div>
+</div>
+<div class="cc-body">
+<p>Manuale Pearson con approccio cronologico e buona integrazione di ricerca europea e italiana. Adottato a Bologna (Infanzia, L-19) e Verona (L-19). La 3ª edizione (novembre 2025) è curata da Tallandini e aggiorna i contenuti su inclusione e neurodiversità. Pearson offre la piattaforma MyLab. Resta un prodotto di nicchia nel mercato italiano dominato da McGraw-Hill, ma la nuova edizione potrebbe ampliarne la diffusione. <strong>Vulnerabilità:</strong> quota di mercato ancora molto bassa; meno riconosciuto dai docenti senior.</p>
+</div>
+</div>
+
+<!-- RANK 9 — ZANICHELLI -->
+<div class="competitor-card" style="border-left-color:var(--zanichelli-accent)">
+<div class="cc-header" onclick="toggleCC(this)">
+<div class="cc-rank" style="background:var(--zanichelli-accent)">Z</div>
+<div class="cc-info">
+<h4>Belsky, J. — Psicologia dello sviluppo (Zanichelli) <span class="badge-cl badge-zan">Zanichelli</span></h4>
+<div class="cc-meta">0 adozioni L-19/LM-85bis · 2ª ed. 2020 · €65,70 · Zanichelli</div>
+</div>
+</div>
+<div class="cc-body">
+<p><strong>Assente dal mercato L-19/LM-85bis.</strong> Il Belsky è un ottimo manuale con approccio centrato sulla persona e orientamento lifespan (copre l'intero ciclo di vita). La 2ª edizione italiana (2020), curata da Eleonora Mascheroni, è basata sulla 5ª edizione americana. Tuttavia, diverse caratteristiche lo rendono poco adatto al target educativo-formativo: il prezzo è il più alto del mercato (€65,70 vs. media competitor €36-45); l'approccio lifespan include età adulta e senescenza — eccesso di contenuto per corsi focalizzati su infanzia/fanciullezza; la prospettiva americana è prevalente; mancano sezioni specifiche su osservazione nei contesti educativi, prerequisiti scolastici e inclusione. Nella L-24 ha una quota del 3,9%, ma in questo segmento non riesce a penetrare. <strong>Opportunità:</strong> la qualità dell'opera è alta; il brand Zanichelli gode di credibilità; il D'Amico-Piccardi "Psicologia per insegnare" è un testo complementare già nel catalogo che dimostra che Zanichelli può entrare nel segmento LM-85bis.</p>
+</div>
+</div>
+
+</div>
+<!-- FINE TAB 3 -->
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-content" id="contenuti">
+
+<div class="highlight-box">
+<h3>📚 Analisi dei contenuti e dei programmi d'insegnamento</h3>
+<p>Basata sull'analisi sistematica dei syllabi di 56 cattedre. I contenuti sono organizzati in nucleo minimo (comuni a quasi tutti i programmi) e nucleo esteso (ricorrenti ma non universali).</p>
+</div>
+
+<h3 style="color:var(--zanichelli-blue);margin-bottom:16px;">Nucleo minimo di contenuti comuni</h3>
+<div class="core-grid">
+<div class="core-card" style="background:linear-gradient(135deg,#003C82,#0057b8)"><h4>Metodologia</h4>Metodi di ricerca e tecnica dell'osservazione scientifica</div>
+<div class="core-card" style="background:linear-gradient(135deg,#2a9d8f,#21867a)"><h4>Sviluppo Cognitivo</h4>Piaget, Vygotskij, Bruner — teorie classiche e neo-piagetiane</div>
+<div class="core-card" style="background:linear-gradient(135deg,#E63946,#c62828)"><h4>Affettività</h4>Teoria dell'attaccamento (Bowlby, Ainsworth) e sviluppo emotivo</div>
+<div class="core-card" style="background:linear-gradient(135deg,#f4a261,#e76f51)"><h4>Linguaggio</h4>Fasi dello sviluppo comunicativo e linguistico</div>
+<div class="core-card" style="background:linear-gradient(135deg,#7b2d8e,#5c1a6e)"><h4>Socialità</h4>Sviluppo sociale, interazione con pari, gioco</div>
+<div class="core-card" style="background:linear-gradient(135deg,#264653,#1d3557)"><h4>Contesti</h4>Ruolo della famiglia, scuola, gruppo dei pari</div>
+</div>
+
+<h3 style="color:var(--zanichelli-blue);margin-bottom:16px;">Nucleo esteso di contenuti ricorrenti</h3>
+<div class="pill-wrap">
+<span class="pill">Neurosviluppo</span>
+<span class="pill">Psicopatologia / Sviluppo atipico</span>
+<span class="pill">Prerequisiti apprendimento</span>
+<span class="pill">Teoria della Mente</span>
+<span class="pill">Sviluppo morale</span>
+<span class="pill">Identità e costruzione del Sé</span>
+<span class="pill">Metacognizione</span>
+<span class="pill">DSA / ADHD / ASD</span>
+<span class="pill">Inclusione scolastica</span>
+<span class="pill">Prosocialità</span>
+<span class="pill">Cyberbullismo / Media digitali</span>
+<span class="pill">Nascita pretermine</span>
+<span class="pill">Relazione educatore-bambino</span>
+<span class="pill">Disegno infantile</span>
+</div>
+
+<button class="collapsible" onclick="toggleColl(this)">Specificità tematiche per tipo di corso</button>
+<div class="coll-content">
+<p><strong>Focus L-19 (Scienze dell'educazione):</strong> i programmi L-19 presentano un focus marcato sulla fascia 0-6 anni, con moduli specifici su osservazione al nido, relazione educatore-bambino, sviluppo comunicativo nella prima infanzia e servizi educativi per l'infanzia. Università come Bari, Bologna (Infanzia), Firenze e Milano Bicocca prevedono laboratori dedicati all'osservazione comportamentale. Il tema dell'intersoggettività e della comunicazione preverbale è centrale.</p>
+<p><strong>Focus LM-85bis (Formazione primaria):</strong> i programmi LM-85bis spostano l'attenzione sulla fascia 6-11 anni, con approfondimenti su processi di apprendimento scolastico, prerequisiti di lettura/scrittura/calcolo, motivazione, relazione insegnante-alunno e gestione del gruppo classe. Atenei come Genova, Padova e Firenze dedicano ampio spazio ai DSA e all'inclusione scolastica. La metacognizione e le strategie didattiche sono temi ricorrenti.</p>
+<p><strong>Temi trasversali emergenti:</strong> cyberbullismo e uso dei media digitali (Campania, Ferrara, Messina); robotica sociale in educazione (Milano Cattolica); fiabe interattive come strumento di sviluppo creativo (Enna Kore); psicologia pediatrica e nascita pretermine (Bologna, Palermo).</p>
+</div>
+
+<button class="collapsible" onclick="toggleColl(this)">Prospettive teoriche nei programmi</button>
+<div class="coll-content">
+<table class="spec-table">
+<thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Costruttivismo (Piaget)</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Base costante in tutti i programmi</td></tr>
+<tr><td>Socio-culturale (Vygotskij)</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Quasi sempre affiancata a Piaget</td></tr>
+<tr><td>Teoria dell'Attaccamento</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Bowlby, Ainsworth — centrale per area affettiva</td></tr>
+<tr><td>Approccio Ecologico (Bronfenbrenner)</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Riferimento frequente per analisi dei contesti</td></tr>
+<tr><td>HIP / Cognitivismo</td><td><span class="tag tag-media">Media-Alta</span></td><td>Esplicita</td><td>Memoria, attenzione, funzioni esecutive</td></tr>
+<tr><td>Psicodinamica (Freud/Erikson)</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Cenni storici o sviluppo del Sé</td></tr>
+<tr><td>Comportamentismo</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Antecedente storico / base per l'apprendimento</td></tr>
+<tr><td>Neurocostruttivismo</td><td><span class="tag tag-bassa">Bassa-Media</span></td><td>Esplicita</td><td>Solo nei programmi più recenti (Campania, Firenze)</td></tr>
+</tbody>
+</table>
+</div>
+
+<button class="collapsible" onclick="toggleColl(this)">Modelli di strutturazione del corso</button>
+<div class="coll-content">
+<p><strong>Modello Topico / per Domini (~60% dei corsi):</strong> organizzato per aree di sviluppo (fisico, cognitivo, sociale, emotivo, linguistico). È il modello più diffuso, coerente con l'organizzazione dei manuali Santrock e Leman. Atenei tipici: Basilicata, Cagliari, Genova, Salerno, Torino.</p>
+<p><strong>Modello Cronologico (~20% dei corsi):</strong> segue le fasi dell'età (prenatale, prima infanzia, fanciullezza, adolescenza). Collegato ai manuali Berti-Bombi e Gillibrand. Atenei tipici: Pisa, Roma Sapienza, Bolzano.</p>
+<p><strong>Modello Integrato con Laboratorio (~50% dei corsi):</strong> prevede una parte teorica istituzionale e un modulo pratico su osservazione, casi clinici o tecniche di assessment. Presente in circa metà dei corsi, trasversalmente a L-19 e LM-85bis. Atenei tipici: Bari, Firenze, Milano Bicocca, Roma Lumsa, Palermo.</p>
+</div>
+
+<button class="collapsible" onclick="toggleColl(this)">Sviluppo tipico vs atipico nei programmi</button>
+<div class="coll-content">
+<p>La distinzione tra sviluppo tipico e atipico è un pilastro formativo in quasi tutti i programmi. Lo sviluppo tipico funge da parametro normativo per identificare le traiettorie atipiche. Diversi atenei dedicano moduli specifici allo sviluppo atipico:</p>
+<p><strong>Benevento (G. Fortunato):</strong> modulo intero su sviluppo atipico con laboratori clinici (autismo, mutismo selettivo, sindrome di Rett). <strong>Modena e Reggio Emilia:</strong> 2 CFU dedicati a disturbi del neurosviluppo e disabilità. <strong>Campania Vanvitelli:</strong> approfondisce DSA, ADHD, autismo con approccio ecologico. <strong>Bolzano:</strong> enfasi su ambienti di apprendimento inclusivi. <strong>Roma LUMSA:</strong> focus su ricadute psicopedagogiche dei BES. L'osservazione scientifica è il metodo cardine per rilevare discrepanze tra sviluppo tipico e atipico (Foggia, Roma Lumsa, Macerata).</p>
+</div>
+
+<button class="collapsible" onclick="toggleColl(this)">Limiti dell'analisi</button>
+<div class="coll-content">
+<p>In alcuni programmi mancano dati espliciti su CFU o semestre di erogazione. Le prospettive teoriche sono talvolta solo implicite o desumibili dai capitoli dei manuali, con un grado di incertezza sulla reale enfasi data in aula. Il termine "Psicologia dell'educazione" appare spesso nel titolo dell'insegnamento ma i contenuti restano prevalentemente evolutivi. Alcuni atenei non hanno reso disponibili i programmi completi (Bari, Bergamo, Udine).</p>
+</div>
+
+<div class="chart-box" style="margin-top:24px">
+<h4>Presenza delle prospettive teoriche nei programmi</h4>
+<canvas id="chartTeorie"></canvas>
+</div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-content" id="posizionamento">
+
+<div class="highlight-box danger">
+<h3>📊 Situazione attuale</h3>
+<p>Zanichelli è <strong>quasi assente</strong> dal mercato Psicologia dello Sviluppo in L-19/LM-85bis. Su 56 cattedre analizzate, il Belsky (2ª ed. 2020) non compare in nessuna adozione. L'unica presenza è il testo complementare <em>D'Amico-Piccardi, Psicologia per insegnare</em> (2019), adottato a Cagliari LM-85bis. Il mercato è dominato da McGraw-Hill (55%) con un duopolio Santrock-Leman che si rafforzerà con la 5ª edizione Santrock (2026). La quota Zanichelli (1,8%) è la più bassa tra tutte le materie analizzate per L-19/LM-85bis. Eppure, con ~112.000 studenti potenziali, questo è il segmento di mercato più ampio per un manuale di psicologia dello sviluppo. <strong>Un intervento strategico è urgente e potenzialmente ad altissimo ritorno.</strong></p>
+</div>
+
+<h3 style="color:var(--zanichelli-blue);margin-bottom:16px;">Analisi SWOT</h3>
+<div class="swot-grid">
+<div class="swot-box swot-s">
+<h4>🟢 STRENGTHS</h4>
+<ul>
+<li>Brand Zanichelli forte e credibile nel mondo universitario</li>
+<li>Catalogo complementare già esistente: D'Amico-Piccardi "Psicologia per insegnare" (2019)</li>
+<li>Esperienza nella Psicologia dello Sviluppo con Belsky (2 edizioni)</li>
+<li>Piattaforma digitale ZTE e MyZanichelli consolidate</li>
+<li>Quota del 3,9% in L-24 come base di partenza</li>
+<li>Tassan "Antropologia per insegnare" dimostra capacità di creare prodotti per LM-85bis</li>
+</ul>
+</div>
+<div class="swot-box swot-w">
+<h4>🔴 WEAKNESSES</h4>
+<ul>
+<li>Belsky inadatto al target: approccio lifespan, prezzo alto (€65,70), prospettiva americana</li>
+<li>Nessuna adozione come manuale principale in L-19/LM-85bis</li>
+<li>D'Amico-Piccardi non è un manuale di sviluppo ma un testo complementare</li>
+<li>Assenza di rete di curatori/co-autori italiani nel segmento sviluppo</li>
+<li>Mancanza di un prodotto specifico per formazione primaria e educazione</li>
+<li>Il prezzo del Belsky è il più alto del mercato (+50% vs media competitor)</li>
+</ul>
+</div>
+<div class="swot-box swot-o">
+<h4>🔵 OPPORTUNITIES</h4>
+<ul>
+<li>Mercato enorme: 112.000 studenti in L-19+LM-85bis</li>
+<li>Materia obbligatoria in tutti i corsi: domanda garantita e ricorrente</li>
+<li>I docenti cercano manuali con taglio educativo italiano — gap non colmato dal Santrock</li>
+<li>Il Berti-Bombi (2018) e lo Schaffer (2005) sono datati: spazio per sostituzione</li>
+<li>Crescente domanda di contenuti su inclusione, DSA, neurodivergenze</li>
+<li>Possibilità di creare un "pacchetto" Belsky ridotto + D'Amico-Piccardi per LM-85bis</li>
+<li>Strategia curatore-adottante: coinvolgere docenti L-19/LM-85bis come curatori</li>
+<li>Santrock 5ª ed. appena uscita: i docenti saranno in fase di valutazione (finestra di switch)</li>
+</ul>
+</div>
+<div class="swot-box swot-t">
+<h4>🟡 THREATS</h4>
+<ul>
+<li>McGraw-Hill domina con 55% e sta rafforzando con Santrock 5ª ed. 2026</li>
+<li>Strategia di localizzazione aggressiva McGraw-Hill (Santrock & Baroncelli a Perugia)</li>
+<li>Il Mulino presidia il segmento italiano con Caravita (nuova ed. 2024) e Berti-Bombi</li>
+<li>Carocci consolida con Barone 2ª ed. ristampata 2025</li>
+<li>Pearson rilancia Gillibrand con 3ª ed. 2025</li>
+<li>Lock-in da piattaforma Connect: i docenti McGraw-Hill sono difficili da spostare</li>
+</ul>
+</div>
+</div>
+
+<h3 style="color:var(--zanichelli-blue);margin-bottom:16px;">Carta d'Identità del prodotto ideale</h3>
+
+<div class="id-card scenario-a">
+<h3 style="color:var(--zanichelli-blue);">SCENARIO A — Potenziare il titolo esistente</h3>
+<p style="font-size:.9rem;margin-bottom:16px;color:var(--zanichelli-gray)">Riadattare il Belsky per il target L-19/LM-85bis con edizione ridotta e localizzata</p>
+<div class="id-grid">
+<div class="id-item"><strong>Titolo</strong>Belsky — Psicologia dello sviluppo: infanzia, fanciullezza, adolescenza (3ª ed. italiana)</div>
+<div class="id-item"><strong>Curatore</strong>Un docente italiano attivo in LM-85bis (es. area Firenze, Bologna o Roma)</div>
+<div class="id-item"><strong>Formato</strong>Volume unico ~400 pp. (escludere età adulta e senescenza)</div>
+<div class="id-item"><strong>Prezzo target</strong>€38-42 (allineato a Caravita e Barone)</div>
+<div class="id-item"><strong>Contenuti aggiuntivi</strong>Capitoli italiani su: osservazione nei contesti educativi, prerequisiti apprendimento, inclusione e DSA, relazione insegnante-bambino</div>
+<div class="id-item"><strong>Piattaforma digitale</strong>ZTE con quiz, video-casi, strumenti di osservazione scaricabili</div>
+<div class="id-item"><strong>Target primario</strong>LM-85bis (1° anno) + L-19 (1°-2° anno)</div>
+<div class="id-item"><strong>Timeline</strong>Preparazione 2026 → pubblicazione inizio 2027 → promozione estate 2027</div>
+</div>
+</div>
+
+<div class="id-card scenario-b">
+<h3 style="color:var(--zanichelli-accent);">SCENARIO B — Nuovo manuale italiano</h3>
+<p style="font-size:.9rem;margin-bottom:16px;color:var(--zanichelli-gray)">Creare un prodotto nativo per L-19/LM-85bis con autori italiani, ispirato al successo del D'Amico-Piccardi</p>
+<div class="id-grid">
+<div class="id-item"><strong>Titolo</strong>Psicologia dello sviluppo e dell'educazione — Un approccio per educatori e insegnanti</div>
+<div class="id-item"><strong>Autori</strong>Team di 3-4 docenti italiani attivi in L-19 e LM-85bis (es. combinazione Nord-Centro-Sud)</div>
+<div class="id-item"><strong>Formato</strong>Volume unico ~450 pp. con struttura modulare per domini + integrazione educativa</div>
+<div class="id-item"><strong>Prezzo target</strong>€35-40 (competitivo con Leman e Caravita)</div>
+<div class="id-item"><strong>Struttura innovativa</strong>Ogni capitolo con: teoria → ricerca → "In contesto educativo" (box con applicazioni per nido, infanzia, primaria) → strumenti di osservazione</div>
+<div class="id-item"><strong>Differenziazione</strong>Unico manuale pensato nativamente per educatori e insegnanti, non riadattato da psicologia generale</div>
+<div class="id-item"><strong>Piattaforma digitale</strong>ZTE con video di osservazione, schede operative, casi studio italiani, rubric valutative</div>
+<div class="id-item"><strong>Timeline</strong>Contratto autori 2026 → stesura 2026-2027 → pubblicazione 2028</div>
+</div>
+</div>
+
+<h3 style="color:var(--zanichelli-blue);margin-bottom:16px;">Atenei target prioritari</h3>
+<table class="target-table">
+<thead><tr><th>Ateneo</th><th>Classe</th><th>Docente attuale</th><th>Testo attuale</th><th>Priorità</th><th>Motivazione</th></tr></thead>
+<tbody>
+<tr><td>Cagliari</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Roberta Fadda</td><td>Santrock + D'Amico-Piccardi (ZAN)</td><td><span class="badge-cl badge-alta">ALTA</span></td><td>Già adotta Zanichelli complementare — fidelizzare</td></tr>
+<tr><td>Roma Tre</td><td><span class="badge-cl badge-l19">L-19</span> + <span class="badge-cl badge-lm85">LM-85bis</span></td><td>Bello / Perucchini</td><td>Schaffer (2005) — datato</td><td><span class="badge-cl badge-alta">ALTA</span></td><td>Manuale molto vecchio, alta probabilità di switch</td></tr>
+<tr><td>Bari</td><td><span class="badge-cl badge-l19">L-19</span> + <span class="badge-cl badge-lm85">LM-85bis</span></td><td>Musso / Silletti</td><td>Non indicato</td><td><span class="badge-cl badge-alta">ALTA</span></td><td>Cattedre senza manuale dichiarato — terreno aperto</td></tr>
+<tr><td>Bergamo</td><td><span class="badge-cl badge-l19">L-19</span> + <span class="badge-cl badge-lm85">LM-85bis</span></td><td>Florio / n.d.</td><td>Non indicato</td><td><span class="badge-cl badge-alta">ALTA</span></td><td>Cattedre senza manuale — terreno aperto</td></tr>
+<tr><td>Basilicata</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Mininni</td><td>Non indicato</td><td><span class="badge-cl badge-alta">ALTA</span></td><td>Nessun manuale dichiarato — contatto diretto</td></tr>
+<tr><td>Udine</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Camodeca</td><td>Non indicato</td><td><span class="badge-cl badge-media">MEDIA</span></td><td>Cattedra senza manuale, area Nord-Est Zanichelli forte</td></tr>
+<tr><td>Torino</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Arace, Prino</td><td>Vianello (UTET, 2019)</td><td><span class="badge-cl badge-media">MEDIA</span></td><td>UTET edizione 2019 — possibile aggiornamento</td></tr>
+<tr><td>Macerata</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Muzi</td><td>Leman (McGraw-Hill)</td><td><span class="badge-cl badge-media">MEDIA</span></td><td>Docente con interesse su adozione — tema affine a Belsky</td></tr>
+<tr><td>Napoli Benincasa</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Drammis</td><td>Shaffer (Piccin, 2015)</td><td><span class="badge-cl badge-media">MEDIA</span></td><td>Manuale datato e di editore non dominante</td></tr>
+<tr><td>Valle d'Aosta</td><td><span class="badge-cl badge-lm85">LM-85bis</span></td><td>Cattelino</td><td>Bonino (Giunti, 2007)</td><td><span class="badge-cl badge-media">MEDIA</span></td><td>Testo molto datato</td></tr>
+<tr><td>Messina</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Indelicato</td><td>Castelli (Franco Angeli)</td><td><span class="badge-cl badge-develop">DEVELOP</span></td><td>Usa testo non standard — aperto a proposte</td></tr>
+<tr><td>Cagliari</td><td><span class="badge-cl badge-l19">L-19</span></td><td>Fastame</td><td>Vianello (UTET)</td><td><span class="badge-cl badge-develop">DEVELOP</span></td><td>Stesso ateneo dove Zanichelli è già complementare</td></tr>
+</tbody>
+</table>
+
+<div class="card">
+<h3>🎯 Quick Win — Azioni immediate (Q1-Q2 2026)</h3>
+<p><strong>1. Consolidare Cagliari:</strong> contattare la prof.ssa Fadda per proporre il Belsky come manuale principale al posto del Santrock o un pacchetto Belsky ridotto + D'Amico-Piccardi. Sfruttare la relazione esistente.</p>
+<p><strong>2. Aggredire le cattedre "aperte":</strong> Bari (Musso e Silletti), Bergamo (Florio), Basilicata (Mininni) e Udine (Camodeca) non hanno manuali dichiarati — inviare copie saggio del Belsky con una proposta di adozione personalizzata.</p>
+<p><strong>3. Proporre il switch dove i manuali sono datati:</strong> Roma Tre (Schaffer 2005), Valle d'Aosta (Bonino 2007), Napoli Benincasa (Shaffer 2015) — questi docenti cercano sicuramente un aggiornamento.</p>
+<p><strong>4. Avviare il progetto editoriale:</strong> identificare 2-3 docenti curatori per lo Scenario A o B. Candidati ideali: docenti in LM-85bis del Centro-Nord con interesse per inclusione e osservazione educativa (es. area Firenze, Bologna, Roma).</p>
+<p><strong>5. Promozione incrociata:</strong> per ogni adozione di Psicologia Generale (Schacter), proporre il pacchetto con D'Amico-Piccardi come testo complementare per lo sviluppo, creando un "ecosistema Zanichelli" nella formazione docenti.</p>
+</div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+<p>Dashboard Zanichelli — Psicologia dello Sviluppo L-19/LM-85bis · Dati aggiornati al 25 febbraio 2026 · 56 cattedre · 42 atenei</p>
+<p>Analisi a uso interno — Funzionario commerciale / Promotore editoriale universitario</p>
+</div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+// TAB NAVIGATION
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+btn.addEventListener('click',()=>{
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById(btn.dataset.tab).classList.add('active');
+});
+});
+
+// COLLAPSIBLE
+function toggleColl(el){
+el.classList.toggle('open');
+const c=el.nextElementSibling;
+c.classList.toggle('open');
+}
+
+// COMPETITOR CARD TOGGLE
+function toggleCC(header){
+const body=header.nextElementSibling;
+body.classList.toggle('open');
+}
+
+// FILTER TABLE
+const tbl=document.getElementById('adozioniTable');
+const filterEditore=document.getElementById('filterEditore');
+const filterClasse=document.getElementById('filterClasse');
+const filterSearch=document.getElementById('filterSearch');
+
+function filterTable(){
+const ed=filterEditore.value.toLowerCase();
+const cl=filterClasse.value;
+const q=filterSearch.value.toLowerCase();
+const rows=tbl.querySelectorAll('tbody tr');
+rows.forEach(r=>{
+const rEd=(r.dataset.editore||'').toLowerCase();
+const rCl=r.dataset.classe||'';
+const txt=r.textContent.toLowerCase();
+let show=true;
+if(ed){
+if(ed==='altro'){show=!['mcgraw-hill','il mulino','carocci','utet','raffaello cortina','pearson','zanichelli','franco angeli'].includes(rEd)&&rEd!=='n/d';}
+else if(ed==='zanichelli'){show=rEd.includes('zanichelli');}
+else{show=rEd.includes(ed);}
+}
+if(cl){
+if(cl==='L-19')show=show&&rCl==='L-19';
+else if(cl==='LM-85bis')show=show&&rCl==='LM-85bis';
+}
+if(q)show=show&&txt.includes(q);
+r.style.display=show?'':'none';
+});
+}
+filterEditore.addEventListener('change',filterTable);
+filterClasse.addEventListener('change',filterTable);
+filterSearch.addEventListener('input',filterTable);
+
+// CHART 1: MARKET SHARE DOUGHNUT
+const ctx1=document.getElementById('chartShare').getContext('2d');
+new Chart(ctx1,{
+type:'doughnut',
+data:{
+labels:['McGraw-Hill (55%)','Il Mulino (18%)','Carocci (9%)','UTET (5%)','Raffaello Cortina (5%)','Pearson (4%)','Zanichelli (1,8%)','Altri (2,2%)'],
+datasets:[{
+data:[55,18,9,5,5,4,1.8,2.2],
+backgroundColor:['#E63946','#264653','#2a9d8f','#e9c46a','#f4a261','#457b9d','#003C82','#adb5bd'],
+borderWidth:2,borderColor:'#fff'
+}]
+},
+options:{responsive:true,plugins:{legend:{position:'right',labels:{boxWidth:14,padding:10,font:{size:11}}}}}
+});
+
+// CHART 2: BAR EDITORI
+const ctx2=document.getElementById('chartBar').getContext('2d');
+new Chart(ctx2,{
+type:'bar',
+data:{
+labels:['McGraw-Hill','Il Mulino','Carocci','UTET','R. Cortina','Pearson','Zanichelli','Altri'],
+datasets:[{
+label:'N° cattedre',
+data:[31,10,5,3,3,2,1,3],
+backgroundColor:['#E63946','#264653','#2a9d8f','#e9c46a','#f4a261','#457b9d','#003C82','#adb5bd'],
+borderRadius:6
+}]
+},
+options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{display:false}}}}
+});
+
+// CHART 3: PROSPETTIVE TEORICHE
+const ctx3=document.getElementById('chartTeorie').getContext('2d');
+new Chart(ctx3,{
+type:'bar',
+data:{
+labels:['Piaget','Vygotskij','Attaccamento','Ecologico','HIP/Cognitivismo','Psicodinamica','Comportamentismo','Neurocostruttivismo'],
+datasets:[{
+label:'Livello di presenza (1-5)',
+data:[5,5,5,3.5,4,3,3,2],
+backgroundColor:['#003C82','#0057b8','#E63946','#2a9d8f','#f4a261','#7b2d8e','#e9c46a','#264653'],
+borderRadius:6
+}]
+},
+options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:5,ticks:{stepSize:1}},x:{grid:{display:false}}}}
+});
+</script>
+
+</body>
+</html>

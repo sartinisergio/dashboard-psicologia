@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANTEPRIMA — Indicazioni Strategiche per Materia</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root{--zb:#003865;--zl:#0066B3;--za:#E63946;--zg:#2A9D8F;--zy:#E9C46A;--zo:#F4A261;--bg:#F5F7FA;--card:#FFF;--t1:#1A1A2E;--t2:#555B6E;--bd:#E0E4EA;--sh:0 2px 12px rgba(0,0,0,.06);--r:12px;--l19:#2A9D8F;--lm85:#7C3AED}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;padding:32px 44px;max-width:1140px;margin:0 auto}
+.page-header{margin-bottom:24px}
+.page-header h2{font-size:24px;font-weight:700;color:var(--zb)}
+.page-header .subtitle{font-size:13.5px;color:var(--t2);margin-top:5px}
+.anteprima-badge{display:inline-block;background:var(--za);color:#fff;padding:6px 14px;border-radius:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+.section-divider{padding:18px 22px;background:linear-gradient(135deg,var(--zb) 0%,var(--zl) 100%);border-radius:var(--r);color:#fff;margin-bottom:24px}
+.section-divider h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.section-divider p{font-size:12px;opacity:.85}
+.card{background:var(--card);border-radius:var(--r);padding:24px;box-shadow:var(--sh);border:1px solid var(--bd);margin-bottom:20px}
+.card-title{font-size:15px;font-weight:600;color:var(--zb);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.note-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:14px 18px;font-size:12.5px;color:#92400E;margin:16px 0;line-height:1.6}
+
+/* Tab primo livello */
+.tab-bar{display:flex;gap:0;border-bottom:2px solid var(--bd);margin-bottom:24px}
+.tab-btn{padding:10px 22px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t2);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:inherit}
+.tab-btn:hover{color:var(--zb);background:#F0F4FF}
+.tab-btn.active{color:var(--zb);border-bottom-color:var(--za)}
+
+/* Sub-tab */
+.sub-tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.sub-tab-btn{padding:7px 16px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--t2);border-radius:20px;transition:all .2s;font-family:inherit}
+.sub-tab-btn:hover{border-color:var(--zl);color:var(--zl)}
+.sub-tab-btn.active{background:var(--zb);color:#fff;border-color:var(--zb)}
+
+/* Tab pane */
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* Prose */
+.prose{font-size:13.5px;line-height:1.8;color:var(--t1)}
+.prose h4{color:var(--zl);margin:18px 0 8px;font-size:14.5px;font-weight:600}
+.prose p{margin-bottom:12px}
+
+/* Scheda materia */
+.materia-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--bd)}
+.materia-header .mh-icon{font-size:36px}
+.materia-header .mh-title{font-size:18px;font-weight:700;color:var(--zb)}
+.materia-header .mh-sub{font-size:12px;color:var(--t2);margin-top:2px}
+.materia-header .mh-badges{display:flex;gap:8px;margin-top:6px}
+.mh-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600}
+.mh-badge.leader{background:#D1FAE5;color:#065F46}
+.mh-badge.presente{background:#DBEAFE;color:#1E40AF}
+.mh-badge.assente{background:#FEE2E2;color:#991B1B}
+
+/* Blocchi contenuto */
+.content-block{background:#F8FAFC;border:1px solid var(--bd);border-radius:10px;padding:18px 20px;margin-bottom:16px}
+.content-block .cb-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--t2);margin-bottom:8px;font-weight:600}
+.content-block.strength{border-left:4px solid var(--zg)}
+.content-block.weakness{border-left:4px solid var(--za)}
+.content-block.opportunity{border-left:4px solid var(--zo)}
+.content-block.content{border-left:4px solid var(--zl)}
+.content-block.competitor{border-left:4px solid #8B5CF6}
+
+/* Badge classi */
+.badge-l19,.badge-lm85,.badge-l24{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.3px;vertical-align:middle}
+.badge-l24{background:#FECDD3;color:#9B1C31;border:1px solid #FCA5A5}
+.badge-l19{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
+.badge-lm85{background:#EDE9FE;color:#5B21B6;border:1px solid #C4B5FD}
+
+@media print{.tab-bar,.sub-tab-bar{display:none!important}.tab-pane{display:block!important}.card{box-shadow:none!important;break-inside:avoid}}
+@media(max-width:768px){body{padding:16px}}
+</style>
+</head>
+<body>
+
+<div class="anteprima-badge">Anteprima — Sezione 6 del Riepilogo Generale</div>
+
+<div class="section-divider">
+<h3>6 — Indicazioni Strategiche per Materia</h3>
+<p>Analisi qualitativa dei contenuti, profilo dei prodotti, punti di forza, vulnerabilità e opportunità</p>
+</div>
+
+<div class="note-box">
+<strong>Come leggere questa sezione.</strong> Per ogni materia: cosa cercano i docenti nei programmi, cosa offre Zanichelli, dove c'è match e dove c'è gap. Le informazioni sono estratte dall'analisi dei singoli programmi d'insegnamento censiti.
+</div>
+
+<!-- === TAB PRIMO LIVELLO === -->
+<div class="tab-bar" id="stratTabBar">
+<button class="tab-btn active" onclick="switchStratTab('presenti',this)">Materie con presenza Zanichelli</button>
+<button class="tab-btn" onclick="switchStratTab('scoperte',this)">Materie scoperte</button>
+<button class="tab-btn" onclick="switchStratTab('neuro',this)">Neuroscienze</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB: MATERIE CON PRESENZA -->
+<!-- ============================================================ -->
+<div id="tab-presenti" class="tab-pane active">
+
+<div class="sub-tab-bar" id="subPresenti">
+<button class="sub-tab-btn active" onclick="switchSubTab('presenti','sp-clinica',this)">Psic. Clinica</button>
+<button class="sub-tab-btn" onclick="switchSubTab('presenti','sp-generale',this)">Psic. Generale</button>
+<button class="sub-tab-btn" onclick="switchSubTab('presenti','sp-sviluppo',this)">Psic. Sviluppo</button>
+<button class="sub-tab-btn" onclick="switchSubTab('presenti','sp-antro',this)">Antrop. Culturale</button>
+</div>
+
+<!-- ===== PSICOLOGIA CLINICA ===== -->
+<div id="sp-clinica" class="tab-pane active">
+<div class="materia-header">
+<div class="mh-icon">🧠</div>
+<div>
+<div class="mh-title">Psicologia Clinica</div>
+<div class="mh-sub">L-24: 22,3% (2°) · L-19: 37,4% (1°) · LM-85bis: 58,7% (1°) — 5.080 studenti primari</div>
+<div class="mh-badges">
+<span class="mh-badge leader">Leader L-19</span>
+<span class="mh-badge leader">Leader LM-85bis</span>
+<span class="mh-badge presente">2° in L-24</span>
+</div>
+</div>
+</div>
+
+<div class="content-block content">
+<div class="cb-label">📚 Cosa cercano i programmi</div>
+<div class="prose">
+<p>In L-24 i programmi richiedono un'introduzione sistematica alla psicopatologia con approccio pluralistico (modelli bio-psico-sociale, psicodinamico, cognitivo-comportamentale), classificazione dei disturbi secondo DSM-5/ICD-11, principi di assessment clinico e relazione d'aiuto. L'accento è sulla comprensione teorica dei quadri clinici, non sulla pratica.</p>
+<p>In L-19 il focus si sposta sulla capacità di riconoscere segnali di disagio nei contesti educativi, sulla collaborazione con i servizi e sull'intervento educativo in équipe. I docenti cercano testi che parlino di sofferenza psichica in chiave accessibile, senza presupporre basi psicologiche avanzate.</p>
+<p>In LM-85bis la richiesta è ancora più specifica: disturbi del neurosviluppo in classe (DSA, ADHD, disturbi della condotta, ansia), collaborazione a PDP/PEI, didattica inclusiva. I docenti vogliono un testo che traduca la psicopatologia in strumenti operativi per l'insegnante.</p>
+</div>
+</div>
+
+<div class="content-block strength">
+<div class="cb-label">✅ Punti di forza Zanichelli</div>
+<div class="prose">
+<p><strong>Kring & Johnson</strong> (L-24): manuale internazionale di riferimento, aggiornato al 2023 (6ª edizione), copertura completa dei disturbi, approccio evidence-based. Forte nelle telematiche ad alta numerosità (Marconi 1.246, Cusano 905) che amplificano il peso ponderato. Apprezzato per la chiarezza espositiva e l'apparato didattico.</p>
+<p><strong>Occhini</strong> (L-19/LM-85bis): titolo-funzione progettato specificamente per educatori e insegnanti. È il prodotto con il miglior rapporto penetrazione/dimensione del segmento nell'intero catalogo Zanichelli universitario. Adottato in 6 cattedre LM-85bis su 9 censite (58,7%). Il suo successo deriva dall'essere l'unico manuale di psicologia clinica pensato per chi non diventerà psicologo ma lavorerà con bambini e adolescenti.</p>
+</div>
+</div>
+
+<div class="content-block weakness">
+<div class="cb-label">⚠️ Vulnerabilità</div>
+<div class="prose">
+<p>In L-24 il 69% del bacino Kring proviene da due telematiche (Marconi + Cusano). La perdita di una sola adozione ridurrebbe significativamente la quota ponderata. Nelle tradizionali, Kring è presente solo in 4 sedi (Modena, Trento, Padova, Sassari) per 959 studenti — il 31% del bacino L-24. Piccin con Verrocchio domina nelle tradizionali con 4.276 studenti su 16 cattedre: è un manuale italiano, scritto direttamente per il contesto formativo L-24, e questo lo rende più "adottabile" da docenti che cercano riferimenti al sistema italiano.</p>
+<p>In LM-85bis la posizione è forte ma il mercato è piccolo (1.742 studenti censiti, 9 cattedre). La crescita futura dipende dall'espansione del numero di cattedre che trattano psicologia clinica in questa classe.</p>
+</div>
+</div>
+
+<div class="content-block opportunity">
+<div class="cb-label">🎯 Opportunità</div>
+<div class="prose">
+<p>Il bacino B2/B3 in L-24 include Roma Sapienza (386 studenti) e Padova (258) — sedi di grande prestigio dove Kring è consigliato ma non adottato come primario. La nuova edizione Corazza & Esposito (2025) già presente come B2 a Trento potrebbe aprire un canale complementare in atenei dove il manuale tradotto è percepito come troppo internazionale.</p>
+<p>In L-19/LM-85bis, Occhini ha un bacino B2/B3 a Udine (189 studenti, dove il primario è Comer/UTET). La strategia più produttiva è probabilmente l'espansione orizzontale di Occhini nelle cattedre LM-85bis che ancora non trattano psicologia clinica come insegnamento autonomo.</p>
+</div>
+</div>
+
+<div class="content-block competitor">
+<div class="cb-label">🏷️ Competitor principale</div>
+<div class="prose">
+<p><strong>L-24 — Piccin (Verrocchio, 30,7%):</strong> manuale italiano con 16 cattedre. Punti di forza: copertura del contesto normativo e professionale italiano, costi contenuti, aggiornamento frequente. Punto debole: meno riconosciuto a livello internazionale.</p>
+<p><strong>L-19/LM-85bis — Carocci (Castiglioni-Corradini, 23,3%):</strong> presente in 2 cattedre L-19 ma con atenei ad alta numerosità (Palermo 610, Firenze 389). Approccio più sociologico-educativo che clinico.</p>
+</div>
+</div>
+</div>
+
+<!-- ===== PSICOLOGIA GENERALE ===== -->
+<div id="sp-generale" class="tab-pane">
+<div class="materia-header">
+<div class="mh-icon">⚙️</div>
+<div>
+<div class="mh-title">Psicologia Generale</div>
+<div class="mh-sub">L-24: 12,4% (3°) · L-19: 7,9% (5°) · LM-85bis: 0% — 2.501 studenti primari</div>
+<div class="mh-badges">
+<span class="mh-badge presente">Presente L-24</span>
+<span class="mh-badge presente">Presente L-19</span>
+<span class="mh-badge assente">Assente LM-85bis</span>
+</div>
+</div>
+</div>
+
+<div class="content-block content">
+<div class="cb-label">📚 Cosa cercano i programmi</div>
+<div class="prose">
+<p>In L-24 è l'insegnamento fondante: percezione, attenzione, memoria, apprendimento, linguaggio, pensiero, emozione, motivazione. I docenti cercano un manuale sistematico con forte impianto sperimentale, aggiornato sulle neuroscienze cognitive, con apparato didattico strutturato (quiz, glossario, risorse online). Il modello è il "big textbook" nordamericano.</p>
+<p>In L-19 il taglio è diverso: i docenti selezionano i capitoli più rilevanti per la progettazione educativa (apprendimento, motivazione, memoria, emozioni) e cercano un testo accessibile anche a studenti senza background scientifico. La completezza enciclopedica è meno importante della chiarezza e della connessione con i contesti educativi.</p>
+<p>In LM-85bis la psicologia generale è marginale (189 studenti, 1 cattedra censita). Quando presente, si concentra su carico cognitivo, scaffolding, zona di sviluppo prossimale — cioè sui concetti psicologici direttamente applicabili alla didattica.</p>
+</div>
+</div>
+
+<div class="content-block strength">
+<div class="cb-label">✅ Punti di forza Zanichelli</div>
+<div class="prose">
+<p><strong>Schacter et al.</strong>: manuale nordamericano completo, traduzione curata, buon apparato didattico. In L-24 è il secondo manuale per diffusione (12 cattedre) anche se il peso ponderato è inferiore alla quota di cattedre. Copre tutti i temi standard di Psicologia Generale ed è percepito come affidabile e ben strutturato.</p>
+<p>In L-19, Schacter è adottato in 3 cattedre più Revlin (1 cattedra). La presenza è coerente: atenei che cercano un manuale tradizionale completo lo trovano nel catalogo Zanichelli.</p>
+</div>
+</div>
+
+<div class="content-block weakness">
+<div class="cb-label">⚠️ Vulnerabilità</div>
+<div class="prose">
+<p>Il divario tra % cattedre (19,4%) e % ponderata (12,4%) in L-24 è il più ampio del catalogo: −7,0 pp. Schacter è adottato prevalentemente in atenei con coorti sotto i 250 iscritti. Negli atenei grandi (Bicocca, Padova, Firenze, Torino, Bologna) il mercato è dominato da McGraw-Hill (Holt, Feldman) e Il Mulino (Anolli-Legrenzi, Girotto-Zorzi). Schacter compete bene sul contenuto ma meno sulla notorietà tra i docenti italiani che tendono a preferire manuali con contributi di autori nazionali o con tradizione consolidata nel proprio ateneo.</p>
+<p>In LM-85bis l'assenza è totale. Non esiste nel catalogo Zanichelli un prodotto di psicologia generale pensato specificamente per futuri insegnanti (come invece esiste per la clinica con Occhini e per l'antropologia con Tassan).</p>
+</div>
+</div>
+
+<div class="content-block opportunity">
+<div class="cb-label">🎯 Opportunità</div>
+<div class="prose">
+<p>Il bacino B2/B3 in L-24 include 5 cattedre per 817 studenti, con titoli diversificati (Schacter, Gray, Revlin, D'Urso & Giusberti, Burro & Zani). Questa varietà segnala che Zanichelli ha un catalogo ampio per quest'area ma fatica a posizionare un singolo titolo come primario negli atenei grandi. La strategia potrebbe puntare sugli atenei dove Zanichelli è già in B2/B3 — in particolare Campania Vanvitelli (240 studenti, Schacter in B2) e Roma Sapienza Salute (255 studenti, Gray + Revlin in B2/B3).</p>
+</div>
+</div>
+
+<div class="content-block competitor">
+<div class="cb-label">🏷️ Competitor principale</div>
+<div class="prose">
+<p><strong>L-24 — McGraw-Hill (21,0%):</strong> Holt e Feldman sono i titoli dominanti. Holt è percepito come il "manuale standard" in molti atenei del Nord. Feldman è più compatto e usato in atenei medio-grandi. McGraw-Hill investe in risorse digitali (Connect) che rafforzano la fedeltà dei docenti.</p>
+<p><strong>L-19 — McGraw-Hill (34,7%):</strong> stessa dinamica amplificata. Holt è il riferimento anche nelle facoltà di Scienze dell'Educazione per la sua completezza e accessibilità.</p>
+</div>
+</div>
+</div>
+
+<!-- ===== PSICOLOGIA DELLO SVILUPPO ===== -->
+<div id="sp-sviluppo" class="tab-pane">
+<div class="materia-header">
+<div class="mh-icon">🌱</div>
+<div>
+<div class="mh-title">Psicologia dello Sviluppo</div>
+<div class="mh-sub">L-24: 9,5% (4°) · L-19: 0% · LM-85bis: 0% — 1.452 studenti primari (solo L-24)</div>
+<div class="mh-badges">
+<span class="mh-badge presente">Presente L-24</span>
+<span class="mh-badge assente">Assente L-19</span>
+<span class="mh-badge assente">Assente LM-85bis</span>
+</div>
+</div>
+</div>
+
+<div class="content-block content">
+<div class="cb-label">📚 Cosa cercano i programmi</div>
+<div class="prose">
+<p>In L-24 i programmi coprono lo sviluppo tipico e atipico lungo l'intero ciclo di vita: sviluppo cognitivo (Piaget, Vygotskij, approcci neopiagetiani, teoria della mente), sviluppo emotivo e dell'attaccamento (Bowlby, Ainsworth), sviluppo linguistico, sviluppo sociale e morale, adolescenza, età adulta e invecchiamento. Il manuale ideale è sistematico, fondato sulla ricerca empirica, con riferimenti a metodi longitudinali e studi cross-culturali.</p>
+<p>In L-19 il taglio è diverso: lo sviluppo è letto in relazione ai contesti educativi. I docenti cercano un testo che colleghi le tappe evolutive alla progettazione di interventi educativi — meno formalismo teorico, più applicazione a situazioni concrete (servizi per l'infanzia, comunità, famiglie).</p>
+<p>In LM-85bis la richiesta è ancora più specifica: sviluppo cognitivo e linguistico nella fascia 3–11, con connessione diretta alla didattica (come insegnare la lettura a un bambino di 6 anni, come gestire l'attenzione in una classe di 8enni). I docenti vogliono un testo "ponte" tra la teoria dello sviluppo e la pratica d'aula.</p>
+</div>
+</div>
+
+<div class="content-block strength">
+<div class="cb-label">✅ Punti di forza Zanichelli</div>
+<div class="prose">
+<p><strong>Belsky, Psicologia dello sviluppo</strong>: manuale lifespan con approccio narrativo apprezzato. Presente in 2 cattedre L-24 per 1.452 studenti. Il punto di forza è la copertura dell'intero arco di vita in un formato accessibile.</p>
+</div>
+</div>
+
+<div class="content-block weakness">
+<div class="cb-label">⚠️ Vulnerabilità</div>
+<div class="prose">
+<p>La fragilità è strutturale: il 92% del bacino (1.341 su 1.452) proviene da una singola telematica (Uninettuno). La seconda adozione è Molise (111 studenti). Nelle tradizionali di peso, Belsky non è presente. Il titolo è alla 2ª edizione (2020) — aggiornato ma non recente.</p>
+<p>In L-19 e LM-85bis l'assenza è totale come B1. L'unica traccia è D'Amico & Piccardi, Psicologia per insegnare in B2 a Cagliari LM-85bis (118 studenti). McGraw-Hill (Santrock + Leman) controlla il 65,2% del mercato in queste classi — una posizione quasi monopolistica costruita su due titoli complementari: Santrock per il lifespan e Leman per la fascia scolare.</p>
+</div>
+</div>
+
+<div class="content-block opportunity">
+<div class="cb-label">🎯 Opportunità</div>
+<div class="prose">
+<p>Il mercato L-19/LM-85bis per Psicologia dello Sviluppo vale 12.798 studenti — il più grande dopo Psicologia Generale. L'assenza di Zanichelli è un gap significativo. Un titolo-funzione per educatori e insegnanti (analogo a Occhini per la Clinica e Tassan per l'Antropologia) che colleghi le tappe dello sviluppo alla progettazione educativa e didattica potrebbe intercettare una domanda oggi servita interamente da McGraw-Hill con un approccio più generalista.</p>
+<p>D'Amico & Piccardi in B2 a Cagliari segnala che il catalogo ha un embrione di prodotto per questo segmento, ma non ancora un titolo autonomo posizionabile come B1.</p>
+</div>
+</div>
+
+<div class="content-block competitor">
+<div class="cb-label">🏷️ Competitor principale</div>
+<div class="prose">
+<p><strong>McGraw-Hill (L-24 48,9% · L-19/LM-85bis 65,2%):</strong> Santrock è il manuale dominante da oltre un decennio. Leman (introdotto più di recente) copre specificamente la fascia scolare ed è in crescita rapida in LM-85bis. Il vantaggio di McGraw-Hill è duplice: un titolo lifespan (Santrock) e uno specializzato (Leman), che insieme coprono sia i corsi generalisti che quelli focalizzati sull'infanzia. Zanichelli non ha un equivalente di Leman.</p>
+</div>
+</div>
+</div>
+
+<!-- ===== ANTROPOLOGIA CULTURALE ===== -->
+<div id="sp-antro" class="tab-pane">
+<div class="materia-header">
+<div class="mh-icon">🌍</div>
+<div>
+<div class="mh-title">Antropologia Culturale</div>
+<div class="mh-sub">L-24: 5,6% · L-19: 7,9% · LM-85bis: 29,8% (1°) — 1.158 studenti primari</div>
+<div class="mh-badges">
+<span class="mh-badge leader">Leader LM-85bis</span>
+<span class="mh-badge presente">Presente L-24</span>
+<span class="mh-badge presente">Presente L-19</span>
+</div>
+</div>
+</div>
+
+<div class="content-block content">
+<div class="cb-label">📚 Cosa cercano i programmi</div>
+<div class="prose">
+<p>In L-24 l'antropologia è un insegnamento complementare che colloca i processi psichici in prospettiva storico-culturale: rappresentazioni culturali di sé, corpo, malattia, genere, emozioni. I docenti cercano un'introduzione alla disciplina che dialoghi con la psicologia — non un manuale di antropologia pura.</p>
+<p>In L-19 il focus è sulle culture educative, le pratiche di socializzazione, le migrazioni, l'intercultura nei servizi. I docenti vogliono un testo che aiuti a leggere i contesti educativi in chiave antropologica.</p>
+<p>In LM-85bis la richiesta è molto specifica: educazione interculturale nella classe, gestione della diversità culturale e linguistica nella scuola dell'infanzia e primaria. I docenti cercano un testo che parli direttamente di scuola, non di etnografia generale.</p>
+</div>
+</div>
+
+<div class="content-block strength">
+<div class="cb-label">✅ Punti di forza Zanichelli</div>
+<div class="prose">
+<p><strong>Tassan, Antropologia per insegnare</strong>: titolo-funzione progettato per insegnanti ed educatori — stesso approccio vincente di Occhini. Leader in LM-85bis (29,8%) con 5 cattedre. Presente anche in 4 cattedre come B2/B3 per 1.454 studenti aggiuntivi — il più alto rapporto B2/B1 del catalogo, che segnala notorietà e apprezzamento diffuso.</p>
+<p><strong>Schultz-Lavenda</strong>: manuale generalista usato in L-19 (Verona 267 studenti) e LM-85bis (Cagliari 118). Fornisce la copertura per chi cerca un'introduzione sistematica piuttosto che un testo applicato.</p>
+<p><strong>Fabietti, Storia dell'antropologia</strong>: presente in L-24 a Campania Vanvitelli (329 studenti) e come B2 in LM-85bis (Molise 253). Testo storico-disciplinare che copre un'esigenza diversa dai manuali introduttivi.</p>
+</div>
+</div>
+
+<div class="content-block weakness">
+<div class="cb-label">⚠️ Vulnerabilità</div>
+<div class="prose">
+<p>In L-24 la presenza è marginale (5,6%, 1 sola cattedra con Fabietti). Il mercato è dominato da Il Mulino (Dei, 31,8%) che ha un manuale introduttivo consolidato e molto adottato. In L-19 la quota (7,9%) è contenuta e Il Mulino con Dei è ancora forte (16,7%), mentre Einaudi cresce rapidamente con King e Engelke (23,2% combinato).</p>
+<p>Einaudi è il competitor emergente più pericoloso: King è un manuale recente, narrativo, molto apprezzato dai docenti L-19. Se Einaudi dovesse investire su un titolo specifico per LM-85bis, potrebbe erodere la posizione di Tassan.</p>
+</div>
+</div>
+
+<div class="content-block opportunity">
+<div class="cb-label">🎯 Opportunità</div>
+<div class="prose">
+<p>Il bacino B2/B3 di Tassan è eccezionale: 1.454 studenti in L-19/LM-85bis, superiore al bacino primario (829). Questo significa che ci sono almeno 4 cattedre dove Tassan è noto e apprezzato ma non è il manuale principale — una base concreta per azioni di conversione. Gli atenei target sono: Foggia L-19 (434 studenti, primario: Engelke/Einaudi), Milano-Bicocca L-19 (392, primario: King/Einaudi), Roma Tre LM-85bis (375, primario: King/Einaudi).</p>
+</div>
+</div>
+
+<div class="content-block competitor">
+<div class="cb-label">🏷️ Competitor principale</div>
+<div class="prose">
+<p><strong>L-24 — Il Mulino (Dei, 31,8%):</strong> manuale italiano consolidato, adottato da oltre un decennio in molte sedi. Punto di forza: familiarità dei docenti, prezzo contenuto, buona copertura dei temi classici.</p>
+<p><strong>L-19/LM-85bis — Einaudi (King + Engelke, 23,2%):</strong> competitor emergente in rapida crescita. King è un manuale narrativo, accessibile, con casi contemporanei. Engelke copre un taglio più teorico. Hoepli (Palumbo-Pizza-Schirripa, 20,2%) è il terzo polo, forte in L-19.</p>
+</div>
+</div>
+</div>
+
+</div><!-- fine tab-presenti -->
+
+<!-- ============================================================ -->
+<!-- TAB: MATERIE SCOPERTE -->
+<!-- ============================================================ -->
+<div id="tab-scoperte" class="tab-pane">
+
+<div class="sub-tab-bar" id="subScoperte">
+<button class="sub-tab-btn active" onclick="switchSubTab('scoperte','ss-sociale',this)">Psic. Sociale</button>
+<button class="sub-tab-btn" onclick="switchSubTab('scoperte','ss-psicometria',this)">Psicometria</button>
+<button class="sub-tab-btn" onclick="switchSubTab('scoperte','ss-sociologia',this)">Sociologia Gen.</button>
+</div>
+
+<!-- ===== PSICOLOGIA SOCIALE ===== -->
+<div id="ss-sociale" class="tab-pane active">
+<div class="materia-header">
+<div class="mh-icon">👥</div>
+<div>
+<div class="mh-title">Psicologia Sociale</div>
+<div class="mh-sub">L-24: 0% · L-19: 0% — 19.273 studenti · Zanichelli assente</div>
+<div class="mh-badges"><span class="mh-badge assente">Assente in tutte le classi</span></div>
+</div>
+</div>
+
+<div class="content-block content">
+<div class="cb-label">📚 Cosa cercano i programmi</div>
+<div class="prose">
+<p>In L-24 i programmi coprono il nucleo classico della disciplina: atteggiamenti, persuasione, cognizione sociale, stereotipi e pregiudizio, identità sociale, conformismo, influenza sociale, dinamiche di gruppo, aggressività, comportamento prosociale, attrazione interpersonale. L'accento è sulla ricerca sperimentale e i paradigmi classici (Milgram, Asch, Zimbardo, Sherif). I docenti cercano un manuale sistematico con forte base empirica.</p>
+<p>In L-19 il taglio è più applicativo: comunità, partecipazione, empowerment, marginalità, prevenzione del bullismo, educazione alla cittadinanza. I docenti cercano un testo che colleghi i concetti della psicologia sociale ai contesti educativi e di comunità.</p>
+</div>
+</div>
+
+<div class="content-block competitor">
+<div class="cb-label">🏷️ Chi domina</div>
+<div class="prose">
+<p><strong>L-24 — McGraw-Hill (Myers, 27,0%):</strong> manuale più adottato al mondo per questa materia. La forza di Myers è la combinazione di rigore sperimentale, accessibilità e aggiornamento costante. Il Mulino è secondo (22,3%) con manuali italiani (Andrighetto-Riva, Hewstone). Pearson terzo (Hogg & Vaughan, 15,4%).</p>
+<p><strong>L-19 — Pearson (36,4%) e Il Mulino (30,5%):</strong> in L-19 il panorama è più frammentato. Pearson con Hogg & Vaughan e Il Mulino con Boca e Speltini sono i riferimenti. Carocci (Gattino, 33,1%) è forte con un taglio più applicativo.</p>
+</div>
+</div>
+
+<div class="content-block opportunity">
+<div class="cb-label">🎯 Cosa servirebbe per entrare</div>
+<div class="prose">
+<p>Il mercato è il più grande tra quelli dove Zanichelli è assente (19.273 studenti cumulati). L'ingresso richiederebbe un manuale internazionale di riferimento tradotto (come lo è Schacter per la Generale o Kring per la Clinica) oppure un titolo-funzione per L-19 che colleghi la psicologia sociale ai contesti educativi (come Occhini e Tassan nei rispettivi campi). La seconda opzione è probabilmente più realistica e differenziante, dato che Myers (McGraw-Hill) è difficilmente scalzabile in L-24.</p>
+</div>
+</div>
+</div>
+
+<!-- ===== PSICOMETRIA ===== -->
+<div id="ss-psicometria" class="tab-pane">
+<div class="materia-header">
+<div class="mh-icon">📐</div>
+<div>
+<div class="mh-title">Psicometria</div>
+<div class="mh-sub">L-24: 0% — 15.911 studenti · Zanichelli assente · Solo in L-24</div>
+<div class="mh-badges"><span class="mh-badge assente">Assente</span></div>
+</div>
+</div>
+
+<div class="content-block content">
+<div class="cb-label">📚 Cosa cercano i programmi</div>
+<div class="prose">
+<p>La psicometria in L-24 copre statistica applicata alla psicologia, costruzione e validazione di test, teoria della misura, attendibilità e validità, analisi dei dati. È una materia tecnico-metodologica con forte componente matematica. I docenti cercano manuali che rendano accessibile la statistica a studenti di psicologia — non testi di statistica pura ma manuali che usino esempi psicologici e guidino passo passo le procedure.</p>
+</div>
+</div>
+
+<div class="content-block competitor">
+<div class="cb-label">🏷️ Chi domina</div>
+<div class="prose">
+<p><strong>McGraw-Hill (Chiorri, 24,2%):</strong> manuale italiano scritto specificamente per L-24, molto adottato. <strong>Il Mulino (22,6%):</strong> con Ercolani e altri testi italiani consolidati. <strong>Pearson (Aron-Coups, 21,5%):</strong> traduzione del manuale nordamericano. Tre editori si spartiscono quasi equamente il mercato, tutti con prodotti solidi.</p>
+</div>
+</div>
+
+<div class="content-block opportunity">
+<div class="cb-label">🎯 Cosa servirebbe per entrare</div>
+<div class="prose">
+<p>Il mercato è competitivo e tripartito. Un ingresso richiederebbe un prodotto con un vantaggio differenziante chiaro — per esempio un manuale con forte componente digitale integrata (esercizi interattivi, dataset, ambienti R/SPSS online) che nessuno dei competitor attuali offre in modo strutturato. Alternativamente, un manuale con approccio "open science" e riproducibilità che catturi la sensibilità delle nuove generazioni di docenti.</p>
+</div>
+</div>
+</div>
+
+<!-- ===== SOCIOLOGIA GENERALE ===== -->
+<div id="ss-sociologia" class="tab-pane">
+<div class="materia-header">
+<div class="mh-icon">🏛️</div>
+<div>
+<div class="mh-title">Sociologia Generale</div>
+<div class="mh-sub">L-24: 0% · L-19: 0% — 15.760 studenti · Zanichelli assente</div>
+<div class="mh-badges"><span class="mh-badge assente">Assente in tutte le classi</span></div>
+</div>
+</div>
+
+<div class="content-block content">
+<div class="cb-label">📚 Cosa cercano i programmi</div>
+<div class="prose">
+<p>In L-24 la sociologia è un insegnamento complementare che fornisce la cornice macro-sociale ai fenomeni psicologici: ruolo, status, istituzione, stratificazione, devianza, welfare, socializzazione. I docenti cercano un'introduzione alla disciplina che sia accessibile a studenti di psicologia.</p>
+<p>In L-19 la sociologia è più centrale: sociologia dell'educazione, famiglia, migrazioni, politiche sociali, disuguaglianze. I docenti cercano un testo che colleghi l'analisi sociologica alla progettazione di interventi educativi e sociali.</p>
+</div>
+</div>
+
+<div class="content-block competitor">
+<div class="cb-label">🏷️ Chi domina</div>
+<div class="prose">
+<p><strong>L-24 — McGraw-Hill (Croteau, 22,9%) e Il Mulino (Bagnasco/Smelser, 21,0%):</strong> duopolio stabile. Croteau è un manuale internazionale, Bagnasco è il riferimento italiano. Franco Angeli è terzo (15,1%) con titoli più specialistici.</p>
+<p><strong>L-19 — Il Mulino (24,9%) e UTET (20,4%):</strong> Il Mulino domina con Giddens-Sutton e Smelser. UTET è forte con Gammaitoni e Gallino-Borgna. McGraw-Hill terzo (Croteau, 18,0%).</p>
+</div>
+</div>
+
+<div class="content-block opportunity">
+<div class="cb-label">🎯 Cosa servirebbe per entrare</div>
+<div class="prose">
+<p>Il mercato è presidiato da editori con tradizione consolidata nella sociologia (Il Mulino, UTET). Un ingresso ex novo sarebbe difficile senza un titolo di forte richiamo. La strategia più realistica potrebbe essere un titolo-funzione di sociologia dell'educazione specifico per L-19, che colleghi l'analisi sociologica alla pratica educativa — un terreno dove nessun editore ha un prodotto dominante e dove il modello Occhini/Tassan potrebbe funzionare.</p>
+</div>
+</div>
+</div>
+
+</div><!-- fine tab-scoperte -->
+
+<!-- ============================================================ -->
+<!-- TAB: NEUROSCIENZE -->
+<!-- ============================================================ -->
+<div id="tab-neuro" class="tab-pane">
+
+<div class="materia-header">
+<div class="mh-icon">🔬</div>
+<div>
+<div class="mh-title">Neuroscienze</div>
+<div class="mh-sub">L-24: 19,6% (3°) — 5.323 studenti · 8 titoli · 20 cattedre · Solo tradizionali</div>
+<div class="mh-badges">
+<span class="mh-badge presente">3° editore complessivo</span>
+<span class="mh-badge leader">1° nelle tradizionali (31,9%)</span>
+</div>
+</div>
+</div>
+
+<div class="content-block content">
+<div class="cb-label">📚 Cosa cercano i programmi</div>
+<div class="prose">
+<p>L'area neuroscientifica in L-24 copre tre filoni: i fondamenti biologici e anatomofisiologici (struttura e funzione del sistema nervoso, trasmissione sinaptica, neuroanatomia), la psicobiologia e psicologia fisiologica (collegamento tra processi biologici e comportamento, emozioni, motivazione, sonno), e le neuroscienze cognitive (percezione, attenzione, memoria, linguaggio, funzioni esecutive, coscienza dal punto di vista neurale).</p>
+<p>I docenti del primo filone cercano manuali sistematici con forti basi di neuroanatomia e neurofisiologia (Bear, Kandel Principi, Purves). I docenti del secondo cercano manuali che traducano la biologia in comportamento (Pinel, Carlson, Breedlove). I docenti del terzo cercano manuali focalizzati sui processi cognitivi superiori (Gazzaniga, Purves NC). Un ateneo con 2-3 insegnamenti di area neuroscientifica può adottare manuali diversi per ciascun filone.</p>
+</div>
+</div>
+
+<div class="content-block strength">
+<div class="cb-label">✅ Punti di forza Zanichelli/CEA</div>
+<div class="prose">
+<p><strong>Catalogo più ampio del settore:</strong> 8 titoli che coprono tutti e tre i filoni. Gazzaniga per le neuroscienze cognitive (9 cattedre, 1.965 studenti), Breedlove per la psicobiologia (4 cattedre, 1.987 studenti), Kandel Principi e Fondamenti per i fondamenti (2 cattedre, 817 studenti), Purves Neuroscienze e NC per approcci complementari (4 cattedre, 542 studenti), Freberg e Revlin per nicchie specifiche.</p>
+<p><strong>Presenza esclusivamente tradizionale:</strong> tutti i 5.323 studenti Zanichelli/CEA sono in atenei tradizionali. Questo significa che la quota nel segmento tradizionale è del 31,9% — la più alta tra tutti gli editori. La qualità del posizionamento è superiore a quanto suggerisce la quota complessiva del 19,6%.</p>
+<p><strong>Diversificazione geografica:</strong> le 20 cattedre sono distribuite da Lecce a Trieste, con forte presenza al Nord (Bergamo, Bologna, Torino, Trento, Trieste, Padova) e al Centro (Firenze, Perugia, Roma).</p>
+</div>
+</div>
+
+<div class="content-block weakness">
+<div class="cb-label">⚠️ Vulnerabilità</div>
+<div class="prose">
+<p><strong>Nessun titolo dominante:</strong> il titolo più grande (Breedlove, 1.987) è solo il 6° per studenti complessivi. Bear (Edra) con 6.034 studenti è 3 volte più grande. La frammentazione del catalogo in 8 titoli è al tempo stesso un punto di forza (copertura) e un limite (nessun singolo titolo raggiunge la massa critica per essere percepito come "il manuale" della materia).</p>
+<p><strong>Assenza nelle telematiche:</strong> nessuno degli 8 titoli è adottato in telematiche, che valgono il 38,5% del mercato. Questo è un limite strutturale se si guarda alla quota complessiva, anche se è coerente con un posizionamento di qualità.</p>
+<p><strong>Dipendenza da Perugia e Firenze per Breedlove:</strong> il 69% del bacino Breedlove (1.363 su 1.987) viene da due atenei. La perdita di una di queste adozioni dimezzerebbe il contributo del titolo.</p>
+</div>
+</div>
+
+<div class="content-block opportunity">
+<div class="cb-label">🎯 Opportunità</div>
+<div class="prose">
+<p><strong>Bacino B2/B3/B4 ampio:</strong> almeno 14 cattedre hanno titoli Zanichelli/CEA come testo complementare, per circa 4.500 studenti aggiuntivi. Le sedi più promettenti per una conversione a B1 sono Milano Bicocca (Gazzaniga in B2 accanto a Bear, 383 studenti), Enna Kore (Purves + Kandel in B2/B3, 229 studenti), e Perugia (Freberg già in B3 accanto a Breedlove in B1, consolidamento).</p>
+<p><strong>Rumiati, Neuroscienze cognitive (nuovo progetto):</strong> dal report emerge che è in corso un nuovo progetto editoriale di Rumiati. Se questo titolo sarà nel catalogo Zanichelli/CEA, potrebbe rafforzare significativamente la posizione nel terzo filone (neuroscienze cognitive), attualmente coperto da Gazzaniga che è un titolo consolidato ma non di nuova generazione.</p>
+</div>
+</div>
+
+<div class="content-block competitor">
+<div class="cb-label">🏷️ Competitor principale</div>
+<div class="prose">
+<p><strong>Edra (Bear + Pinel, 35,3%):</strong> Bear è il manuale più adottato in assoluto (6.034 studenti, 18 cattedre). La sua forza è la completezza e il brand: è percepito come "il Bear" in molti dipartimenti. Pinel (3.263 studenti) è il complemento per i corsi di psicobiologia. Edra domina con due soli titoli ma ha forte dipendenza dalle telematiche (32% del bacino).</p>
+<p><strong>Piccin (Carlson + Mangia + Siegel, 27,3%):</strong> domina nelle telematiche (70% del proprio bacino). Nelle tradizionali è debole (2.221 studenti, meno di Zanichelli/CEA). Carlson è un buon manuale ma la sua quota è gonfiata da e-Campus e Marconi.</p>
+<p><strong>Poletto Editore (Maravita, 6,5%):</strong> manuale italiano scritto specificamente per i corsi di fondamenti anatomofisiologici. Presente in 7 cattedre tradizionali (1.752 studenti). Forte a Milano Bicocca, Palermo, Catania. Competitor diretto di Bear nel primo filone.</p>
+</div>
+</div>
+
+</div><!-- fine tab-neuro -->
+
+<!-- === JAVASCRIPT === -->
+<script>
+function switchStratTab(id,btn){
+  document.querySelectorAll('#stratTabBar .tab-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  document.querySelectorAll('body > .tab-pane').forEach(function(p){p.classList.remove('active')});
+  var el=document.getElementById('tab-'+id);
+  if(el) el.classList.add('active');
+}
+
+function switchSubTab(parent,id,btn){
+  var barId = parent==='presenti' ? 'subPresenti' : 'subScoperte';
+  document.querySelectorAll('#'+barId+' .sub-tab-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  var container = document.getElementById('tab-'+parent);
+  container.querySelectorAll(':scope > .tab-pane').forEach(function(p){p.classList.remove('active')});
+  var el=document.getElementById(id);
+  if(el) el.classList.add('active');
+}
+</script>
+
+</body>
+</html>

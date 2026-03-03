@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Riepilogo Generale Posizionamento</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root{--zb:#003865;--zl:#0066B3;--za:#E63946;--zg:#2A9D8F;--zy:#E9C46A;--zo:#F4A261;--bg:#F5F7FA;--card:#FFF;--t1:#1A1A2E;--t2:#555B6E;--bd:#E0E4EA;--sh:0 2px 12px rgba(0,0,0,.06);--r:12px;--l19:#2A9D8F;--lm85:#7C3AED}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6}
+
+/* === SIDEBAR === */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--zb);color:#fff;z-index:100;overflow-y:auto;display:flex;flex-direction:column}
+.sidebar-header{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-header h1{font-size:18px;font-weight:700;letter-spacing:.5px}
+.sidebar-header p{font-size:11px;opacity:.6;margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+.sidebar-header .sub2{font-size:10.5px;opacity:.45;margin-top:2px}
+.nav-section{padding:14px 0}
+.nav-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;opacity:.4;padding:0 24px;margin-bottom:8px}
+.nav-link{display:flex;align-items:center;padding:10px 24px;font-size:13px;font-weight:400;border-left:3px solid transparent;text-decoration:none;color:#fff;transition:all .2s}
+.nav-link:hover{background:rgba(255,255,255,.08);border-left-color:rgba(255,255,255,.3)}
+.nav-link.active{background:rgba(255,255,255,.12);border-left-color:var(--zy);font-weight:600}
+.nav-link .icon{margin-right:12px;font-size:15px;width:20px;text-align:center}
+
+/* === MAIN === */
+.main{margin-left:280px;padding:32px 44px;max-width:1140px}
+.page-header{margin-bottom:28px}
+.page-header h2{font-size:26px;font-weight:700;color:var(--zb)}
+.page-header .subtitle{font-size:14.5px;color:var(--t2);margin-top:6px}
+.breadcrumb{font-size:12px;color:var(--t2);margin-bottom:8px}
+.breadcrumb a{color:var(--zl);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+/* Toolbar */
+.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.print-btn{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--bd);padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;color:var(--t2);transition:all .2s;font-family:inherit}
+.print-btn:hover{background:#F0F4FF;border-color:var(--zl);color:var(--zb)}
+.dropbox-btn{display:inline-flex;align-items:center;gap:8px;background:var(--zb);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;transition:background .2s}
+.dropbox-btn:hover{background:var(--zl)}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.kpi-card{background:var(--card);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);border:1px solid var(--bd);transition:box-shadow .2s}
+.kpi-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.kpi-card .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);margin-bottom:6px}
+.kpi-card .kpi-value{font-size:30px;font-weight:700;color:var(--zb)}
+.kpi-card .kpi-sub{font-size:12px;color:var(--t2);margin-top:4px}
+.kpi-card.hl{border-left:4px solid var(--za)}.kpi-card.gr{border-left:4px solid var(--zg)}.kpi-card.yl{border-left:4px solid var(--zy)}.kpi-card.bl{border-left:4px solid var(--zl)}
+
+/* Content grid & card */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+.content-grid.full{grid-template-columns:1fr}
+.card{background:var(--card);border-radius:var(--r);padding:24px;box-shadow:var(--sh);border:1px solid var(--bd)}
+.card-title{font-size:15px;font-weight:600;color:var(--zb);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+/* Prose */
+.prose{font-size:13.5px;line-height:1.8;color:var(--t1)}
+.prose h3{color:var(--zb);margin:24px 0 12px;font-size:17px;font-weight:700}
+.prose h4{color:var(--zl);margin:18px 0 8px;font-size:14.5px;font-weight:600}
+.prose p{margin-bottom:12px}
+
+/* Note box */
+.note-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:14px 18px;font-size:12.5px;color:#92400E;margin:16px 0;line-height:1.6}
+
+/* Section divider */
+.section-divider{margin:32px 0 24px;padding:18px 22px;background:linear-gradient(135deg,var(--zb) 0%,var(--zl) 100%);border-radius:var(--r);color:#fff}
+.section-divider h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.section-divider p{font-size:12px;opacity:.85}
+
+/* Bacino grid */
+.bacino-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+.bacino-card{background:var(--card);border-radius:10px;padding:20px;text-align:center;box-shadow:var(--sh);border:1px solid var(--bd)}
+.bacino-card .bc-val{font-size:28px;font-weight:800;color:var(--zb)}
+.bacino-card .bc-lab{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;line-height:1.5}
+
+/* Pond KPI strip */
+.pond-kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.pond-kpi{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:var(--sh);border:1px solid var(--bd);text-align:center}
+.pond-kpi .pk-val{font-size:22px;font-weight:700;color:var(--zb)}
+.pond-kpi .pk-lab{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);margin-top:2px}
+
+/* Tables */
+.riepilogo-table{width:100%;border-collapse:collapse;font-size:11.5px;margin:14px 0}
+.riepilogo-table th{background:var(--zb);color:#fff;padding:8px 10px;text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
+.riepilogo-table td{padding:9px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.riepilogo-table tr:nth-child(even){background:#F8FAFC}
+.riepilogo-table tr.zan-present{background:#FFF8E1!important}
+.riepilogo-table .val-big{font-size:14px;font-weight:700;color:var(--zb)}
+
+/* Chart container */
+.chart-container{position:relative;height:340px;margin-bottom:16px}
+
+/* Badges */
+.badge-l19,.badge-lm85,.badge-l24{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.3px;vertical-align:middle}
+.badge-l24{background:#FECDD3;color:#9B1C31;border:1px solid #FCA5A5}
+.badge-l19{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
+.badge-lm85{background:#EDE9FE;color:#5B21B6;border:1px solid #C4B5FD}
+
+/* Dot indicators */
+.dot-leader{color:var(--zg);font-weight:700}
+.dot-present{color:var(--zl);font-weight:700}
+.dot-absent{color:var(--za);font-weight:700}
+
+/* Responsive */
+@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(2,1fr)}.content-grid{grid-template-columns:1fr}.pond-kpi-strip{grid-template-columns:repeat(2,1fr)}.bacino-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:20px 16px}}
+
+/* Print */
+@media print{.sidebar,.toolbar{display:none!important}.main{margin-left:0!important;padding:20px!important}.card{box-shadow:none!important;break-inside:avoid}.section-divider{break-after:avoid}.bacino-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- === SIDEBAR (allineata all'index) === -->
+<nav class="sidebar">
+<div class="sidebar-header">
+<h1>ZANICHELLI</h1>
+<p>Analisi Programmi Universitari</p>
+<div class="sub2">L-24 · L-19 · LM-85bis</div>
+</div>
+
+<div class="nav-section">
+<div class="nav-section-title">Inquadramento</div>
+<a class="nav-link" href="index.html"><span class="icon">🏠</span> Home</a>
+<a class="nav-link" href="index.html?section=premessa"><span class="icon">📋</span> Premessa</a>
+<a class="nav-link" href="index.html?section=mercato"><span class="icon">📊</span> Mercato L-24</a>
+<a class="nav-link" href="index.html?section=mercato19"><span class="icon">📊</span> Mercato L-19 / LM-85bis</a>
+<a class="nav-link" href="index.html?section=trasversale"><span class="icon">🔀</span> Visione Trasversale</a>
+<a class="nav-link" href="index.html?section=ponderata"><span class="icon">⚖️</span> Analisi Ponderata</a>
+</div>
+
+<div class="nav-section">
+<div class="nav-section-title">L-24 — Per Materia</div>
+<a class="nav-link" href="psicologia_generale.html"><span class="icon">⚙️</span> Psicologia Generale</a>
+<a class="nav-link" href="psicologia_clinica.html"><span class="icon">🧠</span> Psicologia Clinica</a>
+<a class="nav-link" href="psicologia_sviluppo.html"><span class="icon">🌱</span> Psicol. dello Sviluppo</a>
+<a class="nav-link" href="psicologia_sociale.html"><span class="icon">👥</span> Psicologia Sociale</a>
+<a class="nav-link" href="psicometria.html"><span class="icon">📐</span> Psicometria</a>
+<a class="nav-link" href="antropologia_culturale.html"><span class="icon">🌍</span> Antropologia Culturale</a>
+<a class="nav-link" href="sociologia_generale.html"><span class="icon">🏛️</span> Sociologia Generale</a>
+</div>
+
+<div class="nav-section">
+<div class="nav-section-title">L-19 + LM-85bis — Per Materia</div>
+<a class="nav-link" href="psicologia_generale_L19_LM85bis.html"><span class="icon">⚙️</span> Psicologia Generale</a>
+<a class="nav-link" href="psicologia_sviluppo_L19_LM85bis.html"><span class="icon">🌱</span> Psicol. dello Sviluppo</a>
+<a class="nav-link" href="psicologia_clinica_L19_LM85bis.html"><span class="icon">🧠</span> Psicologia Clinica</a>
+<a class="nav-link" href="psicologia_sociale_L19_LM85bis.html"><span class="icon">👥</span> Psicologia Sociale</a>
+<a class="nav-link" href="antropologia_culturale_L19_LM85bis.html"><span class="icon">🌍</span> Antropologia Culturale</a>
+<a class="nav-link" href="sociologia_generale_L19_LM85bis.html"><span class="icon">🏛</span> Sociologia Generale</a>
+</div>
+
+<div class="nav-section">
+<div class="nav-section-title">Sintesi</div>
+<a class="nav-link active" href="riepilogo_generale.html"><span class="icon">📋</span> Riepilogo Generale</a>
+<a class="nav-link" href="report_riepilogo.html" target="_blank"><span class="icon">📄</span> Report PDF</a>
+</div>
+
+<div class="nav-section">
+<div class="nav-section-title">Risorse</div>
+<a class="nav-link" href="https://www.dropbox.com/scl/fo/m02q242gpci6lrmxm3ric/AAk-gwO7k-e0jzDG7ETK4zQ?rlkey=c6w658wx1cpihlyi4m9b57n9x&st=zcqz7vln&dl=0" target="_blank">
+  <span class="icon">📁</span> Indagine Psicologia (Dropbox)
+</a>
+</div>
+</nav>
+
+<!-- === MAIN === -->
+<div class="main">
+
+<div class="breadcrumb"><a href="index.html">Home</a> / Riepilogo Generale</div>
+<div class="page-header">
+<h2>Riepilogo Generale — Posizionamento Zanichelli</h2>
+<div class="subtitle">Sintesi ponderata su 3 classi di laurea · 13 materie-classe · 178.914 iscritti</div>
+</div>
+<div class="toolbar">
+<button class="print-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+<a class="dropbox-btn" href="report_riepilogo.html" target="_blank">📄 Apri Report Completo</a>
+</div>
+
+<!-- ==================== 1. KPI AGGREGATI ==================== -->
+<div class="section-divider">
+<h3>1 — Quadro Aggregato</h3>
+<p>Bacino studenti raggiungibili su L-24, L-19, LM-85bis</p>
+</div>
+
+<div class="kpi-row">
+<div class="kpi-card hl">
+<div class="kpi-label">Bacino Primario Zanichelli</div>
+<div class="kpi-value">10.191</div>
+<div class="kpi-sub">Studenti in Bibl. 1 · 39 cattedre · 4 materie</div>
+</div>
+<div class="kpi-card gr">
+<div class="kpi-label">Esposizione Complementare</div>
+<div class="kpi-value">4.366</div>
+<div class="kpi-sub">Studenti in Bibl. 2/3 · 18 cattedre</div>
+</div>
+<div class="kpi-card bl">
+<div class="kpi-label">Esposizione Totale</div>
+<div class="kpi-value">14.557</div>
+<div class="kpi-sub">Primaria + complementare · 3 classi</div>
+</div>
+<div class="kpi-card yl">
+<div class="kpi-label">Mercato Totale Censito</div>
+<div class="kpi-value">133.612</div>
+<div class="kpi-sub">Studenti con bibl. identificata (7+6 materie)</div>
+</div>
+</div>
+
+<!-- Bacino per classe -->
+<div class="content-grid full">
+<div class="card">
+<div class="card-title">🎯 Bacino Primario per Classe di Laurea</div>
+<div class="bacino-grid">
+<div class="bacino-card" style="border-top:4px solid var(--za)">
+<div class="bc-val" style="color:var(--za)">6.681</div>
+<div class="bc-lab">L-24 · Bibl. 1<br>21 cattedre · 4 materie</div>
+</div>
+<div class="bacino-card" style="border-top:4px solid var(--l19)">
+<div class="bc-val" style="color:var(--l19)">2.096</div>
+<div class="bc-lab">L-19 · Bibl. 1<br>8 cattedre · 3 materie</div>
+</div>
+<div class="bacino-card" style="border-top:4px solid var(--lm85)">
+<div class="bc-val" style="color:var(--lm85)">1.414</div>
+<div class="bc-lab">LM-85bis · Bibl. 1<br>11 cattedre · 2 materie</div>
+</div>
+</div>
+<div class="bacino-grid" style="grid-template-columns:1fr 1fr;margin-top:12px">
+<div class="bacino-card" style="border-top:4px solid var(--zo)">
+<div class="bc-val" style="color:var(--zo)">2.590</div>
+<div class="bc-lab">L-24 · Bibl. 2/3<br>12 cattedre · 3 materie</div>
+</div>
+<div class="bacino-card" style="border-top:4px solid var(--zo)">
+<div class="bc-val" style="color:var(--zo)">1.776</div>
+<div class="bc-lab">L-19 + LM-85bis · Bibl. 2/3<br>6 cattedre · 3 materie</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ==================== 2. MATRICE COMPLETA ==================== -->
+<div class="section-divider">
+<h3>2 — Matrice Posizionamento: Materia × Classe</h3>
+<p>% ponderata Zanichelli · Indicatore visivo · Leader di mercato per cella</p>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<div class="note-box" style="margin-top:0;margin-bottom:14px">
+Legenda: <strong class="dot-leader">●</strong> Leader di mercato · <strong class="dot-present">●</strong> Presente (non leader) · <strong class="dot-absent">●</strong> Assente · <span style="color:var(--t2)">—</span> Insegnamento non previsto nella classe
+</div>
+<div style="overflow-x:auto">
+<table class="riepilogo-table">
+<thead>
+<tr>
+<th rowspan="2" style="vertical-align:bottom;min-width:115px">Materia</th>
+<th colspan="3" style="text-align:center;border-bottom:2px solid rgba(255,255,255,.3)"><span class="badge-l24" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">L-24</span></th>
+<th colspan="3" style="text-align:center;background:var(--l19);border-bottom:2px solid rgba(255,255,255,.3)"><span class="badge-l19" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">L-19</span></th>
+<th colspan="3" style="text-align:center;background:var(--lm85);border-bottom:2px solid rgba(255,255,255,.3)"><span class="badge-lm85" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.3)">LM-85bis</span></th>
+</tr>
+<tr>
+<th>Mercato</th><th>Zan. %</th><th>Leader</th>
+<th style="background:var(--l19)">Mercato</th><th style="background:var(--l19)">Zan. %</th><th style="background:var(--l19)">Leader</th>
+<th style="background:var(--lm85)">Mercato</th><th style="background:var(--lm85)">Zan. %</th><th style="background:var(--lm85)">Leader</th>
+</tr>
+</thead>
+<tbody>
+<tr class="zan-present">
+<td><strong>Psicologia Clinica</strong></td>
+<td>13.919</td><td><strong class="dot-present">22,3%</strong></td><td style="font-size:10px">Piccin 30,7%</td>
+<td>2.537</td><td><strong class="dot-leader">37,4%</strong></td><td style="font-size:10px">Zanichelli</td>
+<td>1.742</td><td><strong class="dot-leader">58,7%</strong></td><td style="font-size:10px">Zanichelli</td>
+</tr>
+<tr class="zan-present">
+<td><strong>Psicologia Generale</strong></td>
+<td>14.447</td><td><strong class="dot-present">12,4%</strong></td><td style="font-size:10px">McGraw-Hill 21,0%</td>
+<td>8.954</td><td><strong class="dot-present">7,9%</strong></td><td style="font-size:10px">McGraw-Hill 34,7%</td>
+<td>189</td><td><strong class="dot-absent">0%</strong></td><td style="font-size:10px">Piccin 100%</td>
+</tr>
+<tr class="zan-present">
+<td><strong>Psicologia Sviluppo</strong></td>
+<td>15.316</td><td><strong class="dot-present">9,5%</strong></td><td style="font-size:10px">McGraw-Hill 48,9%</td>
+<td>7.750</td><td><strong class="dot-absent">0%</strong></td><td style="font-size:10px">McGraw-Hill 65,2%</td>
+<td>5.048</td><td><strong class="dot-absent">0%</strong></td><td style="font-size:10px">McGraw-Hill 65,2%</td>
+</tr>
+<tr class="zan-present">
+<td><strong>Antropologia Culturale</strong></td>
+<td>5.910</td><td><strong class="dot-present">5,6%</strong></td><td style="font-size:10px">Il Mulino 31,8%</td>
+<td>5.541</td><td><strong class="dot-present">7,9%</strong></td><td style="font-size:10px">Einaudi 23,2%</td>
+<td>1.316</td><td><strong class="dot-leader">29,8%</strong></td><td style="font-size:10px">Zanichelli</td>
+</tr>
+<tr>
+<td>Psicologia Sociale</td>
+<td>17.043</td><td><strong class="dot-absent">0%</strong></td><td style="font-size:10px">McGraw-Hill 27,0%</td>
+<td>2.230</td><td><strong class="dot-absent">0%</strong></td><td style="font-size:10px">Pearson 36,4%</td>
+<td colspan="3" style="text-align:center;color:var(--t2);font-style:italic">Non prevista</td>
+</tr>
+<tr>
+<td>Psicometria</td>
+<td>15.911</td><td><strong class="dot-absent">0%</strong></td><td style="font-size:10px">McGraw-Hill 24,2%</td>
+<td colspan="3" style="text-align:center;color:var(--t2);font-style:italic">Non prevista</td>
+<td colspan="3" style="text-align:center;color:var(--t2);font-style:italic">Non prevista</td>
+</tr>
+<tr>
+<td>Sociologia Generale</td>
+<td>7.799</td><td><strong class="dot-absent">0%</strong></td><td style="font-size:10px">McGraw-Hill 22,9%</td>
+<td>7.961</td><td><strong class="dot-absent">0%</strong></td><td style="font-size:10px">Il Mulino 24,9%</td>
+<td colspan="3" style="text-align:center;color:var(--t2);font-style:italic">Non prevista</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Grafici matrice -->
+<div class="content-grid">
+<div class="card">
+<div class="card-title">📊 % Ponderata Zanichelli per Materia e Classe</div>
+<div class="chart-container" style="height:360px"><canvas id="chartRiepMatrice"></canvas></div>
+</div>
+<div class="card">
+<div class="card-title">📊 Bacino Primario per Materia (studenti)</div>
+<div class="chart-container" style="height:360px"><canvas id="chartRiepBacino"></canvas></div>
+</div>
+</div>
+
+<!-- ==================== 3. MAPPA COMPETITIVA ==================== -->
+<div class="section-divider">
+<h3>3 — Mappa Competitiva: Chi Domina Dove</h3>
+<p>Leadership editoriale su 13 celle materia-classe</p>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<div style="overflow-x:auto">
+<table class="riepilogo-table">
+<thead><tr><th>Editore</th><th style="text-align:center">Celle leader</th><th>Materie con leadership</th><th>Profilo</th></tr></thead>
+<tbody>
+<tr style="background:#FFF8E1">
+<td><strong>McGraw-Hill</strong></td>
+<td style="text-align:center"><strong>7 / 13</strong></td>
+<td style="font-size:10px">Psic. Gen. (L-24, L-19) · Psic. Sviluppo (L-24, L-19, LM-85bis) · Psic. Sociale L-24 · Psicometria · Sociologia L-24</td>
+<td style="font-size:10px">Domina le materie dove Zanichelli è assente. Pochi titoli ad altissima diffusione.</td>
+</tr>
+<tr class="zan-present">
+<td><strong>Zanichelli</strong></td>
+<td style="text-align:center"><strong>3 / 13</strong></td>
+<td style="font-size:10px">Psic. Clinica (L-19, LM-85bis) · Antrop. Culturale LM-85bis</td>
+<td style="font-size:10px">Leader dove presente con titoli specializzati (Occhini, Tassan). 2° in Clinica L-24.</td>
+</tr>
+<tr>
+<td><strong>Il Mulino</strong></td>
+<td style="text-align:center"><strong>3 / 13</strong></td>
+<td style="font-size:10px">Antrop. Cult. L-24 · Psic. Sociale L-19 · Sociologia L-19</td>
+<td style="font-size:10px">Forte su materie umanistiche. Catalogo con autori italiani consolidati.</td>
+</tr>
+<tr>
+<td>Piccin</td>
+<td style="text-align:center"><strong>1 / 13</strong></td>
+<td style="font-size:10px">Psic. Clinica L-24</td>
+<td style="font-size:10px">Leadership solida in Clinica L-24 con Verrocchio (30,7%).</td>
+</tr>
+<tr>
+<td>Einaudi</td>
+<td style="text-align:center"><strong>1 / 13</strong></td>
+<td style="font-size:10px">Antrop. Cult. L-19/LM-85bis (aggregato)</td>
+<td style="font-size:10px">Crescita rapida con King e Engelke.</td>
+</tr>
+<tr>
+<td>Pearson</td>
+<td style="text-align:center"><strong>0 / 13</strong></td>
+<td style="font-size:10px">—</td>
+<td style="font-size:10px">2°/3° in molte materie, nessuna leadership. Forte in Psic. Sociale L-19 (36,4%).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<div class="card-title">📊 Celle con Leadership per Editore (su 13 materie-classe)</div>
+<div class="chart-container" style="height:280px"><canvas id="chartRiepCompetitiva"></canvas></div>
+</div>
+</div>
+
+<!-- ==================== 4. BACINO DI CONVERSIONE ==================== -->
+<div class="section-divider">
+<h3>4 — Bacino di Conversione (Bibl. 2/3)</h3>
+<p>Opportunità complementari aggregate per classe e materia</p>
+</div>
+
+<div class="pond-kpi-strip">
+<div class="pond-kpi"><div class="pk-val">4.366</div><div class="pk-lab">Studenti totali B2/B3</div></div>
+<div class="pond-kpi"><div class="pk-val">18</div><div class="pk-lab">Cattedre coinvolte</div></div>
+<div class="pond-kpi" style="border-bottom:3px solid var(--za)"><div class="pk-val">2.590</div><div class="pk-lab">L-24</div></div>
+<div class="pond-kpi" style="border-bottom:3px solid var(--l19)"><div class="pk-val">1.776</div><div class="pk-lab">L-19 + LM-85bis</div></div>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<table class="riepilogo-table">
+<thead><tr><th>Classe</th><th>Materia</th><th>Catt.</th><th>Studenti</th><th>Titoli Zanichelli</th><th>Editore primario</th></tr></thead>
+<tbody>
+<tr>
+<td rowspan="3"><strong><span class="badge-l24">L-24</span></strong></td>
+<td>Psicologia Clinica</td><td>4</td><td>1.134</td>
+<td style="font-size:10px">Kring & Johnson · Corazza & Esposito</td>
+<td style="font-size:10px">Verrocchio (Piccin) · Turchi (EdiSES) · Slide</td>
+</tr>
+<tr>
+<td>Psicologia Generale</td><td>5</td><td>817</td>
+<td style="font-size:10px">Schacter · Gray · Revlin · D'Urso & Giusberti · Burro & Zani</td>
+<td style="font-size:10px">Goldstein (Piccin) · Occhionero (Carocci) · Baddeley (Il Mulino)</td>
+</tr>
+<tr>
+<td>Antropologia Culturale</td><td>2</td><td>399</td>
+<td style="font-size:10px">Tassan, Antropologia per insegnare</td>
+<td style="font-size:10px">Engelke (Einaudi) · Matera (Laterza)</td>
+</tr>
+<tr style="background:#D1FAE5">
+<td colspan="2" style="text-align:right;font-weight:600">Subtotale L-24</td>
+<td><strong>11</strong></td><td><strong>2.350</strong></td><td colspan="2"></td>
+</tr>
+<tr>
+<td rowspan="3"><strong><span class="badge-l19">L-19</span> <span class="badge-lm85">LM-85bis</span></strong></td>
+<td>Antropologia Culturale</td><td>4</td><td>1.454</td>
+<td style="font-size:10px">Tassan · Fabietti</td>
+<td style="font-size:10px">King/Engelke (Einaudi) · Biondi-Richards (Carocci)</td>
+</tr>
+<tr>
+<td>Psicologia Generale</td><td>1</td><td>214</td>
+<td style="font-size:10px">Smith, Psicologia sociale</td>
+<td style="font-size:10px">Cornoldi et al. (Il Mulino)</td>
+</tr>
+<tr>
+<td>Psicologia Clinica</td><td>1</td><td>189</td>
+<td style="font-size:10px">Occhini, Psicol. clinica per insegnare</td>
+<td style="font-size:10px">Comer (UTET)</td>
+</tr>
+<tr style="background:#EDE9FE">
+<td colspan="2" style="text-align:right;font-weight:600">Subtotale L-19/LM-85bis</td>
+<td><strong>6</strong></td><td><strong>1.857</strong></td><td colspan="2"></td>
+</tr>
+</tbody>
+</table>
+<div class="note-box" style="margin-top:14px">
+<strong>Nota.</strong> I subtotali di dettaglio (2.350 e 1.857) possono non coincidere esattamente con i totali aggregati (2.590 e 1.776) per effetto di sovrapposizioni tra cattedre già contate come primarie e doppie presenze B2+B3 sulla stessa cattedra.
+</div>
+</div>
+</div>
+
+<!-- ==================== 5. OSSERVAZIONI ==================== -->
+<div class="section-divider">
+<h3>5 — Osservazioni dai Dati</h3>
+<p>Pattern, concentrazioni, asimmetrie e aree scoperte</p>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<div class="prose">
+
+<h3>Concentrazione su Psicologia Clinica</h3>
+<p>Psicologia Clinica è la materia in cui Zanichelli esprime la posizione più forte. In L-24 è il secondo editore con il 22,3% ponderato (contro il 30,7% di Piccin), ma il dato più rilevante è che le 6 cattedre intercettano atenei ad alta numerosità — Roma Marconi (1.246 studenti) e Cusano (905) pesano insieme per il 69% del bacino di materia. In L-19 e LM-85bis Zanichelli è leader con il 46,0% ponderato complessivo, che sale al 58,7% nella sola LM-85bis grazie a Occhini, adottato in 6 delle 9 cattedre censite. Il 50,5% del bacino primario totale Zanichelli (5.080 studenti su 10.191) proviene da questa singola materia.</p>
+
+<h3>Psicologia Generale: diffusione ampia, peso ponderato contenuto</h3>
+<p>In L-24 Schacter è presente in 12 cattedre (secondo per diffusione) ma il peso ponderato scende al 12,4% perché le sedi sono prevalentemente di dimensione media o medio-piccola. In L-19 la situazione è analoga: 4 cattedre per il 7,8% ponderato. In LM-85bis il titolo è assente. Il divario tra quota di cattedre e quota ponderata è il più ampio del catalogo (−7,0 pp in L-24, −2,8 pp in L-19) e segnala che Schacter compete meglio negli atenei con coorti sotto i 250 iscritti.</p>
+
+<h3>Psicologia dello Sviluppo: dipendenza da una sede</h3>
+<p>Belsky genera il 9,5% ponderato in L-24 con sole 2 cattedre, ma 1.341 dei 1.452 studenti (92%) provengono da Uninettuno. Il dato è strutturalmente fragile: la perdita di questa singola adozione azzererebbe quasi la presenza. In L-19 e LM-85bis Zanichelli è assente dalla materia come Bibliografia 1, mentre McGraw-Hill (Santrock + Leman) controlla il 65,2% ponderato.</p>
+
+<h3>Antropologia Culturale: forza in LM-85bis</h3>
+<p>In L-24 la presenza è marginale (5,6%, 1 cattedra). In L-19 la quota sale al 7,9%. Il risultato più significativo è in LM-85bis, dove Zanichelli raggiunge il 29,8% con 5 cattedre grazie a Tassan, progettato per il pubblico della formazione primaria. Il titolo compare inoltre in 4 cattedre come Bibliografia 2/3 (1.454 studenti), confermando una penetrazione anche dove non è manuale principale.</p>
+
+<h3>Tre materie scoperte</h3>
+<p>Zanichelli è assente da Psicologia Sociale (19.273 studenti cumulati su L-24 e L-19), Psicometria (15.911, solo L-24) e Sociologia Generale (15.760 cumulati). Queste tre materie rappresentano 50.944 studenti — il 38% del mercato totale censito — interamente serviti da altri editori. McGraw-Hill è leader in 5 di queste 6 celle.</p>
+
+<h3>McGraw-Hill come competitor principale</h3>
+<p>McGraw-Hill detiene la leadership in 7 delle 13 celle, con posizioni dominanti in Sviluppo (48,9%–65,2%) e Generale (21,0%–34,7%). La sua forza è costruita su pochi titoli ad altissima diffusione: Santrock, Holt/Feldman, Myers, Chiorri, Croteau. Il Mulino è il secondo competitor per ampiezza con 3 leadership, concentrato su materie umanistiche e sociologiche.</p>
+
+</div>
+</div>
+</div>
+
+</div><!-- fine .main -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+  // 1. % Ponderata per materia e classe
+  var ctx1=document.getElementById('chartRiepMatrice');
+  if(ctx1){
+    new Chart(ctx1,{
+      type:'bar',
+      data:{
+        labels:['Psic.\nClinica','Psic.\nGenerale','Psic.\nSviluppo','Antrop.\nCulturale','Psic.\nSociale','Psicometria','Sociologia\nGen.'],
+        datasets:[
+          {label:'L-24',data:[22.3,12.4,9.5,5.6,0,0,0],backgroundColor:'#E63946',borderRadius:4,barPercentage:.75,categoryPercentage:.7},
+          {label:'L-19',data:[37.4,7.9,0,7.9,0,null,0],backgroundColor:'#2A9D8F',borderRadius:4,barPercentage:.75,categoryPercentage:.7},
+          {label:'LM-85bis',data:[58.7,0,0,29.8,null,null,null],backgroundColor:'#7C3AED',borderRadius:4,barPercentage:.75,categoryPercentage:.7}
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'top',labels:{font:{size:11,family:'Inter'},usePointStyle:true,pointStyle:'rectRounded'}}},
+        scales:{
+          x:{ticks:{font:{size:9.5,family:'Inter'},maxRotation:0},grid:{display:false}},
+          y:{beginAtZero:true,max:65,ticks:{callback:function(v){return v+'%'},font:{size:10,family:'Inter'}},grid:{color:'#EEF0F4'}}
+        }
+      }
+    });
+  }
+
+  // 2. Bacino studenti per materia (stacked)
+  var ctx2=document.getElementById('chartRiepBacino');
+  if(ctx2){
+    new Chart(ctx2,{
+      type:'bar',
+      data:{
+        labels:['Psic. Clinica','Psic. Generale','Psic. Sviluppo','Antrop. Culturale'],
+        datasets:[
+          {label:'L-24',data:[3110,1790,1452,329],backgroundColor:'#E63946',borderRadius:4},
+          {label:'L-19',data:[948,711,0,437],backgroundColor:'#2A9D8F',borderRadius:4},
+          {label:'LM-85bis',data:[1022,0,0,392],backgroundColor:'#7C3AED',borderRadius:4}
+        ]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'top',labels:{font:{size:11,family:'Inter'},usePointStyle:true,pointStyle:'rectRounded'}},
+          tooltip:{callbacks:{afterBody:function(items){
+            var total=0;items.forEach(function(i){total+=i.raw||0});
+            return 'Totale materia: '+total.toLocaleString('it-IT');
+          }}}
+        },
+        scales:{
+          x:{stacked:true,ticks:{font:{size:10,family:'Inter'}},grid:{display:false}},
+          y:{stacked:true,beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString('it-IT')},font:{size:10,family:'Inter'}},grid:{color:'#EEF0F4'}}
+        }
+      }
+    });
+  }
+
+  // 3. Leadership per editore (horizontal)
+  var ctx3=document.getElementById('chartRiepCompetitiva');
+  if(ctx3){
+    new Chart(ctx3,{
+      type:'bar',
+      data:{
+        labels:['McGraw-Hill','Zanichelli','Il Mulino','Piccin','Einaudi','Pearson'],
+        datasets:[{
+          label:'Celle con leadership',
+          data:[7,3,3,1,1,0],
+          backgroundColor:['#F97316','#E63946','#3B82F6','#8B5CF6','#059669','#6B7280'],
+          borderRadius:6,
+          barPercentage:.55
+        }]
+      },
+      options:{
+        indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          x:{beginAtZero:true,max:8,ticks:{stepSize:1,font:{size:10,family:'Inter'}},grid:{color:'#EEF0F4'}},
+          y:{ticks:{font:{size:11,family:'Inter',weight:'600'}},grid:{display:false}}
+        }
+      }
+    });
+  }
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Report Riepilogo Posizionamento Editoriale</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root{--zb:#003865;--zl:#0066B3;--za:#E63946;--zg:#2A9D8F;--zy:#E9C46A;--zo:#F4A261;--l19:#2A9D8F;--lm85:#7C3AED;--t1:#1A1A2E;--t2:#555B6E;--bd:#E0E4EA}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;color:var(--t1);line-height:1.7;max-width:210mm;margin:0 auto;padding:20mm 22mm;font-size:11.5px}
+
+/* Copertina */
+.cover{text-align:center;padding:50px 20px 40px;border-bottom:4px solid var(--zb);margin-bottom:32px;page-break-after:always}
+.cover .logo-line{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--t2);margin-bottom:24px}
+.cover h1{font-size:26px;font-weight:800;color:var(--zb);margin-bottom:8px}
+.cover h2{font-size:15px;font-weight:400;color:var(--zl);margin-bottom:20px}
+.cover .cover-meta{font-size:11px;color:var(--t2);line-height:1.8}
+.cover-kpis{display:flex;justify-content:center;gap:24px;margin-top:28px;flex-wrap:wrap}
+.ck{text-align:center;min-width:120px}
+.ck .ck-val{font-size:30px;font-weight:800;color:var(--zb)}
+.ck .ck-lab{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);margin-top:2px}
+.ck.accent .ck-val{color:var(--za)}
+.ck.green .ck-val{color:var(--zg)}
+
+/* Titoli */
+h3{font-size:15px;font-weight:700;color:var(--zb);margin:28px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--bd)}
+h4{font-size:12.5px;font-weight:600;color:var(--zl);margin:18px 0 8px}
+p{margin-bottom:10px;text-align:justify;hyphens:auto}
+
+/* Tabelle */
+table{width:100%;border-collapse:collapse;font-size:10.5px;margin:14px 0}
+th{background:var(--zb);color:#fff;padding:7px 8px;text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px}
+td{padding:7px 8px;border-bottom:1px solid var(--bd);vertical-align:top}
+tr:nth-child(even){background:#F8FAFC}
+tr.zan-hl{background:#FFF8E1!important}
+tr.zan-hl td{font-weight:600}
+
+/* Badges */
+.badge-l24,.badge-l19,.badge-lm85{display:inline-block;padding:1px 6px;border-radius:8px;font-size:8.5px;font-weight:700;letter-spacing:.3px;vertical-align:middle}
+.badge-l24{background:#FECDD3;color:#9B1C31;border:1px solid #FCA5A5}
+.badge-l19{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
+.badge-lm85{background:#EDE9FE;color:#5B21B6;border:1px solid #C4B5FD}
+
+/* KPI strip */
+.kpi-strip{display:flex;gap:14px;margin:16px 0;justify-content:center;flex-wrap:wrap}
+.kpi-box{background:#F8FAFC;border:1px solid var(--bd);border-radius:8px;padding:12px 16px;text-align:center;flex:1;min-width:110px;max-width:155px}
+.kpi-box .kv{font-size:20px;font-weight:800;color:var(--zb)}
+.kpi-box .kl{font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);margin-top:2px;line-height:1.4}
+.kpi-box.accent{border-bottom:3px solid var(--za)}
+.kpi-box.accent .kv{color:var(--za)}
+.kpi-box.green{border-bottom:3px solid var(--zg)}
+.kpi-box.green .kv{color:var(--zg)}
+
+/* Indicatori */
+.dot-leader{color:var(--zg);font-weight:700}
+.dot-present{color:var(--zl);font-weight:700}
+.dot-absent{color:var(--za);font-weight:700}
+
+/* Note */
+.note{background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:10px 14px;font-size:10px;color:#92400E;margin:14px 0;line-height:1.6}
+
+/* Bacino riquadri */
+.bacino-row{display:flex;gap:14px;margin:16px 0;justify-content:center;flex-wrap:wrap}
+.bacino-box{background:#F8FAFC;border:1px solid var(--bd);border-radius:8px;padding:14px 18px;text-align:center;flex:1;min-width:130px;max-width:180px}
+.bacino-box .bb-val{font-size:22px;font-weight:800}
+.bacino-box .bb-lab{font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);margin-top:3px;line-height:1.4}
+
+/* Footer */
+.page-footer{margin-top:40px;padding-top:12px;border-top:1px solid var(--bd);font-size:9px;color:var(--t2);text-align:center}
+
+/* Torna alla dashboard */
+.back-link{display:inline-block;margin-bottom:20px;font-size:11px;color:var(--zl);text-decoration:none;font-weight:500}
+.back-link:hover{text-decoration:underline}
+
+/* Print */
+@media print{
+  body{padding:16mm 18mm;font-size:10.5px}
+  .cover{padding:40px 0 30px}
+  .cover h1{font-size:22px}
+  .ck .ck-val{font-size:24px}
+  h3{page-break-after:avoid;margin-top:22px}
+  table{page-break-inside:avoid}
+  .kpi-strip,.bacino-row{page-break-inside:avoid}
+  .back-link,.no-print{display:none!important}
+}
+@page{size:A4;margin:16mm 18mm}
+</style>
+</head>
+<body>
+
+<a href="riepilogo_generale.html" class="back-link no-print">← Torna al Riepilogo Generale</a>
+
+<!-- ===== COPERTINA ===== -->
+<div class="cover">
+<div class="logo-line">Zanichelli Editore</div>
+<h1>Posizionamento Editoriale Universitario</h1>
+<h2>Riepilogo ponderato — Classi L-24 · L-19 · LM-85bis</h2>
+<div class="cover-meta">
+Materie psicologiche, sociologiche e antropologiche<br>
+A.A. 2025/2026 — Dati pesati per numero di studenti effettivi
+</div>
+<div class="cover-kpis">
+<div class="ck"><div class="ck-val">178.914</div><div class="ck-lab">Iscritti totali<br>3 classi di laurea</div></div>
+<div class="ck"><div class="ck-val">133.612</div><div class="ck-lab">Mercato censito<br>con bibl. identificata</div></div>
+<div class="ck accent"><div class="ck-val">10.191</div><div class="ck-lab">Bacino primario<br>Zanichelli (B1)</div></div>
+<div class="ck green"><div class="ck-val">14.557</div><div class="ck-lab">Esposizione totale<br>B1 + B2/B3</div></div>
+</div>
+</div>
+
+<!-- ===== 1. QUADRO AGGREGATO ===== -->
+<h3>1. Quadro Aggregato</h3>
+
+<p>L'indagine ha censito 547 programmi d'insegnamento in 7 materie della classe L-24 e 6 materie delle classi L-19 e LM-85bis, per un totale di 13 celle materia-classe. Il mercato con bibliografia identificata ammonta a 133.612 studenti. Zanichelli è presente come manuale principale (Bibliografia 1) in 39 cattedre distribuite su 4 materie, raggiungendo 10.191 studenti — pari al 7,6% del mercato censito. Aggiungendo le presenze in Bibliografia 2/3 (4.366 studenti su 18 cattedre), l'esposizione complessiva sale a 14.557 studenti.</p>
+
+<div class="kpi-strip">
+<div class="kpi-box accent"><div class="kv">10.191</div><div class="kl">Bacino primario<br>39 cattedre · 4 materie</div></div>
+<div class="kpi-box"><div class="kv">4.366</div><div class="kl">Complementare B2/B3<br>18 cattedre</div></div>
+<div class="kpi-box green"><div class="kv">14.557</div><div class="kl">Esposizione totale<br>3 classi di laurea</div></div>
+</div>
+
+<p>La distribuzione per classe mostra una concentrazione in L-24 (6.681 studenti primari, il 65,6% del bacino), seguita da L-19 (2.096) e LM-85bis (1.414). La presenza in L-19 e LM-85bis è legata a titoli progettati specificamente per il pubblico educativo: Occhini per Psicologia Clinica e Tassan per Antropologia Culturale.</p>
+
+<div class="bacino-row">
+<div class="bacino-box" style="border-top:3px solid var(--za)"><div class="bb-val" style="color:var(--za)">6.681</div><div class="bb-lab">L-24 · Bibl. 1<br>21 cattedre</div></div>
+<div class="bacino-box" style="border-top:3px solid var(--l19)"><div class="bb-val" style="color:var(--l19)">2.096</div><div class="bb-lab">L-19 · Bibl. 1<br>8 cattedre</div></div>
+<div class="bacino-box" style="border-top:3px solid var(--lm85)"><div class="bb-val" style="color:var(--lm85)">1.414</div><div class="bb-lab">LM-85bis · Bibl. 1<br>11 cattedre</div></div>
+</div>
+
+<!-- ===== 2. MATRICE POSIZIONAMENTO ===== -->
+<h3>2. Posizionamento per Materia e Classe</h3>
+
+<p>La tabella seguente riepiloga la quota ponderata Zanichelli in ciascuna delle 13 celle materia-classe, con l'indicazione del leader di mercato. Zanichelli è leader in 3 celle, presente ma non leader in 4, assente in 6.</p>
+
+<table>
+<thead>
+<tr>
+<th style="min-width:100px">Materia</th>
+<th style="text-align:center"><span class="badge-l24">L-24</span></th>
+<th>Leader L-24</th>
+<th style="text-align:center"><span class="badge-l19">L-19</span></th>
+<th>Leader L-19</th>
+<th style="text-align:center"><span class="badge-lm85">LM-85bis</span></th>
+<th>Leader LM-85bis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="zan-hl">
+<td>Psic. Clinica</td>
+<td style="text-align:center"><span class="dot-present">22,3%</span></td>
+<td>Piccin 30,7%</td>
+<td style="text-align:center"><span class="dot-leader">37,4%</span></td>
+<td>Zanichelli</td>
+<td style="text-align:center"><span class="dot-leader">58,7%</span></td>
+<td>Zanichelli</td>
+</tr>
+<tr class="zan-hl">
+<td>Psic. Generale</td>
+<td style="text-align:center"><span class="dot-present">12,4%</span></td>
+<td>McGraw-Hill 21,0%</td>
+<td style="text-align:center"><span class="dot-present">7,9%</span></td>
+<td>McGraw-Hill 34,7%</td>
+<td style="text-align:center"><span class="dot-absent">0%</span></td>
+<td>Piccin 100%</td>
+</tr>
+<tr class="zan-hl">
+<td>Psic. Sviluppo</td>
+<td style="text-align:center"><span class="dot-present">9,5%</span></td>
+<td>McGraw-Hill 48,9%</td>
+<td style="text-align:center"><span class="dot-absent">0%</span></td>
+<td>McGraw-Hill 65,2%</td>
+<td style="text-align:center"><span class="dot-absent">0%</span></td>
+<td>McGraw-Hill 65,2%</td>
+</tr>
+<tr class="zan-hl">
+<td>Antrop. Culturale</td>
+<td style="text-align:center"><span class="dot-present">5,6%</span></td>
+<td>Il Mulino 31,8%</td>
+<td style="text-align:center"><span class="dot-present">7,9%</span></td>
+<td>Einaudi 23,2%</td>
+<td style="text-align:center"><span class="dot-leader">29,8%</span></td>
+<td>Zanichelli</td>
+</tr>
+<tr>
+<td>Psic. Sociale</td>
+<td style="text-align:center"><span class="dot-absent">0%</span></td>
+<td>McGraw-Hill 27,0%</td>
+<td style="text-align:center"><span class="dot-absent">0%</span></td>
+<td>Pearson 36,4%</td>
+<td colspan="2" style="text-align:center;color:var(--t2);font-style:italic">Non prevista</td>
+</tr>
+<tr>
+<td>Psicometria</td>
+<td style="text-align:center"><span class="dot-absent">0%</span></td>
+<td>McGraw-Hill 24,2%</td>
+<td colspan="4" style="text-align:center;color:var(--t2);font-style:italic">Non prevista in L-19 e LM-85bis</td>
+</tr>
+<tr>
+<td>Sociologia Gen.</td>
+<td style="text-align:center"><span class="dot-absent">0%</span></td>
+<td>McGraw-Hill 22,9%</td>
+<td style="text-align:center"><span class="dot-absent">0%</span></td>
+<td>Il Mulino 24,9%</td>
+<td colspan="2" style="text-align:center;color:var(--t2);font-style:italic">Non prevista</td>
+</tr>
+</tbody>
+</table>
+
+<div class="note">Legenda: <span class="dot-leader">●</span> Leader di mercato · <span class="dot-present">●</span> Presente, non leader · <span class="dot-absent">●</span> Assente. Percentuali ponderate per studenti effettivi.</div>
+
+<p>La lettura della matrice evidenzia che Zanichelli esprime una posizione forte e crescente nella Psicologia Clinica — unica materia in cui è presente in tutte e tre le classi, con quote che salgono dal 22,3% in L-24 al 58,7% in LM-85bis. Il secondo asse è l'Antropologia Culturale, dove il posizionamento è significativo in LM-85bis (29,8%) ma più contenuto altrove. Psicologia Generale ha una diffusione ampia in termini di cattedre ma un peso ponderato ridotto dalla dimensione delle sedi. Psicologia dello Sviluppo dipende da una singola adozione in una telematica.</p>
+
+<!-- ===== 3. MAPPA COMPETITIVA ===== -->
+<h3>3. Mappa Competitiva</h3>
+
+<p>La distribuzione delle leadership tra editori mostra un panorama concentrato. McGraw-Hill è l'editore dominante con 7 celle su 13. Il suo presidio è costruito su un numero ristretto di titoli ad altissima penetrazione: Santrock per lo Sviluppo, Holt e Feldman per la Generale, Myers per la Sociale, Chiorri per la Psicometria, Croteau per la Sociologia. La forza di McGraw-Hill è massima nelle materie in cui Zanichelli è assente.</p>
+
+<table>
+<thead><tr><th>Editore</th><th style="text-align:center">Celle leader</th><th>Materie con leadership</th></tr></thead>
+<tbody>
+<tr style="background:#FFF8E1">
+<td><strong>McGraw-Hill</strong></td>
+<td style="text-align:center"><strong>7</strong></td>
+<td>Psic. Gen. (L-24, L-19) · Psic. Sviluppo (L-24, L-19, LM-85bis) · Psic. Sociale L-24 · Psicometria · Sociologia L-24</td>
+</tr>
+<tr class="zan-hl">
+<td><strong>Zanichelli</strong></td>
+<td style="text-align:center"><strong>3</strong></td>
+<td>Psic. Clinica (L-19, LM-85bis) · Antrop. Culturale LM-85bis</td>
+</tr>
+<tr>
+<td><strong>Il Mulino</strong></td>
+<td style="text-align:center"><strong>3</strong></td>
+<td>Antrop. Cult. L-24 · Psic. Sociale L-19 · Sociologia L-19</td>
+</tr>
+<tr>
+<td>Piccin</td>
+<td style="text-align:center">1</td>
+<td>Psic. Clinica L-24 (Verrocchio 30,7%)</td>
+</tr>
+<tr>
+<td>Einaudi</td>
+<td style="text-align:center">1</td>
+<td>Antrop. Cult. L-19/LM-85bis aggregato (King, Engelke)</td>
+</tr>
+<tr>
+<td>Pearson</td>
+<td style="text-align:center">0</td>
+<td>2°/3° in molte materie, nessuna leadership. Forte in Psic. Sociale L-19 (36,4%)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Il Mulino è il secondo competitor per ampiezza, con 3 leadership concentrate su materie umanistiche e sociologiche. Piccin ha una sola leadership (Clinica L-24) ma con una quota robusta. Einaudi è un attore recente nel segmento antropologico, in crescita con King e Engelke. Pearson è presente in molte materie come secondo o terzo editore ma non detiene nessuna leadership nelle celle analizzate.</p>
+
+<!-- ===== 4. BACINO DI CONVERSIONE ===== -->
+<h3>4. Bacino di Conversione (Bibl. 2/3)</h3>
+
+<p>Oltre al bacino primario, Zanichelli è presente come Bibliografia 2/3 in 18 cattedre per un totale di 4.366 studenti. Questa presenza complementare riguarda cattedre in cui il manuale Zanichelli non è il testo principale ma è comunque consigliato o indicato come lettura integrativa.</p>
+
+<table>
+<thead><tr><th>Classe</th><th>Materia</th><th>Catt.</th><th>Studenti</th><th>Titoli Zanichelli</th></tr></thead>
+<tbody>
+<tr>
+<td rowspan="3"><span class="badge-l24">L-24</span></td>
+<td>Psicologia Clinica</td><td>4</td><td>1.134</td>
+<td>Kring & Johnson · Corazza & Esposito</td>
+</tr>
+<tr>
+<td>Psicologia Generale</td><td>5</td><td>817</td>
+<td>Schacter · Gray · Revlin · D'Urso & Giusberti · Burro & Zani</td>
+</tr>
+<tr>
+<td>Antropologia Culturale</td><td>2</td><td>399</td>
+<td>Tassan, Antropologia per insegnare</td>
+</tr>
+<tr>
+<td rowspan="3"><span class="badge-l19">L-19</span> <span class="badge-lm85">LM-85bis</span></td>
+<td>Antropologia Culturale</td><td>4</td><td>1.454</td>
+<td>Tassan · Fabietti</td>
+</tr>
+<tr>
+<td>Psicologia Generale</td><td>1</td><td>214</td>
+<td>Smith, Psicologia sociale</td>
+</tr>
+<tr>
+<td>Psicologia Clinica</td><td>1</td><td>189</td>
+<td>Occhini, Psicol. clinica per insegnare</td>
+</tr>
+</tbody>
+</table>
+
+<p>Il dato più rilevante riguarda Antropologia Culturale in L-19/LM-85bis, dove il bacino complementare (1.454 studenti) supera quello primario (829 studenti). Questo suggerisce che Tassan è un titolo noto e raccomandato da docenti che scelgono come manuale principale un testo di altro editore — una base di familiarità che potrebbe facilitare future conversioni. In Psicologia Clinica L-24, i 1.134 studenti in Bibl. 2/3 includono cattedre di Roma Sapienza (386 studenti) e Padova (258 studenti), sedi dove Kring è consigliato accanto a Verrocchio (Piccin) o Turchi.</p>
+
+<!-- ===== 5. PATTERN E OSSERVAZIONI ===== -->
+<h3>5. Pattern dai Dati</h3>
+
+<h4>Concentrazione della forza</h4>
+<p>Il 50,5% del bacino primario Zanichelli (5.080 studenti su 10.191) proviene da una sola materia: Psicologia Clinica. La materia genera il 30,5% del bacino in L-24 (con Kring) e il 56,1% in L-19/LM-85bis (con Occhini e Kring). Questa concentrazione è al tempo stesso una forza — la posizione di leadership è solida e difendibile — e un fattore di rischio, perché espone il bacino complessivo alle dinamiche di una singola materia.</p>
+
+<h4>Asimmetria cattedre-studenti</h4>
+<p>In Psicologia Generale il divario tra quota di cattedre (19,4% in L-24) e quota ponderata (12,4%) è il più ampio del catalogo: −7,0 punti percentuali. Schacter è adottato prevalentemente in atenei con coorti inferiori a 250 iscritti. In Psicologia Clinica il fenomeno è inverso: 6 cattedre in L-24 (11,5%) generano il 22,3% ponderato grazie alla presenza in telematiche ad alta numerosità (Marconi, Cusano). Questo secondo pattern amplifica i numeri ma introduce una dipendenza da sedi con dinamiche specifiche.</p>
+
+<h4>Titoli-funzione vs titoli-traduzione</h4>
+<p>I prodotti con il miglior rapporto penetrazione/dimensione del catalogo sono quelli progettati per un pubblico specifico: Occhini (Psicologia clinica per insegnare) raggiunge il 58,7% in LM-85bis, Tassan (Antropologia per insegnare) raggiunge il 29,8% nella stessa classe. Si tratta di titoli-funzione, costruiti intorno ai bisogni di una professionalità — l'insegnante, l'educatore — piuttosto che di una disciplina. Le traduzioni di manuali internazionali (Schacter, Kring, Belsky) hanno una penetrazione più distribuita ma non raggiungono posizioni di leadership fuori dalla L-24.</p>
+
+<h4>Materie scoperte</h4>
+<p>Psicologia Sociale, Psicometria e Sociologia Generale rappresentano 50.944 studenti con bibliografia identificata — il 38% del mercato censito. Zanichelli è interamente assente da queste tre materie. Non si tratta di quote basse ma di catalogo non disponibile. McGraw-Hill è leader in 5 delle 6 celle corrispondenti, Il Mulino nella sesta.</p>
+
+<h4>Telematiche e fragilità strutturale</h4>
+<p>Le università telematiche pesano in modo determinante in due adozioni: Uninettuno per Belsky in Psicologia dello Sviluppo (1.341 studenti su 1.452) e Marconi per Kring in Psicologia Clinica L-24 (1.246 su 3.110) e L-19 (654). La perdita di una singola adozione in una telematica può ridurre il bacino di una materia di oltre il 30%. Questo non invalida il dato ma richiede consapevolezza nella pianificazione.</p>
+
+<!-- ===== FOOTER ===== -->
+<div class="page-footer">
+Zanichelli Editore — Analisi Programmi Universitari L-24 · L-19 · LM-85bis — A.A. 2025/2026<br>
+Dati ponderati per studenti effettivi · Fonte: censimento programmi d'insegnamento<br>
+<span style="margin-top:4px;display:inline-block">Dashboard completa: <a href="riepilogo_generale.html" style="color:var(--zl)">riepilogo_generale.html</a></span>
+</div>
+
+</body>
+</html>

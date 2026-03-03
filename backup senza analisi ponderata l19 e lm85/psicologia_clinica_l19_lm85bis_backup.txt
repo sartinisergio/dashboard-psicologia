@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psicologia Clinica — L-19 / LM-85bis | Dashboard Zanichelli</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root{--zanichelli-blue:#003C82;--zanichelli-dark:#002B5C;--zanichelli-accent:#E63946;--zanichelli-light:#EBF0F7;--zanichelli-green:#2A9D8F;--zanichelli-orange:#E9C46A;--zanichelli-gray:#6B7280;--zanichelli-bg:#F4F6FB;--zanichelli-white:#FFFFFF;--shadow:0 2px 12px rgba(0,60,130,.08);--radius:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--zanichelli-bg);color:#1a1a2e;line-height:1.6}
+/* TOOLBAR */
+.toolbar{position:sticky;top:0;z-index:1000;background:var(--zanichelli-dark);display:flex;justify-content:space-between;align-items:center;padding:8px 24px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.toolbar a,.toolbar button{color:#fff;text-decoration:none;font-size:.85rem;padding:6px 16px;border-radius:6px;border:1px solid rgba(255,255,255,.3);background:transparent;cursor:pointer;transition:.2s}
+.toolbar a:hover,.toolbar button:hover{background:rgba(255,255,255,.15)}
+/* HEADER */
+.header{background:linear-gradient(135deg,var(--zanichelli-blue),var(--zanichelli-dark));color:#fff;padding:40px 24px 30px;text-align:center}
+.header h1{font-size:2rem;margin-bottom:4px}
+.header .subtitle{opacity:.85;font-size:1rem;margin-bottom:6px}
+.header .badge-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.header .badge{background:rgba(255,255,255,.18);padding:4px 14px;border-radius:20px;font-size:.78rem;font-weight:600}
+.badge-accent{background:var(--zanichelli-accent)!important}
+/* KPI */
+.kpi-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.kpi-card{background:rgba(255,255,255,.13);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:var(--radius);padding:16px 22px;min-width:150px;text-align:center}
+.kpi-card .kpi-value{font-size:1.7rem;font-weight:800}
+.kpi-card .kpi-label{font-size:.75rem;opacity:.85;margin-top:2px}
+/* TABS */
+.tab-nav{display:flex;gap:0;background:var(--zanichelli-white);border-bottom:2px solid #e2e8f0;overflow-x:auto;padding:0 24px;position:sticky;top:42px;z-index:500}
+.tab-btn{padding:12px 20px;border:none;background:none;font-size:.88rem;font-weight:600;color:var(--zanichelli-gray);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.2s}
+.tab-btn:hover{color:var(--zanichelli-blue)}
+.tab-btn.active{color:var(--zanichelli-blue);border-bottom-color:var(--zanichelli-accent)}
+.tab-panel{display:none;padding:28px 24px;max-width:1280px;margin:0 auto}
+.tab-panel.active{display:block}
+/* CARDS */
+.card{background:var(--zanichelli-white);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
+.card h3{color:var(--zanichelli-blue);margin-bottom:12px;font-size:1.1rem}
+.highlight-box{background:linear-gradient(135deg,#EBF0F7,#dbeafe);border-left:4px solid var(--zanichelli-blue);border-radius:var(--radius);padding:20px 24px;margin-bottom:24px;font-size:.95rem}
+.highlight-box strong{color:var(--zanichelli-blue)}
+.highlight-box.accent{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-left-color:var(--zanichelli-accent)}
+.highlight-box.green{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-left-color:var(--zanichelli-green)}
+/* METRIC CARDS ROW */
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.metric-card{background:var(--zanichelli-white);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;text-align:center;border-top:4px solid var(--zanichelli-blue)}
+.metric-card.accent{border-top-color:var(--zanichelli-accent)}
+.metric-card.green{border-top-color:var(--zanichelli-green)}
+.metric-card.orange{border-top-color:var(--zanichelli-orange)}
+.metric-card .m-value{font-size:1.6rem;font-weight:800;color:var(--zanichelli-blue)}
+.metric-card.accent .m-value{color:var(--zanichelli-accent)}
+.metric-card.green .m-value{color:var(--zanichelli-green)}
+.metric-card.orange .m-value{color:#d97706}
+.metric-card .m-label{font-size:.78rem;color:var(--zanichelli-gray);margin-top:2px}
+/* CHART GRID */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.chart-box{background:var(--zanichelli-white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+.chart-box h4{color:var(--zanichelli-blue);margin-bottom:12px;font-size:.95rem}
+.chart-box canvas{max-height:320px}
+/* TABLE */
+.table-wrap{overflow-x:auto;margin-bottom:20px}
+table.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+table.data-table th{background:var(--zanichelli-blue);color:#fff;padding:10px 12px;text-align:left;font-weight:600;white-space:nowrap}
+table.data-table td{padding:10px 12px;border-bottom:1px solid #e5e7eb}
+table.data-table tr:hover{background:#f0f4ff}
+table.data-table .zan-row{background:#fef2f2}
+table.data-table .zan-row:hover{background:#fee2e2}
+.badge-zan{background:var(--zanichelli-accent);color:#fff;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700}
+.badge-l19{background:#7c3aed;color:#fff;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700}
+.badge-lm85{background:var(--zanichelli-green);color:#fff;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700}
+/* FILTER */
+.filter-row{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-row select,.filter-row input{padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:.85rem}
+/* COMPETITOR CARDS */
+.competitor-card{background:var(--zanichelli-white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px;border-left:4px solid var(--zanichelli-gray)}
+.competitor-card.rank-1{border-left-color:var(--zanichelli-accent)}
+.competitor-card.rank-2{border-left-color:var(--zanichelli-blue)}
+.competitor-card.rank-3{border-left-color:var(--zanichelli-green)}
+.competitor-card .rank-num{display:inline-block;background:var(--zanichelli-blue);color:#fff;width:28px;height:28px;border-radius:50%;text-align:center;line-height:28px;font-weight:800;font-size:.85rem;margin-right:10px}
+.competitor-card.rank-1 .rank-num{background:var(--zanichelli-accent)}
+.competitor-card.rank-2 .rank-num{background:var(--zanichelli-blue)}
+.competitor-card.rank-3 .rank-num{background:var(--zanichelli-green)}
+.competitor-card h4{display:inline;font-size:1rem}
+.competitor-card .c-meta{color:var(--zanichelli-gray);font-size:.82rem;margin:6px 0 8px}
+.competitor-card .c-body{font-size:.88rem;line-height:1.6}
+/* COLLAPSIBLE */
+details{margin-bottom:12px}
+details summary{cursor:pointer;font-weight:700;color:var(--zanichelli-blue);padding:10px 0;font-size:.95rem}
+details summary:hover{text-decoration:underline}
+details[open] summary{margin-bottom:8px}
+/* PILLS */
+.pill-container{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pill{padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;background:var(--zanichelli-light);color:var(--zanichelli-blue)}
+.pill.green{background:#dcfce7;color:#166534}
+.pill.orange{background:#fef3c7;color:#92400e}
+.pill.red{background:#fee2e2;color:#991b1b}
+.pill.purple{background:#ede9fe;color:#5b21b6}
+/* NUCLEO CARDS */
+.nucleo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0}
+.nucleo-card{border-radius:var(--radius);padding:16px;color:#fff;font-size:.85rem}
+.nucleo-card h4{font-size:.9rem;margin-bottom:6px}
+.nc-blue{background:linear-gradient(135deg,#003C82,#1e5faa)}
+.nc-green{background:linear-gradient(135deg,#2A9D8F,#21867a)}
+.nc-orange{background:linear-gradient(135deg,#d97706,#f59e0b)}
+.nc-red{background:linear-gradient(135deg,#E63946,#dc2626)}
+/* SPEC TABLE */
+table.spec-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:12px 0}
+table.spec-table th{background:var(--zanichelli-light);color:var(--zanichelli-blue);padding:10px;text-align:left}
+table.spec-table td{padding:10px;border-bottom:1px solid #e5e7eb;vertical-align:top}
+.tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.75rem;font-weight:600;margin:2px}
+.tag-alta{background:#dcfce7;color:#166534}
+.tag-media{background:#fef3c7;color:#92400e}
+.tag-bassa{background:#fee2e2;color:#991b1b}
+.tag-esplicita{background:#dbeafe;color:#1e40af}
+/* SWOT */
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.swot-box{border-radius:var(--radius);padding:18px}
+.swot-box h4{margin-bottom:8px;font-size:.95rem}
+.swot-box ul{list-style:none;padding:0}
+.swot-box li{padding:4px 0;font-size:.88rem;position:relative;padding-left:18px}
+.swot-box li::before{content:"→";position:absolute;left:0;color:inherit;font-weight:700}
+.swot-s{background:#dcfce7;color:#166534}
+.swot-w{background:#fee2e2;color:#991b1b}
+.swot-o{background:#dbeafe;color:#1e40af}
+.swot-t{background:#fef3c7;color:#92400e}
+/* ID CARDS */
+.id-card{border-radius:var(--radius);padding:24px;margin-bottom:20px;color:#fff}
+.id-card h4{margin-bottom:10px;font-size:1.05rem}
+.id-card p,.id-card li{font-size:.9rem;margin-bottom:4px}
+.id-card ul{list-style:none;padding:0}
+.id-card li{padding-left:18px;position:relative}
+.id-card li::before{content:"✦";position:absolute;left:0}
+.id-blue{background:linear-gradient(135deg,var(--zanichelli-blue),#1e5faa)}
+.id-red{background:linear-gradient(135deg,var(--zanichelli-accent),#b91c1c)}
+/* TARGET TABLE */
+.priority-alta{background:var(--zanichelli-accent);color:#fff;padding:3px 10px;border-radius:10px;font-size:.75rem;font-weight:700}
+.priority-media{background:#f97316;color:#fff;padding:3px 10px;border-radius:10px;font-size:.75rem;font-weight:700}
+.priority-develop{background:var(--zanichelli-blue);color:#fff;padding:3px 10px;border-radius:10px;font-size:.75rem;font-weight:700}
+/* QUICK WIN */
+.qw-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--radius);padding:20px;margin-top:20px}
+.qw-box h4{color:#92400e;margin-bottom:10px}
+.qw-box p{font-size:.9rem;color:#78350f}
+/* FOOTER */
+.footer{background:var(--zanichelli-dark);color:rgba(255,255,255,.7);text-align:center;padding:20px;font-size:.8rem;margin-top:40px}
+/* RESPONSIVE */
+@media(max-width:768px){
+.chart-grid,.swot-grid{grid-template-columns:1fr}
+.kpi-row{gap:10px}
+.kpi-card{min-width:120px;padding:12px}
+.tab-btn{padding:10px 14px;font-size:.8rem}
+.header h1{font-size:1.5rem}
+}
+@media print{
+.toolbar,.tab-nav{display:none}
+.tab-panel{display:block!important;page-break-before:always}
+.tab-panel:first-of-type{page-break-before:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+<a href="index.html">← Torna alla Dashboard</a>
+<button onclick="window.print()">Stampa / Salva PDF</button>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+<h1>Psicologia Clinica</h1>
+<div class="subtitle">Analisi adozioni e posizionamento — Classi L-19 / LM-85bis</div>
+<div class="badge-row">
+<span class="badge">L-19 Scienze dell'Educazione</span>
+<span class="badge">LM-85bis Formazione Primaria</span>
+<span class="badge badge-accent">A.A. 2025-2026</span>
+</div>
+<div class="kpi-row">
+<div class="kpi-card"><div class="kpi-value">16</div><div class="kpi-label">Cattedre Analizzate</div></div>
+<div class="kpi-card"><div class="kpi-value">9/15</div><div class="kpi-label">Cattedre con Zanichelli</div></div>
+<div class="kpi-card"><div class="kpi-value">60%</div><div class="kpi-label">Presenza Zanichelli</div></div>
+<div class="kpi-card"><div class="kpi-value">28,1%</div><div class="kpi-label">Market Share Adozioni</div></div>
+<div class="kpi-card"><div class="kpi-value">2</div><div class="kpi-label">Titoli Zanichelli Adottati</div></div>
+</div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+<button class="tab-btn active" onclick="showTab('panoramica')">Panoramica</button>
+<button class="tab-btn" onclick="showTab('mappa')">Mappa Adozioni</button>
+<button class="tab-btn" onclick="showTab('competitor')">Competitor</button>
+<button class="tab-btn" onclick="showTab('contenuti')">Contenuti &amp; Programmi</button>
+<button class="tab-btn" onclick="showTab('posizionamento')">Posizionamento Zanichelli</button>
+</div>
+
+<!-- ===== TAB 1: PANORAMICA ===== -->
+<div id="panoramica" class="tab-panel active">
+
+<div class="highlight-box green">
+<strong>Zanichelli è LEADER di mercato</strong> nella Psicologia Clinica per L-19/LM-85bis. Con il 60% delle cattedre coperte (9 su 15 con dati bibliografici) e il 28,1% delle adozioni totali di testi, Zanichelli domina il segmento grazie a due titoli complementari: <strong>Occhini "Psicologia clinica per insegnare"</strong> (7 adozioni, perfetto per LM-85bis) e <strong>Kring &amp; Johnson "Psicologia clinica"</strong> (2 adozioni, più adatto a L-19). Raffaello Cortina segue al secondo posto (21,9%) e Il Mulino al terzo (15,6%).
+</div>
+
+<div class="metric-row">
+<div class="metric-card"><div class="m-value">9</div><div class="m-label">Adozioni Zanichelli</div></div>
+<div class="metric-card accent"><div class="m-value">7</div><div class="m-label">Adozioni Cortina</div></div>
+<div class="metric-card green"><div class="m-value">5</div><div class="m-label">Adozioni Il Mulino</div></div>
+<div class="metric-card orange"><div class="m-value">11</div><div class="m-label">Adozioni Altri Editori</div></div>
+</div>
+
+<div class="chart-grid">
+<div class="chart-box">
+<h4>Market Share per Editore (% adozioni totali)</h4>
+<canvas id="chartDoughnut"></canvas>
+</div>
+<div class="chart-box">
+<h4>Adozioni per Editore (valori assoluti)</h4>
+<canvas id="chartBar"></canvas>
+</div>
+</div>
+
+<div class="card">
+<h3>Distribuzione per Semestre</h3>
+<p>Il II semestre raccoglie la netta maggioranza degli insegnamenti: <strong>10 cattedre su 16</strong> (62,5%) sono collocate nel secondo semestre, 3 nel primo (18,8%) e per 3 non è specificato (18,8%). Questo dato è rilevante per la pianificazione delle visite promozionali: il periodo ottimale per contattare i docenti è tra settembre e dicembre.</p>
+</div>
+
+<div class="card">
+<h3>Distribuzione per Classe di Laurea</h3>
+<p>Le 16 cattedre si distribuiscono in <strong>6 cattedre L-19</strong> (37,5%) e <strong>10 cattedre LM-85bis</strong> (62,5%). La penetrazione Zanichelli è molto più forte nella LM-85bis (7 su 9 cattedre con dati, pari al 77,8%) rispetto alla L-19 (2 su 5 con dati, pari al 40%). La differenza è spiegata dal successo dell'Occhini "Psicologia clinica per insegnare", scritto appositamente per le professioni educative e quindi più adottato nei corsi di Formazione Primaria.</p>
+</div>
+
+<div class="card">
+<h3>Contesto del Mercato L-19 + LM-85bis</h3>
+<p>Il bacino complessivo è di <strong>111.983 studenti iscritti</strong> (70.254 L-19 + 41.729 LM-85bis), un mercato superiore del 67% rispetto alla L-24 (66.931). Tuttavia, la Psicologia Clinica è presente in un numero limitato di cattedre rispetto a materie come Psicologia Generale o dello Sviluppo, poiché non sempre è obbligatoria nel piano di studi. Il posizionamento di Zanichelli come leader in questo segmento è dunque ancora più significativo: costruisce brand awareness in un mercato educativo strategico.</p>
+</div>
+</div>
+
+<!-- ===== TAB 2: MAPPA ADOZIONI ===== -->
+<div id="mappa" class="tab-panel">
+
+<div class="highlight-box">
+<strong>9 cattedre su 15</strong> (con dati bibliografici) adottano almeno un testo Zanichelli. Le righe evidenziate in rosso chiaro indicano le cattedre con presenza Zanichelli. Usa i filtri per esplorare i dati per classe di laurea o editore.
+</div>
+
+<div class="filter-row">
+<label><strong>Filtra per classe:</strong></label>
+<select id="filterClasse" onchange="filterTable()">
+<option value="all">Tutte</option>
+<option value="L19">L-19</option>
+<option value="LM85">LM-85bis</option>
+</select>
+<label><strong>Filtra per editore:</strong></label>
+<select id="filterEditore" onchange="filterTable()">
+<option value="all">Tutti</option>
+<option value="zanichelli">Zanichelli</option>
+<option value="cortina">Raffaello Cortina</option>
+<option value="mulino">Il Mulino</option>
+<option value="carocci">Carocci</option>
+<option value="altro">Altri</option>
+</select>
+</div>
+
+<div class="table-wrap">
+<table class="data-table" id="adozioniTable">
+<thead>
+<tr><th>Ateneo</th><th>Classe</th><th>Corso</th><th>Anno</th><th>Sem.</th><th>Docente</th><th>Testo Principale</th><th>Editore</th><th>Altri Testi</th></tr>
+</thead>
+<tbody>
+<tr data-classe="LM85" data-editore="">
+<td>Bari</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>5</td><td>II</td><td>C. Semeraro</td><td><em>Non disponibile</em></td><td>—</td><td>—</td>
+</tr>
+<tr class="zan-row" data-classe="LM85" data-editore="zanichelli">
+<td>Cagliari</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>5</td><td>I</td><td>L. Vismara</td><td>Occhini — <em>Psicologia clinica per insegnare</em> <span class="badge-zan">Zanichelli</span></td><td>Zanichelli</td><td>Lucarelli (Cortina); Ansari (articolo)</td>
+</tr>
+<tr data-classe="L19" data-editore="cortina">
+<td>Cagliari</td><td><span class="badge-l19">L-19</span></td><td>Scienze dell'Educazione e Formazione</td><td>3</td><td>II</td><td>L. Vismara</td><td>Ammaniti — <em>Psicopatologia dello sviluppo</em></td><td>R. Cortina</td><td>DC:0-5 (Fioriti)</td>
+</tr>
+<tr class="zan-row" data-classe="LM85" data-editore="zanichelli">
+<td>Enna Kore</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>1</td><td>II</td><td>S. Buono</td><td>Occhini — <em>Psicologia clinica per insegnare</em> <span class="badge-zan">Zanichelli</span></td><td>Zanichelli</td><td>Schalock (Erickson)</td>
+</tr>
+<tr data-classe="L19" data-editore="carocci">
+<td>Ferrara</td><td><span class="badge-l19">L-19</span></td><td>Scienze dell'Educazione</td><td>2</td><td>II</td><td>P. Bastianoni</td><td>Bastianoni — <em>Narrare il lutto</em></td><td>Carocci</td><td>—</td>
+</tr>
+<tr data-classe="LM85" data-editore="mulino">
+<td>Genova</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>5</td><td>I</td><td>C. S. Pace</td><td>Zennaro — <em>Lo sviluppo della psicopatologia</em></td><td>Il Mulino</td><td>Pani (Mulino); Gambini (Franco Angeli); Siegel (Cortina); Pace (Mulino)</td>
+</tr>
+<tr data-classe="L19" data-editore="carocci">
+<td>Milano Bicocca</td><td><span class="badge-l19">L-19</span></td><td>Scienze dell'Educazione</td><td>—</td><td>II</td><td>M. Castiglioni</td><td>Castiglioni — <em>Modelli epistemologici in psicologia</em></td><td>Carocci</td><td>Legrenzi (Mulino); Frances (Bollati B.)</td>
+</tr>
+<tr class="zan-row" data-classe="LM85" data-editore="zanichelli">
+<td>Milano Cattolica (Brescia)</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>—</td><td>—</td><td>F. Sbattella</td><td>Occhini — <em>Psicologia clinica per insegnare</em> <span class="badge-zan">Zanichelli</span></td><td>Zanichelli</td><td>Barnhill DSM-5-TR (Cortina)</td>
+</tr>
+<tr class="zan-row" data-classe="LM85" data-editore="zanichelli">
+<td>Milano Cattolica</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>—</td><td>—</td><td>F. Sbattella</td><td>Occhini — <em>Psicologia clinica per insegnare</em> <span class="badge-zan">Zanichelli</span></td><td>Zanichelli</td><td>Barnhill DSM-5-TR (Cortina)</td>
+</tr>
+<tr class="zan-row" data-classe="LM85" data-editore="zanichelli">
+<td>Pisa</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>5</td><td>II</td><td>C. Berrocal Montiel</td><td>Kring &amp; Johnson — <em>Psicologia clinica</em> <span class="badge-zan">Zanichelli</span></td><td>Zanichelli</td><td>Celi (McGraw-Hill); Hayes ACT (Cortina)</td>
+</tr>
+<tr class="zan-row" data-classe="L19" data-editore="zanichelli">
+<td>Roma Marconi</td><td><span class="badge-l19">L-19</span></td><td>Scienze dell'Educazione e Formazione</td><td>—</td><td>—</td><td>M. Petrucci</td><td>Kring &amp; Johnson — <em>Psicologia clinica</em> <span class="badge-zan">Zanichelli</span></td><td>Zanichelli</td><td>Perdighe (Fioriti); Mancini (Cortina)</td>
+</tr>
+<tr data-classe="L19" data-editore="cortina">
+<td>Roma Tor Vergata</td><td><span class="badge-l19">L-19</span></td><td>Scienze dell'Educazione e Formazione</td><td>—</td><td>—</td><td>M. Di Giuseppe</td><td>Lingiardi — <em>La personalità e i suoi disturbi</em></td><td>R. Cortina</td><td>—</td>
+</tr>
+<tr class="zan-row" data-classe="LM85" data-editore="zanichelli">
+<td>Roma Unilink</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>4</td><td>I</td><td>G. Porcellotti, A. Cuccaroni</td><td>Occhini — <em>Psicologia clinica per insegnare</em> <span class="badge-zan">Zanichelli</span></td><td>Zanichelli</td><td>—</td>
+</tr>
+<tr class="zan-row" data-classe="L19" data-editore="zanichelli">
+<td>Siena</td><td><span class="badge-l19">L-19</span></td><td>Scienze dell'Educazione e Formazione</td><td>1</td><td>II</td><td>L. Occhini</td><td>Occhini — <em>Psicologia clinica per insegnare</em> <span class="badge-zan">Zanichelli</span></td><td>Zanichelli</td><td>—</td>
+</tr>
+<tr class="zan-row" data-classe="LM85" data-editore="zanichelli">
+<td>Udine</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>3</td><td>II</td><td>C. Crescentini</td><td>Comer — <em>Psicologia clinica</em> + Occhini <span class="badge-zan">Zanichelli</span></td><td>Utet + Zanichelli</td><td>—</td>
+</tr>
+<tr data-classe="LM85" data-editore="mulino">
+<td>Urbino</td><td><span class="badge-lm85">LM-85bis</span></td><td>Scienze della Formazione Primaria</td><td>5</td><td>II</td><td>E. Cipollone</td><td>Sanavio &amp; Cornoldi — <em>Psicologia clinica</em></td><td>Il Mulino</td><td>—</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="card">
+<h3>Cattedre con Presenza Zanichelli — Dettaglio per Classe</h3>
+<div class="chart-grid">
+<div class="chart-box">
+<h4>LM-85bis: 7 cattedre su 9 con dati (77,8%)</h4>
+<p style="font-size:.88rem;margin-top:8px;">Cagliari (Occhini), Enna Kore (Occhini), Milano Cattolica Brescia (Occhini), Milano Cattolica (Occhini), Pisa (Kring), Roma Unilink (Occhini), Udine (Occhini). L'Occhini domina la LM-85bis con 6 adozioni su 7.</p>
+</div>
+<div class="chart-box">
+<h4>L-19: 2 cattedre su 5 con dati (40%)</h4>
+<p style="font-size:.88rem;margin-top:8px;">Roma Marconi (Kring), Siena (Occhini — l'autrice stessa è docente a Siena). Margine di crescita significativo: Cagliari L-19, Ferrara e Milano Bicocca sono target prioritari per la L-19.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===== TAB 3: COMPETITOR ===== -->
+<div id="competitor" class="tab-panel">
+
+<div class="highlight-box">
+<strong>Ranking manuali per numero di adozioni.</strong> L'Occhini (Zanichelli) domina con 7 adozioni, seguito dal Kring &amp; Johnson (Zanichelli) con 2. Nessun singolo titolo competitor supera le 2 adozioni: il mercato dei competitor è molto frammentato, il che rappresenta un vantaggio competitivo enorme per Zanichelli.
+</div>
+
+<div class="competitor-card rank-1">
+<span class="rank-num">1</span><h4>Occhini, L. — <em>Psicologia clinica per insegnare</em> (Zanichelli, 2023)</h4>
+<div class="c-meta">7 adozioni — Cagliari LM85, Enna Kore, Milano Cattolica (2 sedi), Roma Unilink, Siena, Udine</div>
+<div class="c-body">
+<details>
+<summary>Analisi dettagliata</summary>
+<p>Testo scritto appositamente per le professioni educative, unico nel suo genere a integrare psicologia clinica e contesto scolastico. È il titolo più adottato in assoluto in questo segmento. Forte coerenza con i programmi LM-85bis orientati alla gestione del disagio in classe. A Siena è adottato dall'autrice stessa (L. Occhini). Copre il modello bio-psico-sociale, i disturbi del neurosviluppo, la relazione insegnante-alunno e le strategie di inclusione. La sua unicità tematica (nessun competitor diretto con lo stesso taglio) spiega la rapida diffusione dal 2023.</p>
+</details>
+</div>
+</div>
+
+<div class="competitor-card rank-2">
+<span class="rank-num">2</span><h4>Kring, A. &amp; Johnson, S. — <em>Psicologia clinica</em> (Zanichelli, 6ª ed. 2023)</h4>
+<div class="c-meta">2 adozioni — Pisa, Roma Marconi</div>
+<div class="c-body">
+<details>
+<summary>Analisi dettagliata</summary>
+<p>Manuale generalista di alto livello, traduzione dell'edizione americana, con approccio tassonomico e basato sull'evidenza. Più adatto a corsi che trattano la psicologia clinica in modo tradizionale (classificazione dei disturbi, eziologia, trattamento). Adottato dove il programma è più orientato alla nosografia completa (Pisa) o all'approccio cognitivo (Roma Marconi). Complementare all'Occhini: quest'ultimo è più "applicativo-educativo", il Kring è più "clinico-scientifico".</p>
+</details>
+</div>
+</div>
+
+<div class="competitor-card rank-3">
+<span class="rank-num">3</span><h4>Barnhill, J. W. — <em>DSM-5-TR Casi Clinici</em> (R. Cortina, 2024)</h4>
+<div class="c-meta">2 adozioni — Milano Cattolica (2 sedi)</div>
+<div class="c-body">
+<details>
+<summary>Analisi dettagliata</summary>
+<p>Testo complementare sempre associato all'Occhini (mai come testo principale). Presenta casi clinici basati sul DSM-5-TR per favorire il ragionamento diagnostico. Scelto dal prof. Sbattella per entrambe le sedi della Cattolica come approfondimento casistica. Non è un competitor diretto di Zanichelli in senso stretto, poiché viene adottato in aggiunta ai titoli Zanichelli.</p>
+</details>
+</div>
+</div>
+
+<div class="competitor-card">
+<span class="rank-num">4</span><h4>Sanavio, E. &amp; Cornoldi, C. — <em>Psicologia clinica</em> (Il Mulino, 2017)</h4>
+<div class="c-meta">1 adozione — Urbino</div>
+<div class="c-body">
+<details>
+<summary>Analisi dettagliata</summary>
+<p>Testo classico della psicologia clinica italiana, ben radicato nel panorama accademico. Approccio generalista con orientamento cognitivo-comportamentale. Edizione del 2017, ormai datata rispetto ai concorrenti più recenti. Potenziale target di sostituzione con l'Occhini o il Kring &amp; Johnson, data l'età del volume.</p>
+</details>
+</div>
+</div>
+
+<div class="competitor-card">
+<span class="rank-num">5</span><h4>Comer, R. J. — <em>Psicologia clinica</em> (Utet, 2017)</h4>
+<div class="c-meta">1 adozione — Udine (in combo con Occhini Zanichelli)</div>
+<div class="c-body">
+<details>
+<summary>Analisi dettagliata</summary>
+<p>Manuale americano tradotto, simile nel taglio al Kring &amp; Johnson. Edizione 2017, ormai datata. A Udine è già affiancato dall'Occhini Zanichelli. Potenziale target di sostituzione completa con il solo Kring &amp; Johnson (più aggiornato) oppure con la combo Kring + Occhini.</p>
+</details>
+</div>
+</div>
+
+<div class="competitor-card">
+<span class="rank-num">6</span><h4>Lingiardi, V. — <em>La personalità e i suoi disturbi</em> (R. Cortina, 2024)</h4>
+<div class="c-meta">1 adozione — Roma Tor Vergata</div>
+<div class="c-body">
+<details>
+<summary>Analisi dettagliata</summary>
+<p>Testo monografico di taglio psicodinamico, focalizzato sui disturbi di personalità. Edizione recentissima (2024) di un autore molto autorevole nel panorama italiano. Difficile da scalzare per motivi di orientamento teorico: il programma di Tor Vergata ha un taglio specificamente psicodinamico. Non è un manuale di psicologia clinica generalista.</p>
+</details>
+</div>
+</div>
+
+<div class="competitor-card">
+<span class="rank-num">7</span><h4>Ammaniti, M. — <em>Psicopatologia dello sviluppo</em> (R. Cortina, 2010)</h4>
+<div class="c-meta">1 adozione — Cagliari L-19</div>
+<div class="c-body">
+<details>
+<summary>Analisi dettagliata</summary>
+<p>Testo del 2010 sulla psicopatologia evolutiva, usato nella L-19 di Cagliari (stessa docente che adotta Occhini per la LM-85bis). La docente Vismara differenzia i testi per classe: Occhini per la LM-85bis e Ammaniti per la L-19 dove il focus è sulla prima infanzia e asili nido. L'età del volume (2010) potrebbe favorire un aggiornamento.</p>
+</details>
+</div>
+</div>
+
+<div class="competitor-card">
+<span class="rank-num">8</span><h4>Altri testi (1 adozione ciascuno)</h4>
+<div class="c-meta">Zennaro (Il Mulino), Pani et al. (Il Mulino), Gambini (Franco Angeli), Castiglioni (Carocci), Legrenzi (Il Mulino), Frances (Bollati B.), Bastianoni (Carocci), Celi (McGraw-Hill), ecc.</div>
+<div class="c-body">
+<details>
+<summary>Analisi dettagliata</summary>
+<p>Il mercato dei competitor è estremamente frammentato: nessun singolo titolo non-Zanichelli supera le 2 adozioni (e le 2 del Barnhill sono sempre in combo con Occhini). Molti testi sono datati (2007-2017) o monografici (un solo tema). Questo frammentamento è la principale forza competitiva di Zanichelli: i docenti non hanno un'alternativa dominante unica su cui convergere. L'Occhini ha creato una nuova categoria ("psicologia clinica per insegnare") che non esisteva prima, catturando la domanda latente.</p>
+</details>
+</div>
+</div>
+
+</div>
+
+<!-- ===== TAB 4: CONTENUTI & PROGRAMMI ===== -->
+<div id="contenuti" class="tab-panel">
+
+<div class="highlight-box">
+<strong>Analisi dei contenuti dei programmi.</strong> Basata sul report comparativo dei sillabi. I programmi convergono su un nucleo comune di temi, con variazioni legate alla classe di laurea (L-19 vs LM-85bis) e all'orientamento del docente.
+</div>
+
+<div class="card">
+<h3>Nucleo Minimo di Contenuti Comuni</h3>
+<div class="nucleo-grid">
+<div class="nucleo-card nc-blue"><h4>Inquadramento Disciplinare</h4>Definizione di psicologia clinica, metodo clinico vs sperimentale, storia della disciplina, distinzione normalità/patologia.</div>
+<div class="nucleo-card nc-green"><h4>Nosografia (DSM-5)</h4>Conoscenza dei criteri diagnostici principali, sistemi di classificazione DSM-5/DSM-5-TR, ICF e DC:0-5.</div>
+<div class="nucleo-card nc-orange"><h4>Neurosviluppo</h4>Comprensione di Autismo, ADHD, Disabilità Intellettiva, DSA e disturbi del neurosviluppo.</div>
+<div class="nucleo-card nc-red"><h4>Ruolo Docente</h4>Strategie di inclusione, gestione del disagio scolastico, relazione insegnante-alunno.</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Nucleo Esteso di Contenuti Ricorrenti</h3>
+<div class="pill-container">
+<span class="pill">Teoria dell'Attaccamento (Bowlby/Ainsworth)</span>
+<span class="pill green">Dinamiche Familiari e Stili Educativi</span>
+<span class="pill orange">Trauma e Maltrattamento (ACE)</span>
+<span class="pill red">Disturbi Internalizzanti (Ansia, Depressione)</span>
+<span class="pill purple">Disturbi del Comportamento Alimentare</span>
+<span class="pill">Disturbi Ossessivo-Compulsivi</span>
+<span class="pill green">Famiglie Atipiche</span>
+<span class="pill orange">Modello Bio-Psico-Sociale</span>
+</div>
+</div>
+
+<div class="card">
+<h3>Specificità Tematiche</h3>
+<details>
+<summary>Target Educativo: L-19 vs LM-85bis</summary>
+<p>I corsi L-19 tendono a focalizzarsi sulla prima infanzia e sul contesto dell'asilo nido (Cagliari L-19) o su contesti di marginalità e comunità educative (Ferrara), mentre i corsi LM-85bis sono orientati alla gestione della classe nella scuola primaria, con focus sull'inclusione e le strategie didattiche (Cagliari LM-85bis, Genova, Urbino). Questa dicotomia influenza la scelta dei manuali: l'Occhini è più adatto alla LM-85bis, il Kring alla L-19 con taglio più generalista.</p>
+</details>
+<details>
+<summary>Focus Epistemologico (Milano Bicocca)</summary>
+<p>L'ateneo di Milano-Bicocca si distingue per un approccio fortemente critico e riflessivo sul metodo clinico e sulle "epidemie infantili", includendo testi che mettono in discussione l'eccessiva medicalizzazione (Frances, "Primo, non curare chi è normale"; Legrenzi, "Neuro-mania"). Questo approccio epistemologico-critico è unico nel campione.</p>
+</details>
+<details>
+<summary>Morte e Lutto</summary>
+<p>Solo pochi programmi affrontano esplicitamente la clinica del lutto e della perdita: Ferrara (con un intero testo dedicato: Bastianoni "Narrare il lutto") e Roma Unilink. È un tema di nicchia ma significativo per il contesto educativo.</p>
+</details>
+<details>
+<summary>Adozione e Attaccamento</summary>
+<p>Il corso di Genova (prof.ssa Pace) dedica spazio peculiare al tema dell'adozione, con un testo specifico (Pace &amp; Santona, "Adozione, attaccamento e narrazione", Il Mulino 2024). È l'unico programma a trattare esplicitamente questo tema.</p>
+</details>
+<details>
+<summary>Psicologia Positiva e ACT</summary>
+<p>Udine menziona esplicitamente la psicologia positiva come modalità di intervento integrativa, mentre Pisa è l'unico ateneo a includere l'Acceptance and Commitment Therapy (ACT) con il testo di Hayes et al.</p>
+</details>
+<details>
+<summary>Sindrome del Bambino Scosso</summary>
+<p>Menzionata specificamente solo nel programma di Roma Unilink, all'interno dell'approfondimento sulle famiglie maltrattanti.</p>
+</details>
+</div>
+
+<div class="card">
+<h3>Prospettive Teoriche</h3>
+<table class="spec-table">
+<thead>
+<tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Atenei</th></tr>
+</thead>
+<tbody>
+<tr><td>Psicodinamica / Attaccamento</td><td><span class="tag tag-alta">Alta</span></td><td><span class="tag tag-esplicita">Esplicita</span></td><td>Genova, Ferrara, Unilink, Tor Vergata</td></tr>
+<tr><td>Bio-Psico-Sociale</td><td><span class="tag tag-alta">Alta</span></td><td><span class="tag tag-esplicita">Esplicita</span></td><td>Enna, Unilink, Siena, Cagliari</td></tr>
+<tr><td>Cognitivo-Costruttivista</td><td><span class="tag tag-media">Media</span></td><td><span class="tag tag-esplicita">Esplicita</span></td><td>Milano Bicocca, Roma Marconi, Pisa</td></tr>
+<tr><td>Sistemico-Relazionale</td><td><span class="tag tag-media">Media</span></td><td><span class="tag tag-esplicita">Esplicita</span></td><td>Genova, Milano Bicocca, Ferrara</td></tr>
+<tr><td>Contestualistico-Funzionale (ACT)</td><td><span class="tag tag-bassa">Bassa</span></td><td><span class="tag tag-esplicita">Esplicita</span></td><td>Pisa (esclusiva)</td></tr>
+</tbody>
+</table>
+<div style="margin-top:16px">
+<canvas id="chartProspettive" height="220"></canvas>
+</div>
+</div>
+
+<div class="card">
+<h3>Modelli di Strutturazione dei Corsi</h3>
+<details>
+<summary>Modello Bifasico (Generale + Speciale) — Il più diffuso</summary>
+<p>Prevede una prima parte sui fondamenti della disciplina e una seconda parte dedicata ai quadri clinici specifici. Adottato da: Roma Marconi, Roma Unilink, Siena, Udine, Urbino. È il modello più compatibile con i manuali Zanichelli (sia Occhini che Kring).</p>
+</details>
+<details>
+<summary>Modello Professionalizzante / Relazionale</summary>
+<p>Focalizzato sulle competenze dell'educatore, sulla comunicazione con le famiglie e sull'osservazione in classe. Adottato da: Genova, Ferrara, Cagliari. Più orientato alla pratica educativa, favorisce l'Occhini per il suo taglio applicativo.</p>
+</details>
+<details>
+<summary>Modello Epistemologico-Critico</summary>
+<p>Centrato sulla discussione dei modelli di mente e sulla critica ai sistemi diagnostici. Adottato da: Milano-Bicocca. Approccio unico che utilizza una bibliografia eclettica e critica, meno compatibile con manuali tradizionali.</p>
+</details>
+</div>
+
+<div class="card">
+<h3>Specificità LM-85bis</h3>
+<p>I corsi LM-85bis mostrano una forte attenzione alla dimensione pratica e professionale dell'insegnante come "primo osservatore" del disagio infantile. I temi peculiari della LM-85bis includono: inclusione scolastica di alunni con BES (Bisogni Educativi Speciali), strumenti di osservazione del comportamento in classe, rapporto con i servizi territoriali (NPI, ASL), comunicazione con le famiglie di alunni con difficoltà, strategie didattiche per il neurosviluppo. Questi temi sono coperti in modo specifico dall'Occhini "Psicologia clinica per insegnare", il che spiega la sua dominanza nella LM-85bis (6 adozioni su 7 cattedre Zanichelli LM-85bis).</p>
+</div>
+
+<div class="card">
+<h3>Limiti dell'Analisi</h3>
+<p>L'analisi è limitata dalla disomogeneità dei dati: per Bari mancano informazioni bibliografiche; per alcuni atenei (Roma Tor Vergata, Milano Bicocca, Roma Marconi) non sono indicati CFU o anno di corso; la prospettiva teorica è spesso implicita e inferita dalla bibliografia. Inoltre, la Psicologia Clinica compare in un numero più contenuto di cattedre L-19/LM-85bis rispetto ad altre materie come Psicologia Generale, il che limita la significatività statistica ma non il valore strategico dell'analisi.</p>
+</div>
+
+</div>
+
+<!-- ===== TAB 5: POSIZIONAMENTO ZANICHELLI ===== -->
+<div id="posizionamento" class="tab-panel">
+
+<div class="highlight-box green">
+<strong>Zanichelli è leader indiscusso nella Psicologia Clinica L-19/LM-85bis.</strong> Con il 28,1% delle adozioni totali e il 60% delle cattedre coperte, Zanichelli ha una posizione dominante sostenuta da due titoli complementari. L'Occhini (7 adozioni) presidia la LM-85bis e il Kring &amp; Johnson (2 adozioni) copre la L-19 e i corsi più generalisti. Nessun competitor ha un singolo titolo con più di 1 adozione (escluso Barnhill, sempre in combo con Occhini). La strategia è di consolidamento e difesa della leadership.
+</div>
+
+<div class="card">
+<h3>Analisi SWOT</h3>
+<div class="swot-grid">
+<div class="swot-box swot-s">
+<h4>Punti di Forza (Strengths)</h4>
+<ul>
+<li>Leadership di mercato con il 28,1% delle adozioni e 60% delle cattedre</li>
+<li>Due titoli complementari che coprono target diversi (Occhini per LM-85bis, Kring per L-19)</li>
+<li>L'Occhini ha creato una nuova categoria senza competitor diretti</li>
+<li>Frammentazione estrema dei competitor (nessun rivale supera 1 adozione propria)</li>
+<li>Edizioni recenti (entrambi 2023) rispetto a molti competitor datati (2007-2017)</li>
+</ul>
+</div>
+<div class="swot-box swot-w">
+<h4>Punti di Debolezza (Weaknesses)</h4>
+<ul>
+<li>Penetrazione L-19 ancora limitata (40% vs 77,8% nella LM-85bis)</li>
+<li>L'Occhini non copre la psicopatologia della prima infanzia (target L-19 asili nido)</li>
+<li>Il Kring è un manuale americano tradotto, meno adatto al contesto educativo italiano</li>
+<li>Campione totale contenuto (16 cattedre) rispetto ad altre materie</li>
+</ul>
+</div>
+<div class="swot-box swot-o">
+<h4>Opportunità (Opportunities)</h4>
+<ul>
+<li>Mercato L-19+LM-85bis da 111.983 studenti, +67% rispetto alla L-24</li>
+<li>Diversi competitor con edizioni datate (Sanavio 2017, Comer 2017, Ammaniti 2010, Zennaro 2011): target di sostituzione</li>
+<li>Possibile nuova edizione Occhini con aggiornamenti DSM-5-TR e nuovi capitoli (lutto, ACE, prima infanzia)</li>
+<li>Espansione su cattedre L-19 dove Zanichelli è meno presente</li>
+<li>Cross-selling: docenti che già adottano Occhini possono aggiungere Kring come approfondimento</li>
+</ul>
+</div>
+<div class="swot-box swot-t">
+<h4>Minacce (Threats)</h4>
+<ul>
+<li>Raffaello Cortina è il secondo editore e pubblica testi autorevoli (Lingiardi 2024, Barnhill 2024)</li>
+<li>Possibile ingresso di nuovi manuali specifici per educatori da parte di competitor (Il Mulino, Carocci)</li>
+<li>Rischio che la frammentazione del mercato si consolidi attorno a un nuovo titolo competitor</li>
+<li>Programmi con orientamento psicodinamico forte (Tor Vergata, Genova) restano difficili da penetrare</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Carta d'Identità dei Titoli Zanichelli</h3>
+
+<div class="id-card id-blue">
+<h4>Scenario A — Consolidare l'Occhini "Psicologia clinica per insegnare"</h4>
+<p><strong>Situazione attuale:</strong> 7 adozioni, leader assoluto, unico testo specifico per insegnanti.</p>
+<ul>
+<li>Pianificare una 2ª edizione con aggiornamento DSM-5-TR e nuovi capitoli (lutto, trauma, psicologia positiva, prima infanzia) per ampliare il target alla L-19</li>
+<li>Promuovere attivamente presso le cattedre LM-85bis che ancora non lo adottano (Bari, Genova, Urbino)</li>
+<li>Proporre l'Occhini come testo principale nelle cattedre dove è testo secondario (Udine: oggi è affiancato dal Comer)</li>
+<li>Sfruttare il passaparola docente: l'Occhini è già adottato dall'autrice a Siena e da docenti di atenei prestigiosi</li>
+</ul>
+</div>
+
+<div class="id-card id-red">
+<h4>Scenario B — Potenziare il Kring &amp; Johnson nelle L-19</h4>
+<p><strong>Situazione attuale:</strong> 2 adozioni (Pisa, Roma Marconi), manuale generalista di riferimento.</p>
+<ul>
+<li>Promuovere il Kring come alternativa aggiornata al Sanavio (Urbino), al Comer (Udine) e all'Ammaniti (Cagliari L-19)</li>
+<li>Posizionare la combo Kring + Occhini come proposta "completa" per corsi che vogliono sia il manuale tradizionale sia il taglio educativo</li>
+<li>Target L-19: Ferrara (testo monografico, potrebbe volere un manuale generalista aggiuntivo), Tor Vergata (difficile per orientamento psicodinamico), Milano Bicocca (difficile per approccio epistemologico-critico)</li>
+<li>Evidenziare l'aggiornamento 2023 rispetto ai competitor datati 2010-2017</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3>Atenei Target — Piano di Azione</h3>
+<div class="table-wrap">
+<table class="data-table">
+<thead>
+<tr><th>Ateneo</th><th>Classe</th><th>Testo Attuale</th><th>Priorità</th><th>Azione Proposta</th></tr>
+</thead>
+<tbody>
+<tr><td>Bari</td><td><span class="badge-lm85">LM-85bis</span></td><td>Non disponibile</td><td><span class="priority-alta">ALTA</span></td><td>Proporre Occhini — cattedra senza dati, primo contatto prioritario</td></tr>
+<tr><td>Urbino</td><td><span class="badge-lm85">LM-85bis</span></td><td>Sanavio (Mulino, 2017)</td><td><span class="priority-alta">ALTA</span></td><td>Proporre Occhini come sostituzione (Sanavio datato, non specifico per insegnanti)</td></tr>
+<tr><td>Genova</td><td><span class="badge-lm85">LM-85bis</span></td><td>Zennaro + 4 testi</td><td><span class="priority-alta">ALTA</span></td><td>Proporre Occhini per semplificare la bibliografia (5 testi → 1 Occhini + 1 approfondimento)</td></tr>
+<tr><td>Cagliari L-19</td><td><span class="badge-l19">L-19</span></td><td>Ammaniti (Cortina, 2010)</td><td><span class="priority-media">MEDIA</span></td><td>Proporre Kring &amp; Johnson (stessa docente già adotta Occhini in LM-85bis)</td></tr>
+<tr><td>Ferrara</td><td><span class="badge-l19">L-19</span></td><td>Bastianoni (Carocci, 2022)</td><td><span class="priority-media">MEDIA</span></td><td>Proporre Kring come manuale generalista + mantenere Bastianoni come approfondimento</td></tr>
+<tr><td>Udine</td><td><span class="badge-lm85">LM-85bis</span></td><td>Comer (Utet, 2017) + Occhini</td><td><span class="priority-develop">DEVELOP</span></td><td>Proporre sostituzione Comer con Kring (più aggiornato) — Occhini già presente</td></tr>
+<tr><td>Milano Bicocca</td><td><span class="badge-l19">L-19</span></td><td>Castiglioni (Carocci)</td><td><span class="priority-develop">DEVELOP</span></td><td>Difficile: approccio epistemologico-critico, monitorare</td></tr>
+<tr><td>Roma Tor Vergata</td><td><span class="badge-l19">L-19</span></td><td>Lingiardi (Cortina, 2024)</td><td><span class="priority-develop">DEVELOP</span></td><td>Difficile: orientamento psicodinamico, testo recentissimo, monitorare</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="qw-box">
+<h4>Quick Win — Azioni Immediate</h4>
+<p><strong>1. Bari (LM-85bis):</strong> Primo contatto con C. Semeraro — nessun dato bibliografico disponibile, potenziale adozione vergine. Inviare copia saggio dell'Occhini.</p>
+<p><strong>2. Urbino (LM-85bis):</strong> Contattare E. Cipollone — proporre Occhini come sostituto del Sanavio (2017), evidenziando il taglio specifico per insegnanti e l'aggiornamento più recente.</p>
+<p><strong>3. Genova (LM-85bis):</strong> Contattare C. S. Pace — la bibliografia attuale è molto frammentata (5 testi). Proporre Occhini + 1 approfondimento per semplificare il percorso studente.</p>
+<p><strong>4. Cross-selling Cattolica / Pisa:</strong> Nelle sedi che adottano Occhini + Barnhill, proporre l'aggiunta del Kring per completare la copertura nosografica. Viceversa, a Pisa (Kring), proporre l'Occhini come complemento applicativo.</p>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+Dashboard Zanichelli — Psicologia Clinica L-19 / LM-85bis | Generata il 25 febbraio 2026 | Dati: sillabi A.A. 2025-2026 | Fonte: rilevazioni interne promotore editoriale
+</div>
+
+<script>
+// === TAB NAVIGATION ===
+function showTab(id){
+document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+event.target.classList.add('active');
+}
+
+// === TABLE FILTER ===
+function filterTable(){
+const cl=document.getElementById('filterClasse').value;
+const ed=document.getElementById('filterEditore').value;
+document.querySelectorAll('#adozioniTable tbody tr').forEach(r=>{
+let showC=cl==='all'||r.dataset.classe===cl;
+let showE=ed==='all'||r.dataset.editore===ed;
+r.style.display=(showC&&showE)?'':'none';
+});
+}
+
+// === CHART 1: Doughnut Market Share ===
+new Chart(document.getElementById('chartDoughnut'),{
+type:'doughnut',
+data:{
+labels:['Zanichelli (28,1%)','Raffaello Cortina (21,9%)','Il Mulino (15,6%)','Carocci (6,3%)','Fioriti (6,3%)','Altri (21,8%)'],
+datasets:[{
+data:[9,7,5,2,2,7],
+backgroundColor:['#E63946','#003C82','#2A9D8F','#E9C46A','#7c3aed','#9ca3af'],
+borderWidth:2,
+borderColor:'#fff'
+}]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{position:'bottom',labels:{font:{size:12},padding:12}},
+tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.raw+' adozioni'}}
+}
+}
+});
+
+// === CHART 2: Bar Editori ===
+new Chart(document.getElementById('chartBar'),{
+type:'bar',
+data:{
+labels:['Zanichelli','R. Cortina','Il Mulino','Carocci','Fioriti','Erickson','Franco Angeli','Utet','McGraw-Hill','Bollati B.','Articolo'],
+datasets:[{
+label:'Adozioni',
+data:[9,7,5,2,2,1,1,1,1,1,1],
+backgroundColor:['#E63946','#003C82','#2A9D8F','#E9C46A','#7c3aed','#f97316','#64748b','#0ea5e9','#ec4899','#a855f7','#6b7280'],
+borderRadius:6
+}]
+},
+options:{
+indexAxis:'y',
+responsive:true,
+plugins:{legend:{display:false}},
+scales:{x:{beginAtZero:true,ticks:{stepSize:1}}}
+}
+});
+
+// === CHART 3: Prospettive Teoriche ===
+new Chart(document.getElementById('chartProspettive'),{
+type:'bar',
+data:{
+labels:['Psicodinamica/Attaccamento','Bio-Psico-Sociale','Cognitivo-Costruttivista','Sistemico-Relazionale','ACT/Contestualistico'],
+datasets:[{
+label:'N. atenei',
+data:[4,4,3,3,1],
+backgroundColor:['#E63946','#003C82','#2A9D8F','#E9C46A','#7c3aed'],
+borderRadius:6
+}]
+},
+options:{
+responsive:true,
+plugins:{legend:{display:false}},
+scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}
+}
+});
+</script>
+</body>
+</html>

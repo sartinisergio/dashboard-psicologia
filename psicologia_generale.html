@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Dashboard Psicologia Generale L-24</title>
+<style>
+:root {
+    --zanichelli-blue: #003C82;
+    --zanichelli-light: #0068C8;
+    --zanichelli-accent: #E63946;
+    --zanichelli-green: #2A9D8F;
+    --zanichelli-orange: #F4A261;
+    --zanichelli-gold: #E9C46A;
+    --zanichelli-purple: #7B2D8E;
+    --bg-primary: #F0F4F8;
+    --bg-card: #FFFFFF;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A5568;
+    --border-color: #E2E8F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+.top-toolbar{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border-color);padding:10px 2rem;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.toolbar-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border-color);background:#fff;color:var(--text-primary);transition:all .2s;font-family:inherit}
+.toolbar-btn:hover{background:#F0F4FF;border-color:var(--zanichelli-blue);color:var(--zanichelli-blue)}
+.toolbar-btn.primary{background:var(--zanichelli-blue);color:#fff;border-color:var(--zanichelli-blue)}
+.toolbar-btn.primary:hover{background:var(--zanichelli-light)}
+.toolbar-spacer{flex:1}
+.toolbar-title{font-size:13px;color:var(--text-secondary);font-weight:500}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,var(--zanichelli-light) 100%);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.05);border-radius:50%}
+.header-content{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.logo-area{display:flex;align-items:center;gap:1rem}
+.logo-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700}
+.brand{font-size:1.4rem;font-weight:700;letter-spacing:.5px}
+.header-badge{background:rgba(255,255,255,.15);padding:.4rem 1rem;border-radius:20px;font-size:.85rem;backdrop-filter:blur(10px)}
+.header h1{font-size:1.9rem;font-weight:700;margin-bottom:.3rem}
+.header .subtitle{font-size:1rem;opacity:.9}
+.header-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem}
+.header-kpi{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,.15)}
+.header-kpi .kpi-value{font-size:1.8rem;font-weight:800}
+.header-kpi .kpi-label{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.nav-tabs{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;transform:translateY(-1.2rem)}
+.nav-tab{padding:.6rem 1.3rem;background:var(--bg-card);border:none;border-radius:10px 10px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-secondary);box-shadow:var(--shadow-sm);transition:all .3s}
+.nav-tab:hover{color:var(--zanichelli-blue)}
+.nav-tab.active{background:var(--zanichelli-blue);color:#fff}
+.main-content{max-width:1400px;margin:0 auto;padding:.5rem 2rem 3rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section{margin-bottom:2rem}
+.section-title{font-size:1.15rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--zanichelli-light);display:flex;align-items:center;gap:.5rem}
+.section-title .icon{width:28px;height:28px;background:var(--zanichelli-blue);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card{background:var(--bg-card);border-radius:14px;box-shadow:var(--shadow-md);padding:1.5rem;margin-bottom:1.2rem;border:1px solid var(--border-color);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1.2rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.chart-container{position:relative;width:100%;max-width:100%;margin:0 auto}
+.chart-container.chart-sm{height:280px}.chart-container.chart-md{height:360px}.chart-container.chart-lg{height:440px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table th{background:var(--zanichelli-blue);color:#fff;padding:.7rem .8rem;text-align:left;font-weight:600;position:sticky;top:0;white-space:nowrap}
+.data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--border-color);vertical-align:top}
+.data-table tr:hover td{background:#F7FAFC}
+.data-table-wrapper{max-height:520px;overflow-y:auto;border-radius:10px;border:1px solid var(--border-color)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.badge-zan{background:#FEE2E2;color:#991B1B}
+.badge-mgh{background:#FFEDD5;color:#9A3412}
+.badge-pic{background:#EDE9FE;color:#5B21B6}
+.badge-pea{background:#DBEAFE;color:#1E40AF}
+.badge-mul{background:#D1FAE5;color:#065F46}
+.badge-cor{background:#FCE7F3;color:#9D174D}
+.badge-car{background:#CCFBF1;color:#115E59}
+.badge-utet{background:#E2E8F0;color:#334155}
+.badge-alt{background:#F1F5F9;color:#475569}
+.badge-blue{background:#DBEAFE;color:#1E40AF}
+.badge-green{background:#D1FAE5;color:#065F46}
+.badge-orange{background:#FEF3C7;color:#92400E}
+.badge-red{background:#FEE2E2;color:#991B1B}
+.badge-purple{background:#EDE9FE;color:#5B21B6}
+.badge-zanichelli{background:#E63946;color:#fff}
+.metric-card{background:var(--bg-card);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border-color)}
+.metric-card .metric-value{font-size:2rem;font-weight:800;color:var(--zanichelli-blue)}
+.metric-card .metric-label{font-size:.8rem;color:var(--text-secondary);margin-top:.3rem}
+.bar-h{display:flex;align-items:center;margin-bottom:.7rem;gap:.8rem}
+.bar-h .bar-label{flex:0 0 200px;font-size:.82rem;font-weight:600;text-align:right;color:var(--text-primary)}
+.bar-h .bar-track{flex:1;height:26px;background:#EDF2F7;border-radius:6px;overflow:hidden}
+.bar-h .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.75rem;font-weight:700;color:#fff;transition:width 1s ease}
+.highlight-box{background:linear-gradient(135deg,#EBF4FF 0%,#F0F7FF 100%);border-left:4px solid var(--zanichelli-blue);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.highlight-box.zanichelli-highlight{background:linear-gradient(135deg,#FFF5F5 0%,#FFF0F0 100%);border-left-color:var(--zanichelli-accent)}
+.highlight-box h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.highlight-box p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.competitor-card{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;border:1px solid var(--border-color);margin-bottom:.8rem;background:var(--bg-card)}
+.competitor-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.competitor-info{flex:1}
+.competitor-info .comp-title{font-weight:700;font-size:.92rem}
+.competitor-info .comp-publisher{font-size:.8rem;color:var(--text-secondary)}
+.competitor-info .comp-adoptions{font-size:.82rem;font-weight:600;color:var(--zanichelli-blue);margin-top:.2rem}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.swot-box{border-radius:12px;padding:1.2rem}
+.swot-box h4{font-size:.95rem;font-weight:700;margin-bottom:.6rem}
+.swot-box ul{list-style:none;padding:0}
+.swot-box ul li{padding:.3rem 0;font-size:.84rem;padding-left:1.2rem;position:relative}
+.swot-box ul li::before{content:'→';position:absolute;left:0;font-weight:700}
+.swot-strengths{background:#D1FAE5;border:1px solid #6EE7B7}.swot-strengths h4{color:#065F46}
+.swot-weaknesses{background:#FEE2E2;border:1px solid #FCA5A5}.swot-weaknesses h4{color:#991B1B}
+.swot-opportunities{background:#DBEAFE;border:1px solid #93C5FD}.swot-opportunities h4{color:#1E40AF}
+.swot-threats{background:#FEF3C7;border:1px solid #FCD34D}.swot-threats h4{color:#92400E}
+.collapsible{background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;color:var(--zanichelli-blue);user-select:none;transition:background .2s}
+.collapsible-header:hover{background:#F0F4FF}
+.collapsible-header .arrow{transition:transform .3s;font-size:12px}
+.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}
+.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.collapsible.open .collapsible-body{max-height:15000px}
+.cc{padding:0 22px 20px;font-size:.88rem;line-height:1.75;color:var(--text-primary)}
+.cc p{margin-bottom:10px}.cc ul{margin:8px 0 12px 18px}.cc ul li{margin-bottom:5px}
+.cc strong{color:var(--zanichelli-blue)}.cc h4{color:var(--zanichelli-light);margin:16px 0 8px;font-size:.95rem;font-weight:600}
+.spec-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}
+.spec-table th{background:var(--zanichelli-blue);color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}
+.spec-table td{padding:8px 10px;border-bottom:1px solid var(--border-color);vertical-align:top}
+.spec-table tr:hover{background:#F8FAFC}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;margin:1px}
+.tag-a{background:#D1FAE5;color:#065F46}.tag-m{background:#FEF3C7;color:#92400E}.tag-b{background:#FEE2E2;color:#991B1B}
+.pill-list{display:flex;flex-wrap:wrap;gap:.5rem}
+.pill{padding:.35rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.id-card{background:var(--bg-card);border-radius:14px;border:2px solid var(--zanichelli-blue);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-md)}
+.id-card.scenario-b{border-color:var(--zanichelli-accent)}
+.id-card-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:2px dashed var(--border-color)}
+.id-card-header .id-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}
+.id-card-header h3{font-size:1.05rem;font-weight:700}
+.id-card-header p{font-size:.82rem;color:var(--text-secondary)}
+.id-section{margin-bottom:1rem}
+.id-section h5{font-size:.88rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.id-section p,.id-section ul{font-size:.84rem;color:var(--text-secondary);line-height:1.65}
+.id-section ul{margin-left:1.2rem;margin-top:.3rem}.id-section ul li{margin-bottom:.3rem}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{padding:8px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--zanichelli-light)}
+.filter-bar input{width:240px}
+.filter-bar label{font-size:12px;color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.8rem;border-top:1px solid var(--border-color);max-width:1400px;margin:0 auto}
+@media print {
+    .tab-panel{display:block !important}
+    .nav-tabs,.top-toolbar,.filter-bar{display:none !important}
+    .data-table-wrapper{max-height:none !important;overflow:visible !important}
+    .data-table th{position:static !important}
+    body{background:#fff !important}
+    .header{break-after:avoid}
+    .card,.collapsible{box-shadow:none !important;border:1px solid #ccc !important;break-inside:avoid;transform:none !important}
+    .collapsible-body{max-height:none !important;overflow:visible !important}
+    .section,.chart-container,.competitor-card,.swot-grid,.id-card{break-inside:avoid}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr !important}
+    .tab-panel::before{display:block;font-size:1.3rem;font-weight:700;color:var(--zanichelli-blue);border-bottom:3px solid var(--zanichelli-blue);padding-bottom:.5rem;margin-bottom:1.5rem;margin-top:2rem}
+    #panoramica::before{content:'';margin-top:0}
+    #adozioni::before{content:'— MAPPA ADOZIONI —'}
+    #competitor::before{content:'— ANALISI COMPETITOR —'}
+    #contenuti::before{content:'— CONTENUTI & PROGRAMMI —'}
+    #zanichelli::before{content:'— POSIZIONAMENTO ZANICHELLI —'}
+    .badge{border:1px solid #999 !important}
+    .badge-zanichelli{background:#E63946 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    tr.zan-row{background:#FFF0F0 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .header,.header-kpi,.section-title .icon,.data-table th,.competitor-rank,.swot-box,.highlight-box,.bar-h .bar-fill,.id-card-header .id-icon{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .footer{border-top:2px solid #003C82;margin-top:2rem}
+}
+@media(max-width:768px){
+    .header h1{font-size:1.4rem}
+    .header-kpis{grid-template-columns:repeat(2,1fr)}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .nav-tabs{padding:0 1rem}
+    .main-content{padding:.5rem 1rem 2rem}
+    .swot-grid{grid-template-columns:1fr}
+    .bar-h .bar-label{flex:0 0 120px;font-size:.75rem}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===================== TOOLBAR ===================== -->
+<div class="top-toolbar">
+    <a href="index.html" class="toolbar-btn primary">← Torna alla Dashboard</a>
+    <div class="toolbar-spacer"></div>
+    <span class="toolbar-title">Psicologia Generale — L-24</span>
+    <button class="toolbar-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+</div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-top">
+            <div class="logo-area">
+                <div class="logo-icon">Z</div>
+                <span class="brand">ZANICHELLI</span>
+            </div>
+            <div class="header-badge">📊 Intelligence Report — Febbraio 2026</div>
+        </div>
+        <h1>Psicologia Generale — L-24</h1>
+        <p class="subtitle">Analisi adozioni, competitor, contenuti e posizionamento nei corsi di Scienze e Tecniche Psicologiche</p>
+        <div class="header-kpis">
+            <div class="header-kpi"><div class="kpi-value">55</div><div class="kpi-label">Cattedre censite</div></div>
+            <div class="header-kpi"><div class="kpi-value">~35</div><div class="kpi-label">Atenei coinvolti</div></div>
+            <div class="header-kpi"><div class="kpi-value">14</div><div class="kpi-label">Adozioni Zanichelli</div></div>
+            <div class="header-kpi"><div class="kpi-value">25,5%</div><div class="kpi-label">Quota Zanichelli — Leader</div></div>
+            <div class="header-kpi"><div class="kpi-value">~25,5%</div><div class="kpi-label">McGraw-Hill (2° editore)</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== NAV TABS ===================== -->
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('panoramica')">Panoramica</button>
+    <button class="nav-tab" onclick="showTab('adozioni')">Mappa Adozioni</button>
+    <button class="nav-tab" onclick="showTab('competitor')">Competitor</button>
+    <button class="nav-tab" onclick="showTab('contenuti')">Contenuti & Programmi</button>
+    <button class="nav-tab" onclick="showTab('zanichelli')">Posizionamento Zanichelli</button>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="main-content">
+
+<!-- ALERT ANALISI PONDERATA -->
+<div style="background:linear-gradient(135deg,#003865 0%,#0066B3 100%);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <div style="color:#fff;font-size:13.5px;line-height:1.6">
+    <strong style="font-size:14px">⚖️ Analisi Ponderata disponibile</strong><br>
+    <span style="opacity:.85">Le quote di mercato di questa materia pesate per numero di studenti effettivi sono ora consultabili nella dashboard principale.</span>
+  </div>
+  <a href="index.html?section=ponderata&materia=pond-psigen" style="display:inline-flex;align-items:center;gap:6px;background:#E63946;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;font-size:12.5px;font-weight:600;white-space:nowrap">Vai all'Analisi Ponderata →</a>
+</div>
+<!-- FINE ALERT -->
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-panel active" id="panoramica">
+    <div class="section">
+        <div class="section-title"><div class="icon">📈</div> Quadro di sintesi del mercato</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli è leader di mercato, ma il vantaggio è sottile</h4>
+            <p>Il manuale <strong>Schacter, Gilbert, Nock & Wegner (Zanichelli)</strong> è il singolo testo più adottato con <strong>13 cattedre</strong> (10 come principale, 3 come complementare). Aggiungendo Gray + Revlin (Zanichelli) si arriva a <strong>14 cattedre su 55 (25,5%)</strong>. McGraw-Hill è virtualmente alla pari con il ~25,5% (Holt ~10 + Feldman ~4), seguita da Piccin al 14,5% (Atkinson), Pearson al 14,5% (Gerrig + Ciccarelli), Il Mulino al 7,3%. La leadership è reale ma contesa testa a testa con McGraw-Hill.</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-accent);">Zanichelli</div><div class="metric-label">Leader — 25,5% (Schacter + altri)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-orange);">McGraw-Hill</div><div class="metric-label">Secondo — ~25,5% (Holt + Feldman)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-purple);">Piccin</div><div class="metric-label">Terzo — 14,5% (Atkinson)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-blue);">Pearson</div><div class="metric-label">Quarto — 14,5% (Gerrig + Ciccarelli)</div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🏢</div> Market Share Editori</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartMarketShare"></canvas></div></div>
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartEditoreBar"></canvas></div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📅</div> Distribuzione per Semestre</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-sm"><canvas id="chartSemestre"></canvas></div></div>
+            <div class="card">
+                <div class="highlight-box">
+                    <h4>Note sulla distribuzione</h4>
+                    <p>La quasi totalità degli insegnamenti è collocata al <strong>I anno</strong> del percorso L-24, confermando Psicologia Generale come materia fondativa. Il <strong>I semestre</strong> è prevalente, ma una quota significativa è annuale (corsi da 12-14 CFU). L'edizione 2024 dello Schacter è già adottata in 5 cattedre; diverse sedi usano ancora edizioni 2018 o precedenti.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-panel" id="adozioni">
+    <div class="section">
+        <div class="section-title"><div class="icon">🗺️</div> Adozioni per Ateneo — Dettaglio completo</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="filter-bar">
+                <label>🔍 Cerca:</label>
+                <input type="text" id="searchTable" placeholder="Ateneo, docente, testo..." oninput="filterTable()">
+                <label>Editore:</label>
+                <select id="filterEditore" onchange="filterTable()">
+                    <option value="">Tutti</option>
+                    <option value="Zanichelli">Zanichelli</option>
+                    <option value="McGraw">McGraw-Hill</option>
+                    <option value="Piccin">Piccin</option>
+                    <option value="Pearson">Pearson</option>
+                    <option value="Mulino">Il Mulino</option>
+                    <option value="UTET">UTET</option>
+                    <option value="Cortina">Cortina</option>
+                    <option value="Carocci">Carocci</option>
+                </select>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="mainTable">
+                    <thead><tr><th onclick="sortTable(0)">Ateneo ↕</th><th>Insegnamento</th><th>Docente</th><th>Sem.</th><th>Testo Principale</th><th>Editore</th></tr></thead>
+                    <tbody>
+<tr><td>Bari</td><td>Psicologia Generale</td><td>Antonietta Curci</td><td>I</td><td>Coon & Mitterer — Psicologia Generale 2ª ed. (2016)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr class="zan-row"><td><strong>Benevento G. Fortunato</strong></td><td>Psicologia Generale</td><td>Alessia Bonavita</td><td>I</td><td>Schacter, Gilbert, Nock — Psicologia Generale (2024)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Bergamo</td><td>Psicologia Generale</td><td>Sotgiu Igor</td><td>I</td><td>Feldman — Essentials of Understanding Psychology</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Bologna</td><td>Psicologia Generale I</td><td>Miranda Occhionero</td><td>I</td><td>Occhionero — Intro alla Psicol. Generale (Carocci 2018)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Bologna</td><td>Psicologia Generale II</td><td>Valsecchi / De Cesarei</td><td>II</td><td>Marini — Psicolinguistica (Carocci) + Atkinson (Piccin)</td><td><span class="badge badge-car">Carocci / Piccin</span></td></tr>
+<tr><td>Cagliari</td><td>Psicologia Generale</td><td>Scalas Laura Francesca</td><td>I</td><td>Ciccarelli & White — Psicologia Generale (2022)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr class="zan-row"><td><strong>Campania Vanvitelli</strong></td><td>Psicologia Generale</td><td>Gennaro Ruggiero</td><td>I</td><td>Occhionero (Carocci) + Schacter (Zanichelli 2010)</td><td><span class="badge badge-car">Carocci</span> + <span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr class="zan-row"><td><strong>Catania</strong></td><td>Fondamenti della Psicologia 1</td><td>Francesca Irene Foti</td><td>I</td><td>Schacter, Gilbert, Nock — Psicologia Generale (2024)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Catania</td><td>Fondamenti della Psicologia 2</td><td>Concetta Pirrone</td><td>I</td><td>Holt et al. — Psicologia Generale 3ª ed. (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Catanzaro</td><td>Fondamenti e Storia della Psicol.</td><td>Liana Palermo</td><td>I</td><td>Atkinson & Hilgard — Intro alla Psicologia (Piccin 2017)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Chieti (A-De)</td><td>Psicologia Generale I</td><td>Brunetti Marcella</td><td>I</td><td>Holt et al. — Psicologia Generale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Chieti (Di-M)</td><td>Psicologia Generale I</td><td>Ceccato Irene</td><td>I</td><td>Holt et al. — Psicologia Generale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Chieti (N-Z)</td><td>Psicologia Generale I</td><td>Di Crosta Adolfo</td><td>I</td><td>Holt et al. — Psicologia Generale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Enna Kore</td><td>Psicologia Generale</td><td>Guarnera M.A.E.</td><td>A</td><td>Atkinson & Hilgard (Piccin) + Legrenzi + Eysenck</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Firenze (L-Z)</td><td>Psicologia Generale</td><td>Giganti Fiorenza</td><td>I</td><td>Holt et al. — Psicologia Generale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Firenze (A-K)</td><td>Psicologia Generale</td><td>Marzi Tessa</td><td>I</td><td>Holt et al. — Psicologia Generale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Foggia</td><td>Psicologia Generale</td><td>Quarto Tiziana</td><td>I</td><td>Gerrig, Zimbardo et al. — Psicologia Generale (2018)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Genova</td><td>Psicologia Generale</td><td>David Giofrè</td><td>I</td><td>Amoretti — Progetto Create: Psicol. Generale (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr class="zan-row"><td><strong>L'Aquila</strong></td><td>Psicol. Gen. e Storia della Psicol.</td><td>Tempesta Daniela</td><td>A</td><td>Schacter, Gilbert, Wegner — Psicol. Generale (Zanichelli)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr class="zan-row"><td><strong>Lecce Salento</strong></td><td>Psicologia Generale</td><td>Paola Angelelli</td><td>I</td><td>Schacter, Gilbert, Nock — Psicol. Generale (2024)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Messina (Noto)</td><td>Fond. di Psicol. Generale</td><td>Massimino Simona</td><td>I</td><td>Eysenck — Psicologia Generale (Idelson-Gnocchi)</td><td><span class="badge badge-alt">Idelson-Gnocchi</span></td></tr>
+<tr class="zan-row"><td><strong>Messina</strong></td><td>Fond. di Psicol. Generale</td><td>Fabio Rosa Angela</td><td>I</td><td>Schacter et al. — Psicologia Generale (2018)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Milano San Raffaele</td><td>Fond. Psicol. Gen. I</td><td>Oppo Annalisa</td><td>I</td><td>Materiale su Leganto</td><td><span class="badge badge-alt">Non disponibile</span></td></tr>
+<tr><td>Milano San Raffaele</td><td>Fond. Psicol. Gen. II</td><td>Zani Alberto</td><td>II</td><td>Non disponibile</td><td><span class="badge badge-alt">Non disponibile</span></td></tr>
+<tr><td>Milano Bicocca (1)</td><td>Psicologia Generale 1-1</td><td>Emanuela Bricolo</td><td>I</td><td>Cherubini et al. — Psicologia Generale (2021)</td><td><span class="badge badge-cor">Cortina</span></td></tr>
+<tr><td>Milano Bicocca (2)</td><td>Psicologia Generale 1-2</td><td>Paola Ricciardelli</td><td>I</td><td>Ciccarelli & White — Psicologia Generale (2022)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Milano Cattolica (1)</td><td>Psicologia Generale</td><td>Repetto / Sansoni</td><td>I</td><td>Feldman — Psicologia Generale (McGraw-Hill 2017)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano Cattolica (2)</td><td>Psicologia Generale</td><td>Balzarotti / Biassoni et al.</td><td>I</td><td>Feldman-Amoretti — Psicologia Generale (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano Statale</td><td>Psicologia Generale</td><td>Durosini Ilaria</td><td>I</td><td>Gerrig et al. — Psicologia Generale III ed.</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Modena-RE</td><td>Introduzione alla Psicologia</td><td>Rubichi Sandro</td><td>I</td><td>Gerrig et al. — Psicologia Generale 3ª ed.</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr class="zan-row"><td><strong>Molise</strong></td><td>Psicologia Generale</td><td>Sulpizio Valentina</td><td>I</td><td>Schacter, Gilbert, Wegner, Nock (2018/2023)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Napoli Benincasa</td><td>Psicol. dei Processi Cognitivi</td><td>Buonocore / Brandimonte</td><td>I</td><td>Girotto & Zorzi — Manuale Psicol. Generale (2016)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Napoli Federico II (1)</td><td>Psicologia Generale</td><td>Gigliotta Onofrio</td><td>I</td><td>Holt et al. — Psicologia Generale 3ª ed.</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Napoli Federico II (2)</td><td>Psicologia Generale</td><td>Fairfield Beth</td><td>I</td><td>Passer & Smith — Psicologia Generale 3ª ed.</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Padova (Svil.-Disp.)</td><td>Psicologia Generale</td><td>Dell'Acqua Roberto</td><td>I</td><td>Zorzi & Girotto — Manuale Psicol. Gen. (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Soc. e Lavoro)</td><td>Psicologia Generale</td><td>Grassi / Mioni</td><td>I</td><td>Atkinson & Hilgard — Intro alla Psicol. (Piccin 2017)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Padova (Sc.Tecn. Mod.A)</td><td>Psicologia Generale</td><td>Pazzaglia Francesca</td><td>I</td><td>Atkinson & Hilgard — Intro alla Psicol. (Piccin 2017)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Padova (Svil.-Pari)</td><td>Psicologia Generale</td><td>Peressotti / Navarrete</td><td>I</td><td>Girotto & Zorzi (Il Mulino) + Dell'Acqua (Carocci)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Cogn. Mod.B)</td><td>Psicologia Generale</td><td>Ranzini Mariagrazia</td><td>I</td><td>Atkinson & Hilgard — Intro alla Psicol. (Piccin 2017)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Padova (Sc.Tecn. Mod.B)</td><td>Psicologia Generale</td><td>Sessa Paola</td><td>I</td><td>Atkinson & Hilgard — Intro alla Psicol. (Piccin 2017)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Padova (Cogn. Mod.A)</td><td>Psicologia Generale</td><td>Tagliabue Mariaelena</td><td>I</td><td>Atkinson & Hilgard — Intro alla Psicol. (Piccin 2017)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Palermo</td><td>Fondamenti e Storia della Psicol.</td><td>Miceli Silvana</td><td>I</td><td>Mastandrea / Fagioli — Psicol. Generale (UTET)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Parma</td><td>Psicologia Generale</td><td>Nicola Bruno</td><td>II</td><td>Ciccarelli & White — Psicologia Generale (2022)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Pavia</td><td>Psicologia Generale</td><td>Rinaldi Luca</td><td>I</td><td>Gerrig et al. — Psicologia Generale 3ª ed.</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Perugia</td><td>Psicologia Generale</td><td>Federici / Lepri</td><td>I</td><td>Anolli & Legrenzi — Psicologia Generale (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Pisa</td><td>Psicologia Generale</td><td>Menicucci / Orrù</td><td>II</td><td>Gerrig et al. — Psicologia Generale 3ª ed.</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr class="zan-row"><td><strong>Roma Europea</strong></td><td>Psicol. Gen. e Storia della Psicol.</td><td>Brunetti / De Monte</td><td>A</td><td>Schacter, Gilbert, Nock & Wegner (2018)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr class="zan-row"><td><strong>Roma LUMSA</strong></td><td>Psicologia Generale</td><td>Arduino / Primativo</td><td>A</td><td>Schacter et al. (2024)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Roma Marconi</td><td>Psicologia Generale</td><td>De Bartolo Paola</td><td>I</td><td>Feldman, Ciceri, Amoretti — Psicol. Gen. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr class="zan-row"><td><strong>Roma Sapienza (Salute)</strong></td><td>Psicol. dei Processi Cognitivi</td><td>Enrico Di Pace</td><td>I</td><td>Goldstein (Piccin) + Gray + Revlin (Zanichelli)</td><td><span class="badge badge-pic">Piccin</span> + <span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Roma Sapienza (Proc.Soc.)</td><td>Psicol. dei Processi Cognitivi</td><td>Giannini / Piccardi</td><td>I</td><td>Carlson et al. — La Scienza del Comportamento (Piccin)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr class="zan-row"><td><strong>Roma Sapienza (Sc.Tecn.)</strong></td><td>Psicol. dei Processi Cognitivi</td><td>Piccardi / Sdoia</td><td>I</td><td>Schacter et al. (2024) + D'Urso/Giusberti (Zanichelli)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr class="zan-row"><td><strong>Roma Tor Vergata</strong></td><td>Psicol. Generale e Cognitiva</td><td>Sperduti / Monachesi</td><td>I</td><td>Schacter, Gilbert, Nock, Wegner (2018)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Roma Unicusano</td><td>Psicologia Generale</td><td>Alberto Costa</td><td>I</td><td>Girotto & Zorzi (Il Mulino) + Donald et al. (Piccin)</td><td><span class="badge badge-mul">Il Mulino + Piccin</span></td></tr>
+<tr><td>Roma Uninettuno</td><td>Psicologia Cognitiva</td><td>Amedeo D'Angiulli</td><td>I</td><td>Feldman et al. — Psicologia Generale (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Sassari</td><td>Psicologia Generale</td><td>Pinna Baingio</td><td>II</td><td>Girotto & Zorzi — Manuale Psicol. Gen. (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr class="zan-row"><td><strong>Torino</strong></td><td>Psicol. Generale di Base</td><td>Adenzato / Colle / Schmidt / Ianì</td><td>I</td><td>Atkinson & Hilgard (Piccin) + Schacter (Zanichelli)</td><td><span class="badge badge-pic">Piccin</span> + <span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Trento</td><td>Psicologia Generale</td><td>Mulatti / Cembrani / Turatto</td><td>I</td><td>Holt et al. — Psicologia Generale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr class="zan-row"><td><strong>Trieste</strong></td><td>Memoria e Percezione</td><td>Del Missier / Fantoni</td><td>A</td><td>Baddeley (Il Mulino) + Burro/Zani (Zanichelli)</td><td><span class="badge badge-mul">Il Mulino</span> + <span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Urbino</td><td>Psicologia Generale</td><td>Mirta Vernice</td><td>I</td><td>Ciccarelli & White — Psicologia Generale (2022)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Valle d'Aosta</td><td>Psicologia Generale</td><td>Jordi Manuello</td><td>I</td><td>Atkinson & Hilgard 15ª ed. (Piccin 2011)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Verona</td><td>Psicologia Generale</td><td>Roberto Burro</td><td>I</td><td>Holt et al. — Psicologia Generale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Cattedre con presenza Zanichelli</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>14 cattedre con presenza Zanichelli — dettaglio</h4>
+            <p><strong>Schacter come testo principale (10 cattedre):</strong> Benevento, Catania (Fond. 1), L'Aquila, Lecce Salento, Messina, Molise, Roma Europea, Roma LUMSA, Roma Sapienza (Sc.Tecn.), Roma Tor Vergata.<br>
+            <strong>Schacter come testo complementare (3 cattedre):</strong> Campania Vanvitelli, Torino, Trieste (Burro/Zani).<br>
+            <strong>Altri titoli Zanichelli (non Schacter):</strong> Roma Sapienza-Salute (Gray + Revlin).<br>
+            <strong>Totale Zanichelli: 14 cattedre (25,5%).</strong><br>
+            <strong>Nota:</strong> Bari (Coon & Mitterer) e Palermo (Mastandrea/Fagioli) adottano testi UTET, editore indipendente — non conteggiati.<br>
+            <strong>Edizioni:</strong> 5 cattedre su ed. 2024, ~6 su ed. 2018, il resto su edizioni precedenti o non specificate.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-panel" id="competitor">
+    <div class="section">
+        <div class="section-title"><div class="icon">⚔️</div> Ranking Manuali per numero di adozioni</div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-accent);">1</div><div class="competitor-info"><div class="comp-title">Schacter, Gilbert, Nock & Wegner — <em>Psicologia Generale</em></div><div class="comp-publisher">Zanichelli — ed. 2018 / 2024</div><div class="comp-adoptions">13 adozioni Schacter (10 principale + 3 complementare) + 1 Gray/Revlin = 14 Zanichelli</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">2</div><div class="competitor-info"><div class="comp-title">Holt, Bremner, Vliek et al. — <em>Psicologia Generale</em> (3ª ed., 2023)</div><div class="comp-publisher">McGraw-Hill Education</div><div class="comp-adoptions">~10 adozioni — Chieti (×3), Firenze (×2), Napoli Fed.II, Trento, Catania, Verona</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#8B5CF6;">3</div><div class="competitor-info"><div class="comp-title">Atkinson & Hilgard — <em>Introduzione alla Psicologia</em> (Piccin, 2017)</div><div class="comp-publisher">Piccin</div><div class="comp-adoptions">~8 adozioni — Padova (×5), Enna, Catanzaro, Torino, Valle d'Aosta</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#3B82F6;">4</div><div class="competitor-info"><div class="comp-title">Gerrig, Zimbardo, Anolli & Baldi — <em>Psicologia Generale</em> (3ª ed.)</div><div class="comp-publisher">Pearson</div><div class="comp-adoptions">~5 adozioni — Foggia, Pavia, Modena, Milano Statale, Pisa</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-green);">5</div><div class="competitor-info"><div class="comp-title">Feldman / Amoretti — <em>Psicologia Generale</em> (McGraw-Hill, 2021)</div><div class="comp-publisher">McGraw-Hill Education</div><div class="comp-adoptions">~4 adozioni — Bergamo, Milano Cattolica (×2), Roma Marconi, Uninettuno</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#264653;">6</div><div class="competitor-info"><div class="comp-title">Girotto & Zorzi — <em>Manuale di Psicologia Generale</em> (Il Mulino, 2016)</div><div class="comp-publisher">Il Mulino</div><div class="comp-adoptions">~4 adozioni — Napoli Benincasa, Padova (×2), Roma Unicusano, Sassari</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#EC4899;">7</div><div class="competitor-info"><div class="comp-title">Ciccarelli & White — <em>Psicologia Generale</em> (Pearson, 2022)</div><div class="comp-publisher">Pearson</div><div class="comp-adoptions">~3 adozioni — Cagliari, Milano Bicocca (2), Parma, Urbino</div></div></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📚</div> Analisi comparativa dei manuali</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">Schacter, Gilbert, Nock & Wegner — Psicologia Generale (Zanichelli)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>È il <strong>manuale più diffuso</strong>, adottato in almeno 13 programmi (+ 1 con Gray/Revlin). L'edizione 2024 è il riferimento più aggiornato.</p>
+                <p><strong>Caratteristiche chiave:</strong> Visione integrata che spazia dalle basi biologiche del comportamento alla psicologia della personalità e dello sviluppo.</p>
+                <p><strong>Punti di forza:</strong> Approccio moderno e interdisciplinare, chiarezza nell'esporre il passaggio dalla psicologia "ingenua" a quella scientifica.</p>
+                <p><strong>Punti di debolezza:</strong> L'estensione del testo porta alcuni docenti a escludere capitoli (sviluppo o basi biologiche) per concentrarsi sui processi core.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Holt, Bremner, Vliek et al. — Psicologia Generale (McGraw-Hill)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Sottotitolato "Capire la mente osservando il comportamento", è il testo di riferimento a Chieti (3 canali), Firenze (2 canali), Napoli Federico II, Trento, Catania e Verona.</p>
+                <p><strong>Punti di forza:</strong> Eccellente per l'inquadramento della psicologia come scienza sperimentale. Forte enfasi sul metodo scientifico e sul rapporto genetica-ambiente-comportamento.</p>
+                <p><strong>Punti di debolezza:</strong> In alcuni programmi vengono esclusi i capitoli su psicopatologia e salute (14-15), suggerendo che il testo sia troppo vasto per i soli obiettivi di Psicologia Generale.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Atkinson & Hilgard — Introduzione alla Psicologia (Piccin)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Un classico "storico" adottato a Padova (5 cattedre), Enna, Catanzaro, Torino e Valle d'Aosta.</p>
+                <p><strong>Punti di forza:</strong> Completezza enciclopedica e rigore scientifico. "Gold standard" per un approfondimento dettagliato dell'architettura funzionale della mente.</p>
+                <p><strong>Punti di debolezza:</strong> La natura enciclopedica richiede una selezione molto mirata dei capitoli (a Padova Mod.B: solo 5 capitoli su un volume immenso).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Gerrig, Zimbardo, Anolli & Baldi — Psicologia Generale (Pearson)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Adottato a Foggia, Pavia, Modena, Milano Statale e Pisa.</p>
+                <p><strong>Punti di forza:</strong> Struttura equilibrata tra teorie classiche e ricerche contemporanee. Funzionale alla didattica per CFU, con capitoli modulari.</p>
+                <p><strong>Punti di debolezza:</strong> Viene talvolta utilizzato in forma ridotta (solo i primi 6-10 capitoli).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Feldman (ed. Ciceri, Amoretti) — Psicologia Generale (McGraw-Hill)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Scelto da Bergamo, Milano Cattolica (2 cattedre), Roma Marconi e Uninettuno.</p>
+                <p><strong>Punti di forza:</strong> Attenzione alla Psicologia Positiva, al benessere e allo stress. Accessibile e orientato alle applicazioni pratiche.</p>
+                <p><strong>Punti di debolezza:</strong> Spesso integrato con monografie per coprire storia della psicologia o coscienza.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Girotto & Zorzi — Manuale di Psicologia Generale (Il Mulino)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Adottato a Napoli Benincasa, Padova (2 cattedre), Roma Unicusano e Sassari.</p>
+                <p><strong>Punti di forza:</strong> Orientamento verso la Scienza Cognitiva e il paradigma dell'elaborazione dell'informazione. Ideale per i processi cognitivi.</p>
+                <p><strong>Punti di debolezza:</strong> Può risultare troppo tecnico per chi cerca una panoramica umanistica o clinica.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Legrenzi — Storia della Psicologia (Il Mulino) — Testo di supporto<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Testo quasi universalmente adottato come supporto obbligatorio per la parte storica (Cagliari, Catanzaro, Enna, L'Aquila, Palermo, Perugia, Sapienza).</p>
+                <p><strong>Punti di forza:</strong> Indispensabile per la parte storica; visione critica dei paradigmi che i manuali generalisti trattano in modo superficiale.</p>
+                <p><strong>Punti di debolezza:</strong> Non può essere usato come manuale unico, manca della parte sperimentale sui processi cognitivi.</p>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-panel" id="contenuti">
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Nucleo Minimo di Contenuti (presenza >90%)</div>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid var(--zanichelli-blue);"><h4 style="color:var(--zanichelli-blue);margin-bottom:.5rem;">Epistemologia & Metodologia</h4><p style="font-size:.85rem;color:var(--text-secondary);">Definizione della psicologia come scienza, inquadramento storico delle scuole classiche, metodo sperimentale, variabili e fasi della ricerca.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-green);"><h4 style="color:var(--zanichelli-green);margin-bottom:.5rem;">Percezione</h4><p style="font-size:.85rem;color:var(--text-secondary);">Psicofisica, organizzazione percettiva, sistemi sensoriali. Presente in tutti i programmi.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-orange);"><h4 style="color:var(--zanichelli-orange);margin-bottom:.5rem;">Apprendimento</h4><p style="font-size:.85rem;color:var(--text-secondary);">Condizionamento classico e operante, basi dell'apprendimento cognitivo.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-accent);"><h4 style="color:var(--zanichelli-accent);margin-bottom:.5rem;">Memoria</h4><p style="font-size:.85rem;color:var(--text-secondary);">Architettura mnesica (magazzini sensoriale, BT, LT), processi di codifica, recupero e oblio.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-purple);"><h4 style="color:var(--zanichelli-purple);margin-bottom:.5rem;">Pensiero & Intelligenza</h4><p style="font-size:.85rem;color:var(--text-secondary);">Ragionamento deduttivo/induttivo, categorizzazione, problem solving, linguaggio e comunicazione.</p></div>
+            <div class="card" style="border-left:4px solid #264653;"><h4 style="color:#264653;margin-bottom:.5rem;">Emozioni & Motivazione</h4><p style="font-size:.85rem;color:var(--text-secondary);">Teorie principali (James-Lange, Schachter-Singer, ecc.), basi biologiche e funzioni adattive.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📑</div> Nucleo Esteso (presenza 50-70%)</div>
+        <div class="card">
+            <div class="pill-list">
+                <span class="pill" style="background:#DBEAFE;color:#1E40AF;">Personalità</span>
+                <span class="pill" style="background:#D1FAE5;color:#065F46;">Sviluppo cognitivo</span>
+                <span class="pill" style="background:#FEF3C7;color:#92400E;">Intelligenza</span>
+                <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Neuroscienze</span>
+                <span class="pill" style="background:#FEE2E2;color:#991B1B;">Psicologia Positiva</span>
+                <span class="pill" style="background:#E0F2FE;color:#075985;">Coscienza</span>
+                <span class="pill" style="background:#FCE7F3;color:#9D174D;">Stress e coping</span>
+                <span class="pill" style="background:#F0FDF4;color:#166534;">Psicologia del sonno</span>
+                <span class="pill" style="background:#FFF7ED;color:#9A3412;">Psicologia animale</span>
+                <span class="pill" style="background:#F5F3FF;color:#6D28D9;">Cognizione numerica</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🔬</div> Specificità, Variazioni e Approfondimenti</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">1. Specificità e Variazioni tematiche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Neuroscienze cognitive avanzate:</strong> Pochi corsi dedicano moduli specifici a tecniche di neuroimaging, neuroplasticità e architettura neurale dettagliata (es. Foggia, Perugia, Padova, Torino, Firenze).</p>
+                <p><strong>Psicologia Evoluzionistica:</strong> Una minoranza di corsi integra questo approccio come cornice interpretativa strutturale (es. Perugia, Napoli Federico II, Torino).</p>
+                <p><strong>Psicologia Positiva e Benessere:</strong> Temi come felicità, benessere psicofisico e stress/coping compaiono in circa un decimo dei programmi (es. Bergamo, Genova, Milano Cattolica, Verona).</p>
+                <p><strong>Psicologia Animale e Comparata:</strong> Trattata come modulo o tema specifico a Bologna, Padova, Roma LUMSA e Trieste.</p>
+                <p><strong>Cognizione numerica:</strong> Argomento altamente specialistico presente nel programma di Padova.</p>
+                <p><strong>Robotica, Vita Artificiale e Fisica Quantistica:</strong> Riferimenti interdisciplinari d'avanguardia presenti a Milano San Raffaele.</p>
+                <p><strong>Psicologia del Sonno:</strong> Approfondita specificamente a Bologna, Messina, Verona e Milano Cattolica.</p>
+                <p><strong>Dilemma Etico del "Male Minore":</strong> Approfondimento specifico a Roma Sapienza.</p>
+                <p><strong>Differenze per CFU:</strong> I programmi da 12-14 CFU (Genova, Padova, L'Aquila, Sassari, Roma Europea, Roma Marconi) includono sistematicamente Storia della Psicologia, Personalità e Sviluppo, temi spesso ridotti o assenti nei corsi da 6-8 CFU.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">2. Prospettive / Scuole Teoriche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <table class="spec-table">
+                    <thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Atenei di Riferimento</th><th>Note</th></tr></thead>
+                    <tbody>
+                        <tr><td>Cognitivismo / HIP</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Trento, Torino, Benincasa, Bicocca, Tor Vergata, Sapienza, Bologna, Unicusano</td><td>Cornice dominante basata sull'elaborazione dell'informazione</td></tr>
+                        <tr><td>Neuroscienze Cognitive</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Foggia, Firenze, Perugia, Padova, Tor Vergata, Milano Statale, Messina</td><td>Integrazione sistematica dei correlati neurali</td></tr>
+                        <tr><td>Storico-Epistemologica</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Catanzaro, Palermo, Roma Europea, Enna, Cagliari, L'Aquila, Valle d'Aosta</td><td>Analisi critica dell'evoluzione della disciplina</td></tr>
+                        <tr><td>Psicologia Evoluzionistica</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Perugia, Torino, Napoli Federico II, Palermo</td><td>Funzioni mentali come adattamenti biologici</td></tr>
+                        <tr><td>Embodied Cognition / 4E</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Roma Tor Vergata, San Raffaele, Milano Cattolica</td><td>Cognizione radicata nelle interazioni corporee</td></tr>
+                        <tr><td>Comportamentismo / Gestalt</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Bologna, L'Aquila, Cattolica, Palermo, Enna</td><td>Nelle sezioni storiche e percezione/apprendimento</td></tr>
+                        <tr><td>Psicoanalisi</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Catanzaro, Palermo, Roma Europea, L'Aquila, Cattolica</td><td>Solo come tappa dell'inquadramento storico</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">3. Modelli di Strutturazione del Corso<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Modello Standard-Lineare (8-10 CFU):</strong> Corso semestrale che segue lo sviluppo dei manuali: Metodo → Percezione → Cognizione → Emozione. Esempi: Bari, Cagliari, Foggia, Molise, Torino, Trento, Urbino.</p>
+                <p><strong>Modello Integrato-Storico (12-14 CFU):</strong> Corso annuale o bimodulare con forte peso alla Storia della Psicologia (fino a 5-6 CFU). Esempi: Bergamo, Bologna, Enna, Genova, L'Aquila, Sassari, Roma Europea.</p>
+                <p><strong>Modello Telematico-Modulare:</strong> Diviso in brevi videolezioni (es. 8 moduli da 8 video) con forte componente interattiva (forum, e-tivity). Esempi: Benevento, Roma Marconi, Unicusano, Uninettuno.</p>
+                <p><strong>Modello Tecnico-Sperimentale:</strong> Presente soprattutto a Padova e Roma Sapienza, con moduli distinti per "Teorie" e "Metodi" e inclusione di attività di laboratorio o partecipazione a ricerche.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">4. Approccio alla Storia della Psicologia<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <h4>1. Storia come Fondamento dell'Identità Scientifica</h4>
+                <p>In molti atenei lo studio storico è finalizzato a marcare il passaggio dalla "psicologia del senso comune" alla psicologia come scienza sperimentale. <strong>Atenei coinvolti:</strong> Bari, Catanzaro, Enna, Palermo, Urbino e Verona. A Catanzaro, il confronto tra scuole (Strutturalismo, Funzionalismo, Gestalt, Psicoanalisi, Comportamentismo, Cognitivismo) è usato per sviluppare l'autonomia di giudizio. Ad Enna, l'enfasi è posta sugli esperimenti originali.</p>
+                <h4>2. Trattazione Estesa e Analitica ("Full History")</h4>
+                <p><strong>Roma Europea:</strong> programma più dettagliato, risale all'epoca classica e medievale (psicologia greca, romana, scolastica e araba), Rinascimento, Illuminismo, fino alla psicologia durante i regimi totalitari. <strong>L'Aquila:</strong> 12 CFU di cui 5 dedicati alla storia. <strong>Palermo:</strong> moduli orari specifici per ogni scuola classica.</p>
+                <h4>3. Integrazione con Neuroscienze e Cognitivismo</h4>
+                <p>La storia è vista come evoluzione lineare verso i moderni paradigmi delle neuroscienze. <strong>Atenei:</strong> Bologna, Messina, Foggia, Napoli Federico II, Roma Sapienza e Torino. A Messina la storia è percorso verso lo studio dei correlati neurali. Alla Sapienza (Giannini) la parte storica è oggetto di prova intermedia basata sul Legrenzi.</p>
+                <h4>Bibliografia sulla Storia</h4>
+                <p><strong>Legrenzi, Storia della psicologia (Il Mulino)</strong> è il riferimento quasi universale. Firenze adotta Mecacci, Perugia utilizza Foschi, Roma Europea prevede testi del docente De Monte.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">5. Focus Scientifico per Ateneo — Tabella completa<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <div style="overflow-x:auto">
+                <table class="spec-table">
+                    <thead><tr><th>Ateneo</th><th>Focus Scientifico</th><th>Testo Cardine</th><th>Criticità / Nota</th></tr></thead>
+                    <tbody>
+<tr><td>Bari</td><td>Emozioni e Memoria</td><td>Coon & Mitterer</td><td>Carico elevato: 4 articoli densi per 8 CFU</td></tr>
+<tr><td>Benevento</td><td>Evolutivo-Personalità</td><td>Schacter 2024</td><td>Programma molto vasto (include Personalità e Sviluppo)</td></tr>
+<tr><td>Bergamo</td><td>Psicologia Positiva</td><td>Feldman</td><td>Valutazione premia la produzione critica (2/3 del voto)</td></tr>
+<tr><td>Bologna I</td><td>Processi del Sonno</td><td>Occhionero 2018</td><td>Focus molto marcato su un unico tema monografico</td></tr>
+<tr><td>Bologna II</td><td>Animale e Dolore</td><td>Atkinson / Marini</td><td>Richiede integrazione di 3 manuali diversi</td></tr>
+<tr><td>Cagliari</td><td>Metodologico</td><td>Ciccarelli / Nigro</td><td>Il testo di metodologia (Nigro) risale al 2001</td></tr>
+<tr><td>Campania</td><td>Sperimentale</td><td>Occhionero 2018</td><td>Doppia prova (scritto/orale) per 8 CFU</td></tr>
+<tr><td>Catania</td><td>Bio-psicosociale</td><td>Schacter / Holt</td><td>Due programmi distinti per i Fondamenti</td></tr>
+<tr><td>Catanzaro</td><td>Storico-Epistemologico</td><td>Atkinson & Hilgard</td><td>Rubrica di valutazione esplicita per DD3</td></tr>
+<tr><td>Chieti</td><td>Cognitivismo di base</td><td>Holt 2023</td><td>Esclusione sistematica delle basi biologiche (cap. 3)</td></tr>
+<tr><td>Enna</td><td>Epistemologico</td><td>Legrenzi / Atkinson</td><td>Enfasi sugli esperimenti originali</td></tr>
+<tr><td>Firenze</td><td>Neuroscienze / Creatività</td><td>Holt 2023</td><td>Uso del metodo "Sei cappelli per pensare" di De Bono</td></tr>
+<tr><td>Foggia</td><td>Neuroscienze Cognitive</td><td>Gerrig et al.</td><td>Ottimo legame modelli cognitivi e basi neurali</td></tr>
+<tr><td>Genova</td><td>Metodologico-Statistico</td><td>Amoretti 2021</td><td>Forte accento sulla lettura dei dati statistici</td></tr>
+<tr><td>L'Aquila</td><td>Storico-Generale</td><td>Schacter / Legrenzi</td><td>Programma annuale 12 CFU molto denso</td></tr>
+<tr><td>Salento</td><td>Informatico-Generale</td><td>Schacter 2024</td><td>Obiettivi chiaramente orientati alla propedeuticità</td></tr>
+<tr><td>Messina</td><td>Ricerca Sperimentale</td><td>Schacter / Eysenck</td><td>Richiesto studio di articoli dell'anno corrente</td></tr>
+<tr><td>San Raffaele</td><td>4E / Robotica / Fisica</td><td>Leganto</td><td>Programma più avanzato e interdisciplinare del campione</td></tr>
+<tr><td>Bicocca</td><td>Metodologico</td><td>Cherubini / Ciccarelli</td><td>Uso di canali Telegram per didattica interattiva</td></tr>
+<tr><td>Cattolica</td><td>Embodied / Benessere</td><td>Feldman / Ciceri</td><td>Carico elevato (60 domande MC + Orale)</td></tr>
+<tr><td>MI Statale</td><td>Creatività</td><td>Gerrig / Lucchiari</td><td>Unico programma con modulo Psicologia a scuola</td></tr>
+<tr><td>Modena</td><td>Biologico-Cognitivo</td><td>Gerrig et al.</td><td>Modalità Blended con videolezioni brevi (&lt;30 min)</td></tr>
+<tr><td>Molise</td><td>Cognitivo-Sperimentale</td><td>Schacter</td><td>Valutazione prettamente nozionistica (solo MC)</td></tr>
+<tr><td>Benincasa</td><td>Mente e Cervello</td><td>Girotto & Zorzi</td><td>Valutazione capacità di interpretazione dei grafici</td></tr>
+<tr><td>Napoli Fed II</td><td>Evoluzionistico</td><td>Holt 2023</td><td>Principi di psicol. evoluzionistica nel core</td></tr>
+<tr><td>Padova</td><td>Neuroimaging / Cogn. Num.</td><td>Zorzi / Atkinson</td><td>Eccessiva frammentazione in moduli da 6 CFU</td></tr>
+<tr><td>Palermo</td><td>Evoluzionistico-Storico</td><td>UTET / Legrenzi</td><td>Contrasto tra obiettivi critici e valutazione solo MC</td></tr>
+<tr><td>Parma</td><td>Metodologico</td><td>Ciccarelli 2022</td><td>—</td></tr>
+<tr><td>Pavia</td><td>Etico-Deontologico</td><td>Gerrig 2018</td><td>Enfasi specifica sui principi etici della ricerca</td></tr>
+<tr><td>Perugia</td><td>Neuroscienze Cognitive</td><td>Anolli / Buss</td><td>Unico ateneo con modulo strutturato su Psicol. Evoluzionistica</td></tr>
+<tr><td>Pisa</td><td>Generale</td><td>Gerrig et al.</td><td>—</td></tr>
+<tr><td>Roma Europea</td><td>Identità Storica</td><td>Schacter / De Monte</td><td>Storia della psicologia medievale e araba</td></tr>
+<tr><td>LUMSA</td><td>Personalità / Intell. Animale</td><td>Schacter / De Beni</td><td>Approfondimento su intelligenza creativa e animale</td></tr>
+<tr><td>Marconi</td><td>Natura vs Cultura</td><td>Feldman</td><td>Verifica del senso critico tramite saggi</td></tr>
+<tr><td>Sapienza</td><td>Dilemmi Etici / Metodo</td><td>Goldstein / Schacter</td><td>Studio del dilemma del "male minore"</td></tr>
+<tr><td>Tor Vergata</td><td>4E Cognition</td><td>Schacter 2018</td><td>Focus su cervello bayesiano e body ownership</td></tr>
+<tr><td>Unicusano</td><td>Clinico-Applicativo</td><td>Girotto & Zorzi</td><td>Obbligo di E-tivity per applicazione conoscenze</td></tr>
+<tr><td>Uninettuno</td><td>Cognitivismo Digitale</td><td>Feldman</td><td>Corso basato su videolezioni di specialisti esterni</td></tr>
+<tr><td>Sassari</td><td>Percettivo-Evoluzionistico</td><td>Girotto & Zorzi</td><td>—</td></tr>
+<tr><td>Torino</td><td>Neurobiol. Interpersonale</td><td>Atkinson / Eysenck</td><td>Presenza di esoneri parziali per studio costante</td></tr>
+<tr><td>Trento</td><td>Sperimentale-Teorico</td><td>Holt / Turatto</td><td>Testi differenti per frequentanti e non</td></tr>
+<tr><td>Trieste</td><td>Percezione / Memoria</td><td>Burro-Zani / Baddeley</td><td>Moduli distinti con testi specialistici</td></tr>
+<tr><td>Urbino</td><td>Analisi Dati Linguistici</td><td>Ciccarelli / Vernice</td><td>Obbligo di report su articolo scientifico</td></tr>
+<tr><td>Valle d'Aosta</td><td>Neuroanatomico</td><td>Atkinson 2011</td><td>Manuale (15ª ed.) del 2011 — datato</td></tr>
+<tr><td>Verona</td><td>Adattivo-Sociale</td><td>Holt 2023</td><td>Tempo d'esame (1 min/domanda) molto serrato</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">6. Limiti dell'Analisi<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>L'analisi risente della disomogeneità informativa dei sillabi: alcuni Atenei forniscono dettagli granulari sui singoli esperimenti e bibliografie ragionate (es. Bari, Catanzaro, Padova), mentre altri si limitano a schede sintetiche o rimandano a strumenti esterni come Leganto (es. Verona, San Raffaele, Sassari, Pisa, Parma). Esiste un grado di incertezza sulle prospettive teoriche, spesso non dichiarate esplicitamente ma deducibili solo dai manuali adottati. Infine, sussistono ambiguità terminologiche: il termine "Processi cognitivi" può indicare, a seconda del programma, l'intero arco delle funzioni mentali o solo le funzioni superiori.</p>
+            </div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📊</div> Prospettive Teoriche — Diffusione nei programmi</div>
+        <div class="card"><div class="chart-container chart-md"><canvas id="chartTeorie"></canvas></div></div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-panel" id="zanichelli">
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Situazione attuale — Schacter, "Psicologia Generale"</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli è leader con 14 cattedre (25,5%) — vantaggio sottile su McGraw-Hill</h4>
+            <p>Lo Schacter è adottato come <strong>testo principale in 10 cattedre</strong> e come <strong>testo complementare in 3</strong>. Con il titolo Gray + Revlin (1 cattedra) la presenza Zanichelli sale a <strong>14 su 55</strong>. La copertura è concentrata nel Centro-Sud (Roma con 4 sedi, Campania, Puglia, Sicilia, Molise) con presenze al Nord (Torino, Trieste). L'edizione 2024 è adottata in 5 cattedre; circa 6 sedi usano ancora l'edizione 2018. Il vantaggio su McGraw-Hill (~25,5% con Holt + Feldman) è minimo: un cambio di 2-3 cattedre potrebbe invertire la classifica.</p>
+        </div>
+        <div class="swot-grid">
+            <div class="swot-box swot-strengths">
+                <h4>✅ Punti di Forza</h4>
+                <ul>
+                    <li>Manuale più adottato in Italia per Psicologia Generale L-24 (25,5%)</li>
+                    <li>Approccio moderno e interdisciplinare: basi biologiche + personalità + sviluppo</li>
+                    <li>Edizione 2024 aggiornata con ricerca recente</li>
+                    <li>Brand Zanichelli forte e riconosciuto in ambito universitario</li>
+                    <li>Chiarezza espositiva apprezzata dai docenti per studenti del I anno</li>
+                    <li>Presenza in atenei strategici (Sapienza, Tor Vergata, LUMSA, Salento)</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-weaknesses">
+                <h4>⚠️ Punti di Debolezza</h4>
+                <ul>
+                    <li>Eccessiva estensione: molti docenti escludono capitoli (sviluppo, basi biologiche)</li>
+                    <li>Assenza nei grandi atenei del Nord (Padova, Milano, Firenze, Trento, Bologna)</li>
+                    <li>~6 cattedre ancora su edizione 2018 — rischio di migrazione</li>
+                    <li>Risorse digitali da potenziare rispetto a Connect (McGraw-Hill)</li>
+                    <li>Nessuna versione "breve" per corsi da 6-8 CFU</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-opportunities">
+                <h4>🚀 Opportunità</h4>
+                <ul>
+                    <li>Atenei con manuali datati (Valle d'Aosta: Atkinson 2011; Cagliari: Nigro 2001; Foggia: Gerrig 2018)</li>
+                    <li>Atenei con programmi non disponibili (Milano San Raffaele ×2)</li>
+                    <li>Conquista di Padova (5 cattedre Piccin con testo del 2017)</li>
+                    <li>Aggiornamento cattedre Zanichelli ferme al 2018</li>
+                    <li>Crescita del modello telematico (Benevento già Zanichelli; target Marconi, Uninettuno, Unicusano)</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-threats">
+                <h4>🔶 Minacce</h4>
+                <ul>
+                    <li>McGraw-Hill con due linee (Holt 2023 + Feldman 2021) e piattaforma Connect</li>
+                    <li>Pearson con 3ª ed. Gerrig aggiornata e piattaforma MyLab</li>
+                    <li>Inerzia accademica: docenti tendono a confermare il testo in uso</li>
+                    <li>Il Mulino forte con autori italiani (Girotto-Zorzi) nella nicchia cognitiva</li>
+                    <li>Cortina (Cherubini) e Piccin (Atkinson) radicati in atenei strategici (Bicocca, Padova)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📋</div> Carta d'Identità del Manuale — Doppio Scenario</div>
+
+        <div class="id-card">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-blue);">📘</div>
+                <div>
+                    <h3>Scenario 1 — Evoluzione dello Schacter (prossima edizione)</h3>
+                    <p>Come dovrebbe essere la 4ª edizione italiana per consolidare la leadership</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>📌 Contenuti irrinunciabili (presenti in >90% dei programmi)</h5>
+                <p>Il nucleo dello Schacter è già allineato. La prossima edizione deve mantenere intatti: epistemologia e metodo scientifico, sensazione/percezione, attenzione e coscienza, apprendimento (condizionamento classico e operante), memoria (modello multi-magazzino + memoria di lavoro), pensiero/ragionamento/problem solving, linguaggio, emozioni e motivazione, intelligenza. Questo nucleo corrisponde ai capitoli già presenti e non va ridotto.</p>
+            </div>
+            <div class="id-section">
+                <h5>🔧 Contenuti da rafforzare / aggiornare</h5>
+                <ul>
+                    <li><strong>Neuroscienze cognitive:</strong> Potenziare le sezioni su neuroimaging (fMRI, EEG) e neuroplasticità — richiesto esplicitamente a Foggia, Perugia, Padova, Torino, Firenze (~20% dei programmi)</li>
+                    <li><strong>Psicologia evoluzionistica:</strong> Inserire un modulo o box tematici — tema in crescita, presente esplicitamente a Perugia (unico con modulo dedicato), Napoli, Torino, Palermo</li>
+                    <li><strong>Embodied Cognition / 4E:</strong> Aggiungere sezioni su cognizione incarnata, cervello bayesiano, body ownership — frontiera emergente a Tor Vergata, San Raffaele, Cattolica</li>
+                    <li><strong>Psicologia Positiva e benessere:</strong> Ampliare con felicità, stress/coping, resilienza — presente a Bergamo, Genova, Milano Cattolica, Verona</li>
+                    <li><strong>Psicologia del sonno:</strong> Inserire come box o sezione speciale — tema specifico a Bologna, Messina, Verona, Milano Cattolica</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>🎓 Innovazioni didattiche suggerite</h5>
+                <ul>
+                    <li><strong>Versione modulare / "essenziale":</strong> Un formato ridotto (~300 pp.) per corsi da 6-8 CFU, con i soli capitoli core — risponderebbe al problema dei docenti che escludono capitoli. Modello: Feldman "Essentials"</li>
+                    <li><strong>Piattaforma digitale integrata:</strong> Risposta a Connect (McGraw-Hill) e MyLab (Pearson). Include: quiz interattivi per capitolo, flashcard, video brevi, simulazione di esperimenti classici, monitoraggio del progresso</li>
+                    <li><strong>Materiale per didattica blended:</strong> Videolezioni brevi (&lt;30 min) per ogni capitolo — richiesto dal modello telematico in crescita (Benevento, Marconi, Unicusano, Uninettuno)</li>
+                    <li><strong>Sezione "Esperimenti classici":</strong> Schede didattiche sugli esperimenti originali (richieste a Enna, Messina, Sapienza) — potrebbe essere un punto di differenziazione rispetto ai competitor</li>
+                    <li><strong>Integrazione con la Storia della Psicologia:</strong> Capitolo storico rafforzato o companion online dedicato — eviterebbe il ricorso al Legrenzi (Il Mulino) usato come testo complementare in ~10 atenei</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>📐 Formato e struttura consigliati</h5>
+                <p>Mantenere l'approccio integrato (basi biologiche → processi cognitivi → personalità → sviluppo) che è il punto di forza differenziante rispetto ai competitor più settoriali. La struttura standard-lineare (Metodo → Percezione → Cognizione → Emozione) è coerente con il ~60% dei corsi. Valutare un'organizzazione in "percorsi di lettura" flessibili che permettano ai docenti di scegliere itinerari da 6, 8, 10 o 12 CFU senza dover indicare "capitoli esclusi".</p>
+            </div>
+        </div>
+
+        <div class="id-card scenario-b">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-accent);">📕</div>
+                <div>
+                    <h3>Scenario 2 — Nuovo manuale (diverso dallo Schacter)</h3>
+                    <p>Che tipo di testo pubblicare per aggredire segmenti non coperti</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>🎯 Segmento target: la "nicchia cognitiva" (Il Mulino + Piccin)</h5>
+                <p>Esiste un segmento di ~12 cattedre (Padova ×5, Napoli Benincasa, Sassari, Unicusano, e in parte Bologna e Torino) che adotta manuali fortemente orientati alla scienza cognitiva (Girotto-Zorzi, Atkinson) e che lo Schacter non intercetta. Un manuale italiano di <strong>Psicologia dei Processi Cognitivi</strong> con approccio neuroscientifico integrato potrebbe competere direttamente con il Girotto-Zorzi e l'Atkinson in questo segmento.</p>
+            </div>
+            <div class="id-section">
+                <h5>📌 Contenuti chiave del nuovo manuale</h5>
+                <ul>
+                    <li><strong>Core cognitivo puro:</strong> Percezione, attenzione, memoria (con buffer episodico e memoria di lavoro), pensiero, ragionamento, linguaggio, coscienza</li>
+                    <li><strong>Neuroscienze integrate:</strong> Ogni capitolo con sezioni dedicate ai correlati neurali e alle tecniche di neuroimaging</li>
+                    <li><strong>Psicologia sperimentale:</strong> Forte enfasi sul metodo e sui disegni di ricerca (doppia dissociazione, paradigmi sperimentali classici)</li>
+                    <li><strong>Cognizione numerica:</strong> Argomento specialistico richiesto a Padova e raro nei manuali esistenti</li>
+                    <li><strong>4E Cognition:</strong> Sezione su embodied, embedded, enacted, extended cognition — frontiera che nessun manuale italiano copre adeguatamente</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>👥 Profilo autori ideale</h5>
+                <p>Un team di <strong>autori italiani</strong> con competenze in psicologia sperimentale e neuroscienze cognitive — la mancanza di autori italiani è un punto debole percepito dei manuali tradotti. Coinvolgere ricercatori attivi nei centri di eccellenza (Padova, Trento, Torino, Milano-Bicocca) darebbe credibilità e accesso diretto alla rete accademica. Un manuale con autori italiani riconosciuti potrebbe competere con il Girotto-Zorzi (Il Mulino) e con il Cherubini (Cortina) sullo stesso piano.</p>
+            </div>
+            <div class="id-section">
+                <h5>📐 Formato suggerito</h5>
+                <p>Testo compatto (~350-400 pp.), orientato a corsi da 8-10 CFU, con forte apparato di esercizi e laboratori (inclusi dataset per analisi con R/JASP). Risorse digitali native: non un adattamento, ma un prodotto pensato fin dall'inizio come ibrido carta+digitale. Differenziazione rispetto allo Schacter: dove lo Schacter è generalista e "orizzontale", il nuovo testo sarebbe specialistico e "verticale" sui processi cognitivi.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Atenei Target — Priorità di intervento</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Priorità</th><th>Ateneo</th><th>Situazione attuale</th><th>Perché è un target</th><th>Azione suggerita</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Padova (5 cattedre)</td><td>Atkinson & Hilgard (Piccin, 2017)</td><td>Maggiore concentrazione Piccin; testo del 2017; 5 cattedre = alto impatto</td><td>Presentazione ed. 2024 ai coordinatori; copia saggio a tutti i docenti</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Valle d'Aosta</td><td>Atkinson 15ª ed. (Piccin, 2011)</td><td>Manuale datato di 15 anni; alta probabilità di cambio</td><td>Visita docente, copia saggio ed. 2024</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Foggia</td><td>Gerrig (Pearson, 2018)</td><td>Edizione datata, ateneo medio-piccolo permeabile</td><td>Contatto diretto, confronto Schacter vs Gerrig</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Milano San Raffaele (×2)</td><td>Non disponibile / Leganto</td><td>Nessun testo dichiarato; finestra aperta su 2 cattedre</td><td>Contatto docenti Oppo e Zani, demo piattaforma</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Cagliari</td><td>Ciccarelli (Pearson) + Nigro (2001)</td><td>Testo metodologico del 2001; possibile sostituzione</td><td>Proposta pacchetto Schacter + companion metodologico</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Chieti (3 canali)</td><td>Holt (McGraw-Hill, 2023)</td><td>3 cattedre con stesso testo; effetto domino se uno cambia</td><td>Monitoraggio; evento accademico; copia saggio</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Firenze (2 canali)</td><td>Holt (McGraw-Hill, 2023)</td><td>Grande ateneo; 2 cattedre; alta visibilità</td><td>Monitoraggio; contatto in occasione di cambio docente</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Pisa</td><td>Gerrig (Pearson)</td><td>Ateneo prestigioso; testo non recentissimo</td><td>Contatto esplorativo</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Modena-RE</td><td>Gerrig (Pearson)</td><td>Ateneo medio; possibile apertura</td><td>Contatto docente in fase di revisione programma</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Trento</td><td>Holt (McGraw-Hill) + Turatto (Mondadori)</td><td>Centro d'eccellenza cognitiva — alto valore simbolico</td><td>Evento/presentazione; target per il nuovo manuale cognitivo (Scenario 2)</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Milano Bicocca</td><td>Cherubini (Cortina) + Ciccarelli (Pearson)</td><td>2 canali con editori diversi; possibile terza via</td><td>Monitoraggio; target per Scenario 2</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Bologna</td><td>Occhionero (Carocci) + Atkinson (Piccin)</td><td>Grande ateneo; programma frammentato; testo proprio del docente</td><td>Lungo termine; monitoraggio cambio docente</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">⚡</div> Quick Win — Aggiornamento cattedre esistenti</div>
+        <div class="highlight-box">
+            <h4>~6 cattedre Zanichelli ancora su edizione 2018 o precedente</h4>
+            <p>Messina (Fabio, 2018), Roma Europea (Brunetti/De Monte, 2018), Roma Tor Vergata (Sperduti/Monachesi, 2018), Molise (Sulpizio, 2018/2023), Campania Vanvitelli (Ruggiero, ed. 2010). <strong>Azione immediata:</strong> contatto per aggiornamento all'edizione 2024; copia saggio + demo risorse digitali. Risultato atteso: consolidamento delle 14 cattedre e aggiornamento editoriale.</p>
+        </div>
+    </div>
+</div>
+
+</div><!-- /main-content -->
+
+<!-- ===================== FOOTER ===================== -->
+<div class="footer">
+    <p>Zanichelli Editore — Intelligence Report Psicologia Generale L-24 | Febbraio 2026 | Dati raccolti da syllabi accademici A.A. 2024-2026</p>
+    <p style="margin-top:.3rem;">Dashboard generata per uso interno — Promozione Editoriale Universitaria</p>
+</div>
+
+<!-- ===================== CHARTS ===================== -->
+<script>
+const ZB='#003C82',ZL='#0068C8',ZA='#E63946',ZG='#2A9D8F',ZO='#F4A261',ZGo='#E9C46A',ZP='#7B2D8E';
+
+new Chart(document.getElementById('chartMarketShare'),{
+    type:'doughnut',
+    data:{labels:['Zanichelli (Schacter+Gray/Revlin)','McGraw-Hill (Holt+Feldman+altri)','Piccin (Atkinson+Carlson)','Pearson (Gerrig+Ciccarelli)','Il Mulino (Girotto-Zorzi+Anolli)','UTET','Cortina','Carocci','Altro / N.D.'],
+        datasets:[{data:[14,14,8,8,4,2,1,2,2],backgroundColor:[ZA,'#F97316','#8B5CF6','#3B82F6',ZG,'#64748B','#EC4899','#14B8A6','#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},padding:10}},title:{display:true,text:'Distribuzione adozioni per editore (55 cattedre)',font:{size:14,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartEditoreBar'),{
+    type:'bar',
+    data:{labels:['Zanichelli','McGraw-Hill','Piccin','Pearson','Il Mulino','UTET','Cortina','Carocci','Altro'],
+        datasets:[{label:'N° adozioni',data:[14,14,8,8,4,2,1,2,2],backgroundColor:[ZA,'#F97316','#8B5CF6','#3B82F6',ZG,'#64748B','#EC4899','#14B8A6','#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'N° cattedre per editore',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,grid:{color:'#EDF2F7'}},y:{grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('chartSemestre'),{
+    type:'pie',
+    data:{labels:['I Semestre','II Semestre','Annuale'],
+        datasets:[{data:[42,8,5],backgroundColor:[ZB,ZG,ZO],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},title:{display:true,text:'Distribuzione per Semestre',font:{size:13,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartTeorie'),{
+    type:'bar',
+    data:{labels:['Cognitivismo / HIP','Neuroscienze Cognitive','Comportamentismo / Gestalt','Storico-Epistemologica','Psicologia Evoluzionistica','Embodied Cognition / 4E','Psicoanalisi'],
+        datasets:[{label:'Diffusione nei programmi',data:[85,75,70,55,30,15,15],backgroundColor:[ZB,ZL,ZGo,ZG,ZO,ZP,'#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Diffusione prospettive teoriche nei programmi (%)',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,max:100,grid:{color:'#EDF2F7'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}}}
+});
+
+function showTab(tabId){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+function toggleC(h){h.parentElement.classList.toggle('open')}
+function filterTable(){
+    const s=document.getElementById('searchTable').value.toLowerCase();
+    const e=document.getElementById('filterEditore').value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(r=>{
+        const t=r.textContent.toLowerCase();
+        r.style.display=(!s||t.includes(s))&&(!e||t.includes(e))?'':'none';
+    });
+}
+let sortDir={};
+function sortTable(c){
+    const tb=document.querySelector('#mainTable tbody');
+    const rows=Array.from(tb.querySelectorAll('tr'));
+    sortDir[c]=!sortDir[c];
+    rows.sort((a,b)=>{
+        const at=a.children[c].textContent.trim().toLowerCase();
+        const bt=b.children[c].textContent.trim().toLowerCase();
+        return sortDir[c]?at.localeCompare(bt):bt.localeCompare(at);
+    });
+    rows.forEach(r=>tb.appendChild(r));
+}
+</script>
+</body>
+</html>

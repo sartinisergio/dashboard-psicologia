@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antropologia Culturale — L-19 / LM-85bis | Zanichelli Market Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--zanichelli-blue:#003C82;--zanichelli-blue-light:#0055B8;--zanichelli-blue-pale:#E8F0FE;--zanichelli-accent:#E63946;--zanichelli-accent-light:#FDEAEC;--zanichelli-green:#2A9D8F;--zanichelli-green-light:#E6F5F3;--zanichelli-yellow:#E9C46A;--zanichelli-yellow-light:#FFF8E7;--zanichelli-orange:#F4A261;--zanichelli-purple:#6C5CE7;--zanichelli-purple-light:#F0EEFF;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;--gray-800:#1F2937;--gray-900:#111827;--shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);--shadow-lg:0 10px 15px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.05);--radius:12px;--radius-sm:8px;--radius-xs:6px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-800);line-height:1.6}
+.toolbar{position:sticky;top:0;z-index:1000;background:#fff;border-bottom:1px solid var(--gray-200);padding:10px 24px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow-sm)}
+.toolbar a,.toolbar button{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-xs);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:all .2s}
+.toolbar a{color:var(--zanichelli-blue);border:1px solid var(--zanichelli-blue);background:#fff}
+.toolbar a:hover{background:var(--zanichelli-blue-pale)}
+.toolbar button{color:#fff;background:var(--zanichelli-blue);border:1px solid var(--zanichelli-blue)}
+.toolbar button:hover{background:var(--zanichelli-blue-light)}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,#001F44 100%);color:#fff;padding:40px 24px 30px}
+.header-inner{max-width:1280px;margin:0 auto}
+.header h1{font-size:28px;font-weight:800;margin-bottom:4px}
+.header .subtitle{font-size:14px;opacity:.8;margin-bottom:24px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.kpi-card{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);padding:16px;text-align:center}
+.kpi-card .kpi-value{font-size:28px;font-weight:800}
+.kpi-card .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;opacity:.8;margin-top:2px}
+.tabs-container{background:#fff;border-bottom:1px solid var(--gray-200);position:sticky;top:52px;z-index:999;box-shadow:var(--shadow-sm)}
+.tabs{max-width:1280px;margin:0 auto;display:flex;overflow-x:auto}
+.tab-btn{padding:14px 20px;font-size:13px;font-weight:600;color:var(--gray-500);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s}
+.tab-btn:hover{color:var(--zanichelli-blue);background:var(--zanichelli-blue-pale)}
+.tab-btn.active{color:var(--zanichelli-blue);border-bottom-color:var(--zanichelli-blue)}
+.content{max-width:1280px;margin:0 auto;padding:24px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.highlight-box{background:linear-gradient(135deg,var(--zanichelli-blue-pale),#F0F4FF);border-left:4px solid var(--zanichelli-blue);border-radius:var(--radius-sm);padding:20px 24px;margin-bottom:24px;font-size:14px}
+.highlight-box.accent{background:linear-gradient(135deg,var(--zanichelli-accent-light),#FFF0F1);border-left-color:var(--zanichelli-accent)}
+.highlight-box.green{background:linear-gradient(135deg,var(--zanichelli-green-light),#F0FAF8);border-left-color:var(--zanichelli-green)}
+.highlight-box strong{color:var(--zanichelli-blue)}
+.highlight-box.accent strong{color:var(--zanichelli-accent)}
+.highlight-box.green strong{color:var(--zanichelli-green)}
+.section-title{font-size:20px;font-weight:700;color:var(--gray-900);margin:32px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--gray-200)}
+.metric-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
+.metric-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+.metric-card .mc-label{font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px}
+.metric-card .mc-value{font-size:24px;font-weight:800;color:var(--gray-900);margin:4px 0}
+.metric-card .mc-sub{font-size:12px;color:var(--gray-500)}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+.chart-box{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+.chart-box h3{font-size:15px;font-weight:700;margin-bottom:16px;color:var(--gray-800)}
+.table-wrapper{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:24px}
+.table-controls{padding:16px;display:flex;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--gray-200);background:var(--gray-50)}
+.table-controls select,.table-controls input{padding:8px 12px;border:1px solid var(--gray-300);border-radius:var(--radius-xs);font-size:13px;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--zanichelli-blue);color:#fff;padding:12px 14px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px;cursor:pointer;white-space:nowrap}
+th:hover{background:var(--zanichelli-blue-light)}
+td{padding:10px 14px;border-bottom:1px solid var(--gray-100);vertical-align:top}
+tr:hover{background:var(--gray-50)}
+tr.zan-row{background:var(--zanichelli-accent-light)!important}
+tr.zan-row:hover{background:#FDD!important}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700}
+.badge-l19{background:#DBEAFE;color:#1E40AF}
+.badge-lm85{background:#D1FAE5;color:#065F46}
+.badge-zan{background:var(--zanichelli-accent);color:#fff}
+.badge-alta{background:var(--zanichelli-accent);color:#fff}
+.badge-media{background:var(--zanichelli-orange);color:#fff}
+.badge-develop{background:var(--zanichelli-blue);color:#fff}
+.competitor-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm);display:flex;gap:16px;align-items:flex-start}
+.competitor-rank{width:40px;height:40px;border-radius:50%;background:var(--zanichelli-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}
+.competitor-rank.gold{background:#F59E0B}
+.competitor-rank.silver{background:#94A3B8}
+.competitor-rank.bronze{background:#CD7F32}
+.competitor-rank.zan{background:var(--zanichelli-accent)}
+.competitor-info{flex:1}
+.competitor-info h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.competitor-info .ci-meta{font-size:12px;color:var(--gray-500);margin-bottom:8px}
+.competitor-info .ci-desc{font-size:13px;color:var(--gray-600);line-height:1.5}
+.competitor-info .ci-badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;margin-right:6px;margin-top:8px}
+.collapsible{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-sm);margin-bottom:12px;overflow:hidden}
+.collapsible-header{padding:14px 20px;font-weight:700;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--gray-50);transition:background .2s}
+.collapsible-header:hover{background:var(--gray-100)}
+.collapsible-header::after{content:'▸';transition:transform .2s;font-size:16px}
+.collapsible.open .collapsible-header::after{transform:rotate(90deg)}
+.collapsible-body{padding:0 20px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease}
+.collapsible.open .collapsible-body{padding:16px 20px;max-height:4000px}
+.core-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.core-card{border-radius:var(--radius-sm);padding:16px;font-size:13px}
+.core-card h4{font-size:13px;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.cc-blue{background:var(--zanichelli-blue-pale);border-left:3px solid var(--zanichelli-blue)}
+.cc-green{background:var(--zanichelli-green-light);border-left:3px solid var(--zanichelli-green)}
+.cc-orange{background:var(--zanichelli-yellow-light);border-left:3px solid var(--zanichelli-orange)}
+.cc-purple{background:var(--zanichelli-purple-light);border-left:3px solid var(--zanichelli-purple)}
+.cc-red{background:var(--zanichelli-accent-light);border-left:3px solid var(--zanichelli-accent)}
+.cc-gray{background:var(--gray-100);border-left:3px solid var(--gray-400)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.pill{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;background:var(--gray-100);color:var(--gray-700)}
+.spec-table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:13px}
+.spec-table th{background:var(--gray-700);font-size:12px}
+.spec-table td{padding:10px 14px}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:600}
+.tag-alta{background:#DCFCE7;color:#166534}
+.tag-media{background:#FEF3C7;color:#92400E}
+.tag-bassa{background:#FEE2E2;color:#991B1B}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.swot-box{border-radius:var(--radius);padding:20px}
+.swot-box h4{font-size:14px;font-weight:700;margin-bottom:10px}
+.swot-box ul{padding-left:18px;font-size:13px}
+.swot-box li{margin-bottom:6px}
+.swot-s{background:#DCFCE7;border:1px solid #86EFAC}.swot-s h4{color:#166534}
+.swot-w{background:#FEE2E2;border:1px solid #FCA5A5}.swot-w h4{color:#991B1B}
+.swot-o{background:#DBEAFE;border:1px solid #93C5FD}.swot-o h4{color:#1E40AF}
+.swot-t{background:#FEF3C7;border:1px solid #FDE68A}.swot-t h4{color:#92400E}
+.id-card{border-radius:var(--radius);padding:24px;margin-bottom:16px}
+.id-card h4{font-size:16px;font-weight:700;margin-bottom:12px}
+.id-card-blue{background:linear-gradient(135deg,#EBF4FF,#DBEAFE);border:2px solid var(--zanichelli-blue)}.id-card-blue h4{color:var(--zanichelli-blue)}
+.id-card-red{background:linear-gradient(135deg,#FFF0F1,var(--zanichelli-accent-light));border:2px solid var(--zanichelli-accent)}.id-card-red h4{color:var(--zanichelli-accent)}
+.id-field{margin-bottom:10px;font-size:13px}
+.id-field strong{color:var(--gray-700)}
+.target-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px}
+.target-table th{background:var(--zanichelli-blue);color:#fff;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase}
+.target-table td{padding:10px 14px;border-bottom:1px solid var(--gray-100)}
+.target-table tr:hover{background:var(--gray-50)}
+.qw-box{background:linear-gradient(135deg,#FFF8E7,#FFFBF0);border:2px solid var(--zanichelli-yellow);border-radius:var(--radius);padding:20px;margin-bottom:24px}
+.qw-box h4{color:#92400E;font-size:15px;margin-bottom:10px}
+.qw-box ul{padding-left:18px;font-size:13px}
+.qw-box li{margin-bottom:6px}
+.footer{text-align:center;padding:24px;font-size:12px;color:var(--gray-400);border-top:1px solid var(--gray-200);margin-top:40px}
+@media(max-width:768px){.chart-grid{grid-template-columns:1fr}.swot-grid{grid-template-columns:1fr}.kpi-row{grid-template-columns:repeat(2,1fr)}.header h1{font-size:22px}}
+@media print{.toolbar,.tabs-container{display:none}.tab-panel{display:block!important;page-break-inside:avoid}.header{padding:20px}body{font-size:11px}}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+    <a href="index.html">← Torna alla Dashboard</a>
+    <button onclick="window.print()">🖨 Stampa / Salva PDF</button>
+</div>
+
+<div style="background:#003865;color:#fff;padding:12px 20px;font-size:13px;border-radius:8px;margin:0 0 20px;display:flex;align-items:center;justify-content:space-between">
+  <span>📊 L'analisi ponderata per studenti è ora disponibile nella sezione dedicata.</span>
+  <a href="index.html?section=ponderata&materia=pond19-antro" style="color:#E9C46A;font-weight:600;text-decoration:none;white-space:nowrap;margin-left:16px">Vai all'analisi ponderata →</a>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="header-inner">
+        <h1>📊 Antropologia Culturale</h1>
+        <div class="subtitle">Analisi di Mercato Editoriale — Classi L-19 / LM-85bis | Aggiornamento Febbraio 2026</div>
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:#4ADE80">29</div>
+                <div class="kpi-label">Cattedre Analizzate</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:var(--zanichelli-yellow)">22</div>
+                <div class="kpi-label">Atenei Coinvolti</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:var(--zanichelli-orange)">18+11</div>
+                <div class="kpi-label">L-19 + LM-85bis</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:#F87171">21,4%</div>
+                <div class="kpi-label">Quota Zanichelli (principale)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" style="color:#4ADE80">37,9%</div>
+                <div class="kpi-label">Presenza totale Zanichelli</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('panoramica')">Panoramica</button>
+        <button class="tab-btn" onclick="switchTab('mappa')">Mappa Adozioni</button>
+        <button class="tab-btn" onclick="switchTab('competitor')">Competitor</button>
+        <button class="tab-btn" onclick="switchTab('contenuti')">Contenuti & Programmi</button>
+        <button class="tab-btn" onclick="switchTab('posizionamento')">Posizionamento Zanichelli</button>
+    </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- ==================== TAB PANORAMICA ==================== -->
+<div id="panoramica" class="tab-panel active">
+    <div class="highlight-box green">
+        <strong>🏆 Zanichelli è LEADER di mercato!</strong> Con il <strong>21,4%</strong> delle adozioni principali (6 cattedre su 28 con testo noto), Zanichelli detiene la prima posizione nel segmento L-19/LM-85bis dell'Antropologia Culturale. Considerando anche le adozioni complementari, la presenza totale sale a <strong>11 cattedre su 29 (37,9%)</strong>. Il vantaggio competitivo è trainato dal titolo <strong>Tassan — Antropologia per insegnare</strong> (2020), che domina nella classe LM-85bis con 4 adozioni principali + 3 complementari. Il manuale <strong>Schultz & Lavenda</strong> (4ª ed. 2021) contribuisce con 2 adozioni principali nella L-19. La minaccia principale viene dalla nuova edizione di <strong>Dei (Il Mulino, marzo 2026)</strong> e dalla 4ª edizione di <strong>Kottak (McGraw-Hill, 2025)</strong>.
+    </div>
+
+    <div class="metric-cards">
+        <div class="metric-card" style="border-left:4px solid var(--zanichelli-accent)">
+            <div class="mc-label">🥇 Zanichelli — Leader</div>
+            <div class="mc-value" style="color:var(--zanichelli-accent)">21,4%</div>
+            <div class="mc-sub">6 adozioni principali (4 Tassan + 2 Schultz&Lavenda)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">🥈 Il Mulino</div>
+            <div class="mc-value" style="color:var(--zanichelli-blue)">17,9%</div>
+            <div class="mc-sub">5 adozioni principali (Dei)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">🥈 Hoepli</div>
+            <div class="mc-value" style="color:var(--zanichelli-orange)">17,9%</div>
+            <div class="mc-sub">5 adozioni (Palumbo/Pizza/Schirripa)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">4° Einaudi / McGraw-Hill</div>
+            <div class="mc-value" style="color:var(--gray-600)">10,7%</div>
+            <div class="mc-sub">3 adozioni ciascuno</div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-box">
+            <h3>Market Share — Manuali Principali (28 cattedre note)</h3>
+            <canvas id="chartDoughnut" height="280"></canvas>
+        </div>
+        <div class="chart-box">
+            <h3>Presenza per Editore (principali + complementari)</h3>
+            <canvas id="chartBar" height="280"></canvas>
+        </div>
+    </div>
+
+    <h2 class="section-title">Distribuzione per Classe di Laurea</h2>
+    <div class="metric-cards">
+        <div class="metric-card">
+            <div class="mc-label">L-19 (Scienze dell'Educazione)</div>
+            <div class="mc-value">18</div>
+            <div class="mc-sub">62% delle cattedre — orientamento sociale e marginalità</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">LM-85bis (Formazione Primaria)</div>
+            <div class="mc-value">11</div>
+            <div class="mc-sub">38% delle cattedre — orientamento scuola e infanzia</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">Zanichelli in LM-85bis</div>
+            <div class="mc-value" style="color:var(--zanichelli-accent)">63,6%</div>
+            <div class="mc-sub">7 presenze su 11 cattedre LM-85bis</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">Zanichelli in L-19</div>
+            <div class="mc-value" style="color:var(--zanichelli-orange)">22,2%</div>
+            <div class="mc-sub">4 presenze su 18 cattedre L-19</div>
+        </div>
+    </div>
+
+    <h2 class="section-title">Distribuzione Temporale</h2>
+    <div class="metric-cards">
+        <div class="metric-card">
+            <div class="mc-label">I Semestre</div>
+            <div class="mc-value">7</div>
+            <div class="mc-sub">Cagliari, Foggia, Messina LM-85bis, Perugia (×2), Bologna L-19 Gaibazzi, Salerno</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">II Semestre</div>
+            <div class="mc-value">16</div>
+            <div class="mc-sub">Maggioranza delle cattedre</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">Annuale / N.D.</div>
+            <div class="mc-value">6</div>
+            <div class="mc-sub">Cattolica, Pisa, LUMSA, Napoli Benincasa (×2), Roma Unilink</div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <strong>Contesto di mercato:</strong> L'Antropologia Culturale è presente come esame autonomo in entrambe le classi — un caso raro nel panorama delle materie analizzate. Il bacino complessivo è di <strong>111.983 iscritti</strong> (70.254 L-19 + 41.729 LM-85bis). Zanichelli gode di un posizionamento particolarmente forte nella LM-85bis grazie al Tassan, specificamente progettato per futuri insegnanti. La sfida è consolidare questa leadership e espandere la penetrazione nella L-19 dove Schultz & Lavenda compete con i manuali italiani.
+    </div>
+</div>
+
+<!-- ==================== TAB MAPPA ADOZIONI ==================== -->
+<div id="mappa" class="tab-panel">
+    <h2 class="section-title">Mappa Completa delle Adozioni</h2>
+    <div class="table-wrapper">
+        <div class="table-controls">
+            <select id="filterEditore" onchange="filterTable()">
+                <option value="">Tutti gli editori</option>
+                <option value="Zanichelli">Zanichelli</option>
+                <option value="Il Mulino">Il Mulino</option>
+                <option value="Hoepli">Hoepli</option>
+                <option value="McGraw-Hill">McGraw-Hill</option>
+                <option value="Einaudi">Einaudi</option>
+                <option value="Mondadori">Mondadori</option>
+                <option value="Carocci">Carocci</option>
+            </select>
+            <select id="filterClasse" onchange="filterTable()">
+                <option value="">Tutte le classi</option>
+                <option value="L-19">L-19</option>
+                <option value="LM-85bis">LM-85bis</option>
+            </select>
+            <input type="text" id="filterSearch" placeholder="🔍 Cerca ateneo o docente..." oninput="filterTable()" style="flex:1;min-width:200px;">
+        </div>
+        <div style="overflow-x:auto">
+        <table id="adozioniTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Ateneo</th>
+                    <th onclick="sortTable(1)">Classe</th>
+                    <th onclick="sortTable(2)">Docente</th>
+                    <th onclick="sortTable(3)">Anno</th>
+                    <th onclick="sortTable(4)">Sem.</th>
+                    <th onclick="sortTable(5)">Manuale Principale</th>
+                    <th onclick="sortTable(6)">Editore</th>
+                    <th>Zanichelli</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="zan-row"><td>Basilicata</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Domenico Copertino</td><td>—</td><td>II</td><td>Fabietti, <em>Elementi di antropologia culturale</em></td><td>Mondadori</td><td><span class="badge badge-zan">Tassan (compl.)</span></td></tr>
+                <tr><td>Bergamo</td><td><span class="badge badge-l19">L-19</span></td><td>Ulderico Daniele</td><td>1</td><td>II</td><td><em>Non indicato</em></td><td>N.D.</td><td>—</td></tr>
+                <tr><td>Bologna</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Francesca Crivellaro</td><td>—</td><td>II</td><td>Benadusi, <em>La scuola in pratica</em></td><td>Editpress</td><td>—</td></tr>
+                <tr><td>Bologna</td><td><span class="badge badge-l19">L-19</span></td><td>Paolo Gaibazzi</td><td>—</td><td>I</td><td>Dei, <em>Antropologia culturale</em></td><td>Il Mulino</td><td>—</td></tr>
+                <tr><td>Bologna</td><td><span class="badge badge-l19">L-19</span></td><td>Giovanna Guerzoni</td><td>—</td><td>II</td><td>Dei, <em>Antropologia culturale</em></td><td>Il Mulino</td><td>—</td></tr>
+                <tr class="zan-row"><td>Cagliari</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Carlo Maxia</td><td>—</td><td>I</td><td>Schultz & Lavenda, <em>Antropologia culturale</em> (4ª ed. 2021)</td><td>Zanichelli</td><td><span class="badge badge-zan">Principale</span></td></tr>
+                <tr><td>Campania Vanvitelli</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Simone Valitutto</td><td>—</td><td>II</td><td>Dei, <em>Antropologia culturale</em></td><td>Il Mulino</td><td>—</td></tr>
+                <tr class="zan-row"><td>Foggia</td><td><span class="badge badge-l19">L-19</span></td><td>Francesca Scionti</td><td>1</td><td>I</td><td>Engelke, <em>Pensare come un antropologo</em></td><td>Einaudi</td><td><span class="badge badge-zan">Tassan (compl.)</span></td></tr>
+                <tr><td>L'Aquila</td><td><span class="badge badge-l19">L-19</span></td><td>Antonello Ciccozzi</td><td>1</td><td>II</td><td>Dei, <em>Antropologia culturale</em></td><td>Il Mulino</td><td>—</td></tr>
+                <tr><td>Messina</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Sebastiano Nucera</td><td>1</td><td>I</td><td>Palumbo/Pizza/Schirripa, <em>Antropologia culturale e sociale</em></td><td>Hoepli</td><td>—</td></tr>
+                <tr><td>Messina</td><td><span class="badge badge-l19">L-19</span></td><td>G. D. Schirripa</td><td>1</td><td>II</td><td>Palumbo/Pizza/Schirripa, <em>Antropologia culturale e sociale</em></td><td>Hoepli</td><td>—</td></tr>
+                <tr><td>Milano Bicocca</td><td><span class="badge badge-l19">L-19</span></td><td>Alessandra Brivio</td><td>—</td><td>II</td><td>King, <em>La riscoperta dell'umanità</em></td><td>Einaudi</td><td>—</td></tr>
+                <tr class="zan-row"><td>Milano Bicocca</td><td><span class="badge badge-l19">L-19</span></td><td>Manuela Tassan</td><td>—</td><td>II</td><td>King, <em>La riscoperta dell'umanità</em></td><td>Einaudi</td><td><span class="badge badge-zan">Tassan (compl.)</span></td></tr>
+                <tr><td>Milano Cattolica</td><td><span class="badge badge-l19">L-19</span></td><td>M. F. Fontefrancesco</td><td>—</td><td>A</td><td>Kottak, <em>Antropologia Culturale</em></td><td>McGraw-Hill</td><td>—</td></tr>
+                <tr class="zan-row"><td>Molise</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Antonella Minelli</td><td>3</td><td>II</td><td>Biondi/Richards, <em>L'errore della razza</em></td><td>Carocci</td><td><span class="badge badge-zan">Fabietti Storia (compl.)</span></td></tr>
+                <tr><td>Napoli Benincasa</td><td><span class="badge badge-l19">L-19</span></td><td>Rossella Galletti</td><td>—</td><td>—</td><td>Palumbo/Pizza/Schirripa, <em>Antropologia culturale e sociale</em></td><td>Hoepli</td><td>—</td></tr>
+                <tr><td>Napoli Benincasa</td><td><span class="badge badge-l19">L-19</span></td><td>Helga Sanità</td><td>—</td><td>—</td><td>Palumbo/Pizza/Schirripa, <em>Antropologia culturale e sociale</em></td><td>Hoepli</td><td>—</td></tr>
+                <tr><td>Perugia</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Daniele Parbuono</td><td>1</td><td>I</td><td>Kottak, <em>Antropologia culturale</em></td><td>McGraw-Hill</td><td>—</td></tr>
+                <tr><td>Perugia</td><td><span class="badge badge-l19">L-19</span></td><td>Elisa Rondini</td><td>1</td><td>I</td><td>Kottak, <em>Antropologia culturale</em></td><td>McGraw-Hill</td><td>—</td></tr>
+                <tr class="zan-row"><td>Pisa</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Caterina Di Pasquale</td><td>1</td><td>A</td><td>Tassan, <em>Antropologia per insegnare</em> (2020)</td><td>Zanichelli</td><td><span class="badge badge-zan">Principale</span></td></tr>
+                <tr class="zan-row"><td>Roma LUMSA</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Calogero Caltagirone</td><td>1</td><td>A</td><td>Tassan, <em>Antropologia per insegnare</em> (2020)</td><td>Zanichelli</td><td><span class="badge badge-zan">Principale</span></td></tr>
+                <tr class="zan-row"><td>Roma Sapienza</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Anna Maria Iuso</td><td>1</td><td>II</td><td>Tassan, <em>Antropologia per insegnare</em> (2020)</td><td>Zanichelli</td><td><span class="badge badge-zan">Principale</span></td></tr>
+                <tr><td>Roma Tre</td><td><span class="badge badge-l19">L-19</span></td><td>Barbara Pinelli</td><td>3</td><td>II</td><td>Palumbo/Pizza/Schirripa, <em>Antropologia culturale e sociale</em></td><td>Hoepli</td><td>—</td></tr>
+                <tr class="zan-row"><td>Roma Tre</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Barbara Pinelli</td><td>3</td><td>II</td><td>King, <em>La riscoperta dell'umanità</em></td><td>Einaudi</td><td><span class="badge badge-zan">Tassan (compl.)</span></td></tr>
+                <tr><td>Roma Tre</td><td><span class="badge badge-l19">L-19</span></td><td>Francesco Pompeo</td><td>3</td><td>II</td><td>Pompeo, <em>Elementi di antropologia critica</em></td><td>Meti</td><td>—</td></tr>
+                <tr class="zan-row"><td>Roma Unilink</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Silvia Pitzalis</td><td>1</td><td>I</td><td>Tassan, <em>Antropologia per insegnare</em> (2020)</td><td>Zanichelli</td><td><span class="badge badge-zan">Principale</span></td></tr>
+                <tr><td>Salerno</td><td><span class="badge badge-l19">L-19</span></td><td>Federico Scarpelli</td><td>1</td><td>I</td><td>Dei, <em>Antropologia culturale</em></td><td>Il Mulino</td><td>—</td></tr>
+                <tr><td>Torino</td><td><span class="badge badge-l19">L-19</span></td><td>Francesco Vietti</td><td>3</td><td>II</td><td>Riccio/Tarabusi, <em>Antropologia ed etnografia per i servizi</em></td><td>Ed. Junior</td><td>—</td></tr>
+                <tr class="zan-row"><td>Verona</td><td><span class="badge badge-l19">L-19</span></td><td>Fabio Vicini</td><td>—</td><td>II</td><td>Schultz & Lavenda, <em>Antropologia culturale</em> (4ª ed. 2021)</td><td>Zanichelli</td><td><span class="badge badge-zan">Principale</span></td></tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <h2 class="section-title">Cattedre con Presenza Zanichelli (11 su 29)</h2>
+    <div class="highlight-box green">
+        Zanichelli è presente in <strong>11 cattedre su 29</strong> (37,9%), di cui 6 come manuale principale e 5 come complementare. La distribuzione per titolo è: <strong>Tassan</strong> — <em>Antropologia per insegnare</em> (7 presenze: 4 principali + 3 complementari); <strong>Schultz & Lavenda</strong> — <em>Antropologia culturale</em> (2 presenze, entrambe principali); <strong>Fabietti</strong> — <em>Storia dell'antropologia</em> (1 complementare a Molise). Il dominio è particolarmente netto nella <strong>LM-85bis</strong>: 7 presenze su 11 cattedre (63,6%).
+    </div>
+
+    <div class="chart-box" style="margin-bottom:24px">
+        <h3>Zanichelli: Distribuzione per Classe e Ruolo</h3>
+        <canvas id="chartZanClasse" height="180"></canvas>
+    </div>
+</div>
+
+<!-- ==================== TAB COMPETITOR ==================== -->
+<div id="competitor" class="tab-panel">
+    <h2 class="section-title">Ranking Manuali Principali</h2>
+
+    <div class="competitor-card">
+        <div class="competitor-rank zan">🥇</div>
+        <div class="competitor-info">
+            <h4>Tassan — Antropologia per insegnare</h4>
+            <div class="ci-meta">Zanichelli | 2020 | ~280 pp. | ~€ 28 | Sottotitolo: "Diversità culturale e processi educativi"</div>
+            <div class="ci-desc">
+                Il vero game-changer di Zanichelli in questo segmento. Unico manuale specificamente progettato per futuri insegnanti e educatori, con taglio operativo su scuola multiculturale, processi di inculturazione e schooling. Dominante nella LM-85bis (4 adozioni principali + 3 complementari). L'autrice Manuela Tassan è docente a Milano-Bicocca e lo adotta anche nel proprio corso (complementare). Nessun concorrente ha un equivalente mirato.
+            </div>
+            <span class="ci-badge" style="background:var(--zanichelli-accent);color:#fff">4 principali + 3 complementari</span>
+            <span class="ci-badge" style="background:#D1FAE5;color:#065F46">Dominante LM-85bis</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank gold">2</div>
+        <div class="competitor-info">
+            <h4>Dei — Antropologia culturale</h4>
+            <div class="ci-meta">Il Mulino | 2ª ed. 2016 → <strong style="color:var(--zanichelli-accent)">3ª ed. marzo 2026!</strong> | 336 pp. | ~€ 33</div>
+            <div class="ci-desc">
+                Il manuale generalista più adottato (5 cattedre principali). Apprezzato per l'equilibrio tra teoria classica, storia e temi contemporanei. La <strong>nuova edizione in uscita a marzo 2026</strong> (ISBN 9788815389947) rappresenta una minaccia diretta: Il Mulino sta investendo per mantenere la leadership. Forte nella L-19 ma meno presente nella LM-85bis.
+            </div>
+            <span class="ci-badge" style="background:#DBEAFE;color:#1E40AF">5 adozioni principali</span>
+            <span class="ci-badge" style="background:#FEE2E2;color:#991B1B">⚠ Nuova ed. marzo 2026</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank gold">2</div>
+        <div class="competitor-info">
+            <h4>Palumbo, Pizza, Schirripa — Antropologia culturale e sociale</h4>
+            <div class="ci-meta">Hoepli | 2022 | 368 pp. | ~€ 32 | Sottotitolo: "Concetti, storia, prospettive"</div>
+            <div class="ci-desc">
+                Manuale recente e ambizioso di Hoepli, scritto da docenti di Messina. Organizzato per concetti e parole chiave contemporanee. Forte nel Sud Italia (Messina ×2, Napoli Benincasa ×2, Roma Tre L-19). Auto-adozione da parte di Schirripa a Messina. Taglio più critico e contemporaneo rispetto a Dei.
+            </div>
+            <span class="ci-badge" style="background:#FEF3C7;color:#92400E">5 adozioni principali</span>
+            <span class="ci-badge" style="background:#E0E7FF;color:#4338CA">Forte nel Mezzogiorno</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank">4</div>
+        <div class="competitor-info">
+            <h4>Kottak — Antropologia culturale</h4>
+            <div class="ci-meta">McGraw-Hill | <strong>4ª ed. italiana 2025</strong> | ~380 pp. | ~€ 37</div>
+            <div class="ci-desc">
+                Il classico manuale americano, aggiornato con una nuova edizione italiana 2025 curata da Laura Bonato. Presente a Perugia (L-19 + LM-85bis) e Milano Cattolica. Approccio sistematico e ricco di casi etnografici. La nuova edizione lo rende un concorrente più temibile di quanto non fosse.
+            </div>
+            <span class="ci-badge" style="background:#DBEAFE;color:#1E40AF">3 adozioni</span>
+            <span class="ci-badge" style="background:#FEF3C7;color:#92400E">Nuova ed. 2025</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank">5</div>
+        <div class="competitor-info">
+            <h4>King — La riscoperta dell'umanità</h4>
+            <div class="ci-meta">Einaudi | 2020 | ~400 pp. | ~€ 28</div>
+            <div class="ci-desc">
+                Non è un manuale tradizionale ma un saggio narrativo sulla nascita delle idee antropologiche (Franz Boas e allievi). Adottato come testo principale a Milano-Bicocca (2 cattedre) e Roma Tre LM-85bis. Apprezzato per la leggibilità e il taglio storico-critico, ma non copre tutti i temi di un corso standard.
+            </div>
+            <span class="ci-badge" style="background:#E0E7FF;color:#4338CA">3 adozioni principali</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank">6</div>
+        <div class="competitor-info">
+            <h4>Schultz & Lavenda — Antropologia culturale</h4>
+            <div class="ci-meta">Zanichelli | 4ª ed. italiana 2021 (dalla 10ª americana) | ~480 pp. | ~€ 55</div>
+            <div class="ci-desc">
+                Il secondo titolo Zanichelli nel segmento. Manuale internazionale completo e sistematico, curato da Mauro Van Aken. Adottato a Cagliari (LM-85bis) e Verona (L-19). Prezzo più alto della media, il che può penalizzarlo nella L-19 dove i docenti preferiscono testi agili. Forte per corsi da 8+ CFU.
+            </div>
+            <span class="ci-badge" style="background:var(--zanichelli-accent);color:#fff">2 adozioni Zanichelli</span>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Analisi Comparativa Dettagliata dei Manuali</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:12px"><strong>Segmentazione per target:</strong> Il mercato si divide nettamente in due: manuali generalisti (Dei, Kottak, Schultz & Lavenda, Palumbo et al.) e manuali orientati all'educazione (Tassan). Il Tassan è l'unico testo che occupa in modo esclusivo la nicchia "antropologia per insegnanti/educatori". Questa unicità è il principale vantaggio competitivo di Zanichelli.</p>
+            <p style="margin-bottom:12px"><strong>Aggiornamento — Momento critico:</strong> Il 2025-2026 è un anno di rinnovamento massiccio: Kottak 4ª ed. (2025), Dei 3ª ed. (marzo 2026), mentre Tassan (2020) e Schultz & Lavenda (2021) hanno ancora qualche anno di vita. Tuttavia, se i competitor si aggiornano e Zanichelli no, il vantaggio si erode.</p>
+            <p style="margin-bottom:12px"><strong>Prezzo:</strong> Tassan (~€28) e King (~€28) sono nella fascia più accessibile. Dei (~€33) e Palumbo (~€32) in fascia media. Schultz & Lavenda (~€55) e Kottak (~€37) nella fascia alta. Il prezzo del Schultz può essere un freno nelle L-19 a 6 CFU.</p>
+            <p><strong>Complementari:</strong> Il panorama complementare è estremamente frammentato tra piccoli editori specializzati (CISU, Seid, Editpress, Eleuthera, Meltemi). Nessun editore domina. Zanichelli ha un vantaggio con Fabietti (Storia dell'antropologia) come complementare storico-teorico.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB CONTENUTI & PROGRAMMI ==================== -->
+<div id="contenuti" class="tab-panel">
+    <h2 class="section-title">Nucleo Minimo di Contenuti Comuni</h2>
+    <div class="core-cards">
+        <div class="core-card cc-blue">
+            <h4>Epistemologia</h4>
+            Definizione di Antropologia (DEA), distinzione biologico/culturale, storia della disciplina
+        </div>
+        <div class="core-card cc-green">
+            <h4>Teoria della Cultura</h4>
+            Concetto di cultura, superamento del senso comune, etnocentrismo vs relativismo
+        </div>
+        <div class="core-card cc-purple">
+            <h4>Identità e Alterità</h4>
+            Etnicità, costruzione delle identità, decostruzione del concetto biologico di "razza"
+        </div>
+        <div class="core-card cc-orange">
+            <h4>Metodologia</h4>
+            Ricerca etnografica, osservazione partecipante, lavoro sul campo
+        </div>
+    </div>
+
+    <h2 class="section-title">Nucleo Esteso (variabile per curriculum)</h2>
+    <div class="pills">
+        <span class="pill">Parentela e famiglia</span>
+        <span class="pill">Genere e sessualità</span>
+        <span class="pill">Rito e religione</span>
+        <span class="pill">Antropologia dell'educazione / Schooling</span>
+        <span class="pill">Migrazioni e transnazionalismo</span>
+        <span class="pill">Globalizzazione</span>
+        <span class="pill">Antropologia dell'alimentazione</span>
+        <span class="pill">Antropologia medica / salute</span>
+        <span class="pill">Antropologia urbana e marginalità</span>
+        <span class="pill">Antropocene e ambiente</span>
+        <span class="pill">Infanzia / Childhood Studies</span>
+        <span class="pill">Post-colonialismo</span>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Specificità per Classe di Laurea</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:12px"><strong>LM-85bis (Formazione Primaria):</strong> Forte specializzazione verso l'antropologia dell'educazione e dello schooling. I programmi includono successo/insuccesso scolastico delle minoranze, la "cultura dei bambini", il rapporto scuola-famiglie migranti. L'infanzia è legata ai processi di apprendimento e scolarizzazione. L'obiettivo è "antropologizzare" la figura del maestro per gestire la classe multiculturale.</p>
+            <p><strong>L-19 (Scienze dell'Educazione):</strong> Orientamento verso l'antropologia sociale, del welfare e della marginalità. Temi: vulnerabilità sociale, servizi socio-educativi, antropologia urbana, processi migratori complessi. L'infanzia è trattata come categoria sociale nei Childhood Studies. L'obiettivo è formare un operatore sociale capace di muoversi tra i servizi del territorio.</p>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Specificità Tematiche per Ateneo</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px"><strong>Bologna (Crivellaro, LM-85bis):</strong> Modello integrato con Sociologia dell'educazione. Focus su antropologia della scuola con testo Benadusi.</p>
+            <p style="margin-bottom:10px"><strong>Bologna (Gaibazzi/Guerzoni, L-19):</strong> Dei come base + monografici su migrazioni (badanti, confini). Approccio critico-contemporaneo.</p>
+            <p style="margin-bottom:10px"><strong>Cagliari (Maxia, LM-85bis):</strong> Schultz & Lavenda (Zanichelli) come base + Piasere <em>A scuola</em> + etnografia dell'educazione. Programma da 8 CFU molto articolato.</p>
+            <p style="margin-bottom:10px"><strong>Milano Bicocca (Brivio/Tassan, L-19):</strong> Modello critico con King come inquadramento storico-narrativo. Tassan adotta il proprio testo come complementare. Temi: welfare, ambiente, Antropocene.</p>
+            <p style="margin-bottom:10px"><strong>Napoli Benincasa (Galletti/Sanità, L-19):</strong> Palumbo et al. + antropologia dell'alimentazione (Moro/Niola). Due sezioni A-L e M-Z.</p>
+            <p style="margin-bottom:10px"><strong>Roma Tre (Pinelli, L-19 + LM-85bis):</strong> Stessa docente in due classi diverse con programmi differenziati: Palumbo per L-19 (marginalità, migrazioni) e King+Tassan per LM-85bis (scuola).</p>
+            <p style="margin-bottom:10px"><strong>Roma Sapienza/LUMSA/Unilink (LM-85bis):</strong> Tutte adottano Tassan come principale — fortino Zanichelli nell'area romana.</p>
+            <p><strong>Torino (Vietti, L-19):</strong> Approccio etnografico con Riccio/Tarabusi (Ed. Junior) + Miller (Pearson) + etnografia delle migrazioni. Unico programma con manuale Pearson (Miller).</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">Prospettive Teoriche</h2>
+    <table class="spec-table">
+        <thead><tr><th>Prospettiva Teorica</th><th>Presenza</th><th>Modalità</th><th>Note</th></tr></thead>
+        <tbody>
+            <tr><td>Evoluzionismo unilineare</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Origine storica della disciplina — tutti i manuali</td></tr>
+            <tr><td>Funzionalismo / Struttural-funzionalismo</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Malinowski, analisi bisogni/istituzioni</td></tr>
+            <tr><td>Strutturalismo (Lévi-Strauss)</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Centrale per parentela e miti</td></tr>
+            <tr><td>Particolarismo storico (Boas)</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Critica del concetto di razza</td></tr>
+            <tr><td>Cultura e Personalità</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Inculturazione, rilevante per educatori</td></tr>
+            <tr><td>Antropologia Interpretativa (Geertz)</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Cultura come "testo"</td></tr>
+            <tr><td>Post-coloniale / Decoloniale</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Potere e asimmetrie globali</td></tr>
+            <tr><td>Antropologia Critica / Marxismo</td><td><span class="tag tag-media">Media</span></td><td>Implicita</td><td>Disuguaglianze e welfare</td></tr>
+            <tr><td>Ermeneutica / Post-strutturalismo</td><td><span class="tag tag-bassa">Bassa</span></td><td>Esplicita</td><td>Solo nei sillabi con forte impronta storica</td></tr>
+        </tbody>
+    </table>
+
+    <div class="chart-box" style="margin-bottom:24px">
+        <h3>Presenza delle Prospettive Teoriche nei Programmi</h3>
+        <canvas id="chartProspettive" height="220"></canvas>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Modelli di Strutturazione del Corso</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px"><strong>Modello Storico-Sistematico:</strong> Evoluzione cronologica delle scuole (Evoluzionismo → Funzionalismo → Strutturalismo → Contemporaneità) + aree tematiche. Tipico di: Bergamo, Molise, Perugia, Salerno.</p>
+            <p style="margin-bottom:10px"><strong>Modello Concettuale-Operativo (prevalente in LM-85bis):</strong> Focus immediato sui concetti chiave (cultura, etnicità) → applicazione nei contesti scolastici e dell'infanzia. Tipico di: Bologna-Crivellaro, Cagliari, Sapienza, Unilink, Pisa.</p>
+            <p style="margin-bottom:10px"><strong>Modello Critico-Monografico (prevalente in L-19):</strong> Breve introduzione manualistica + ampia sezione monografica su temi della contemporaneità (migrazioni, violenza, welfare). Tipico di: Milano-Bicocca, Roma Tre, Torino.</p>
+            <p><strong>Modello Integrato:</strong> L'insegnamento è parte di un modulo più ampio (spesso con Sociologia dell'educazione). Tipico di: Bologna-Crivellaro, Messina-Nucera.</p>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Limiti dell'Analisi</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px">L'analisi risente dell'eterogeneità dei dati: alcuni sillabi sono molto dettagliati (Milano-Bicocca, Perugia), altri forniscono solo elenchi di testi (Messina-Nucera). I termini "Antropologia Culturale", "Sociale" e "Demoetnoantropologica" sono spesso usati come sinonimi senza precisare le sfumature teoriche. Molti sillabi dichiarano i contenuti senza esplicitare quale scuola teorica verrà privilegiata, rendendo la mappatura parzialmente basata su inferenze dai testi adottati.</p>
+            <p>Il campione di 29 cattedre su 22 atenei è comunque significativo. Non sono incluse le telematiche (41,5% degli iscritti L-19), che rappresentano un'area di indagine prioritaria per estendere l'analisi.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB POSIZIONAMENTO ZANICHELLI ==================== -->
+<div id="posizionamento" class="tab-panel">
+    <div class="highlight-box green">
+        <strong>🏆 Situazione eccezionale:</strong> Zanichelli è <strong>leader di mercato</strong> nell'Antropologia Culturale L-19/LM-85bis con una quota del 21,4% come manuale principale (6 cattedre) e una presenza totale del 37,9% (11 cattedre). Il vantaggio è costruito su un portafoglio a tre titoli complementari: <strong>Tassan</strong> (formazione insegnanti, dominante LM-85bis), <strong>Schultz & Lavenda</strong> (manuale internazionale generalista) e <strong>Fabietti</strong> (storia della disciplina, complementare). Questo è il miglior risultato Zanichelli tra tutte le materie analizzate nelle Fasi 1 e 2 del progetto.
+    </div>
+
+    <h2 class="section-title">Analisi SWOT</h2>
+    <div class="swot-grid">
+        <div class="swot-box swot-s">
+            <h4>⬆ Punti di Forza (Strengths)</h4>
+            <ul>
+                <li><strong>Tassan è un unicum:</strong> unico manuale pensato per insegnanti/educatori — nessun concorrente diretto</li>
+                <li><strong>Portafoglio a tre livelli:</strong> Tassan (nicchia educativa) + Schultz & Lavenda (generalista internazionale) + Fabietti (storia) = copertura completa</li>
+                <li><strong>Dominio LM-85bis:</strong> 63,6% di presenza nella Formazione Primaria</li>
+                <li><strong>Auto-adozione virtuosa:</strong> Tassan è docente a Milano-Bicocca e adotta il proprio testo</li>
+                <li><strong>Edizioni recenti:</strong> Tassan 2020, Schultz & Lavenda 2021, Fabietti 2020 — tutte aggiornate</li>
+                <li><strong>Fortino romano:</strong> Sapienza, LUMSA, Unilink, Roma Tre LM-85bis = 4 cattedre su 4 a Roma</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-w">
+            <h4>⬇ Punti di Debolezza (Weaknesses)</h4>
+            <ul>
+                <li><strong>Penetrazione L-19 limitata:</strong> solo 4 presenze su 18 cattedre (22,2%) vs 63,6% in LM-85bis</li>
+                <li><strong>Schultz & Lavenda costoso:</strong> ~€55, il più caro del segmento, penalizza nella L-19 a 6 CFU</li>
+                <li><strong>Assenza nel Mezzogiorno L-19:</strong> Hoepli domina Messina e Napoli, zone non penetrate</li>
+                <li><strong>Tassan datato entro 2-3 anni:</strong> 2020 inizierà a invecchiare se non si pianifica un aggiornamento</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-o">
+            <h4>→ Opportunità (Opportunities)</h4>
+            <ul>
+                <li><strong>Bergamo senza testo:</strong> cattedra scoperta, massima apertura a proposte</li>
+                <li><strong>Torino:</strong> manuale atipico (Riccio/Tarabusi, Ed. Junior) — potrebbe passare a Schultz & Lavenda o Tassan</li>
+                <li><strong>Campania Vanvitelli (LM-85bis):</strong> usa Dei + ha profilo educativo → Tassan come complementare/sostitutivo</li>
+                <li><strong>Perugia (×2):</strong> usa Kottak che si è appena aggiornato, ma Tassan potrebbe entrare come complementare LM-85bis</li>
+                <li><strong>Telematiche inesplorate:</strong> enorme potenziale per Schultz & Lavenda (digitale nativo)</li>
+                <li><strong>Espansione Tassan nella L-19:</strong> il taglio educativo è utile anche per educatori socio-pedagogici</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-t">
+            <h4>⚠ Minacce (Threats)</h4>
+            <ul>
+                <li><strong>Dei 3ª edizione (marzo 2026):</strong> Il Mulino aggiorna il proprio campione — rischio di riconquista cattedre</li>
+                <li><strong>Kottak 4ª ed. (2025):</strong> McGraw-Hill rinnova e può rilanciare anche in LM-85bis</li>
+                <li><strong>Palumbo/Hoepli in crescita:</strong> manuale recente (2022) con auto-adozione a Messina, in espansione</li>
+                <li><strong>Assenza di un "Tassan 2" per L-19:</strong> se un competitor crea un manuale mirato per educatori sociali, erode il vantaggio Zanichelli</li>
+                <li><strong>Ciclo di vita Tassan:</strong> se non si pianifica la 2ª edizione entro 2026-2027, rischia di perdere appeal</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2 class="section-title">Carta d'Identità Competitiva — Strategia di Consolidamento</h2>
+
+    <div class="id-card id-card-blue">
+        <h4>📘 Scenario A — Difesa e Consolidamento (Priorità)</h4>
+        <div class="id-field"><strong>Azione 1:</strong> Pianificare la <strong>2ª edizione di Tassan</strong> entro 2027 — aggiornare con capitoli su: identità digitale, Antropocene, nuovi flussi migratori post-2020, didattica inclusiva post-pandemia</div>
+        <div class="id-field"><strong>Azione 2:</strong> Promuovere <strong>Tassan come complementare</strong> nelle cattedre L-19 dove non è ancora presente (Bologna, L'Aquila, Salerno, Torino)</div>
+        <div class="id-field"><strong>Azione 3:</strong> Difendere il fortino LM-85bis romano (Sapienza, LUMSA, Unilink) con servizi esclusivi: webinar con l'autrice, materiali didattici, test online</div>
+        <div class="id-field"><strong>Azione 4:</strong> Consolidare Schultz & Lavenda nelle cattedre da 8+ CFU (Cagliari, Verona) e proporlo come alternativa a Kottak/Dei dove il CFU lo consente</div>
+        <div class="id-field"><strong>Rischio:</strong> Basso — è una strategia difensiva che sfrutta posizioni acquisite</div>
+    </div>
+
+    <div class="id-card id-card-red">
+        <h4>📕 Scenario B — Espansione nella L-19</h4>
+        <div class="id-field"><strong>Concept:</strong> Creare una versione "L-19" del Tassan o un nuovo titolo: <em>"Antropologia per educatori. Marginalità, servizi e diversità culturale"</em></div>
+        <div class="id-field"><strong>Target:</strong> Le 18 cattedre L-19 dove Zanichelli ha solo il 22% di penetrazione</div>
+        <div class="id-field"><strong>Differenziazione:</strong> Mentre il Tassan è calibrato sulla scuola (LM-85bis), il nuovo titolo sarebbe calibrato su servizi sociali, welfare, migrazioni, marginalità urbana — i temi dominanti nella L-19</div>
+        <div class="id-field"><strong>Target primario:</strong> Torino (attualmente Ed. Junior), Bologna L-19, Bergamo (scoperta), Napoli Benincasa</div>
+        <div class="id-field"><strong>Timeline:</strong> 2027-2028 — richiede individuazione curatori</div>
+        <div class="id-field"><strong>Rischio:</strong> Medio — necessità di non cannibalizzare il Tassan e di trovare un autore con reputazione nella L-19</div>
+    </div>
+
+    <h2 class="section-title">Atenei Target — Piano d'Azione</h2>
+    <table class="target-table">
+        <thead><tr><th>Ateneo</th><th>Classe</th><th>Docente</th><th>Testo Attuale</th><th>Azione Zanichelli</th><th>Priorità</th></tr></thead>
+        <tbody>
+            <tr><td>Bergamo</td><td><span class="badge badge-l19">L-19</span></td><td>Ulderico Daniele</td><td>N.D.</td><td>Cattedra scoperta — proporre Schultz & Lavenda + Tassan complementare</td><td><span class="badge badge-alta">ALTA</span></td></tr>
+            <tr><td>Campania Vanvitelli</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Simone Valitutto</td><td>Dei (Il Mulino)</td><td>Proporre Tassan come complementare (profilo LM-85bis = fit perfetto)</td><td><span class="badge badge-alta">ALTA</span></td></tr>
+            <tr><td>Bologna LM-85bis</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Francesca Crivellaro</td><td>Benadusi (Editpress)</td><td>Proporre Tassan come principale — Editpress è editore piccolo, sostituibile</td><td><span class="badge badge-alta">ALTA</span></td></tr>
+            <tr><td>Torino</td><td><span class="badge badge-l19">L-19</span></td><td>Francesco Vietti</td><td>Riccio/Tarabusi (Ed. Junior)</td><td>Proporre Schultz & Lavenda come manuale base + Tassan complementare</td><td><span class="badge badge-media">MEDIA</span></td></tr>
+            <tr><td>L'Aquila</td><td><span class="badge badge-l19">L-19</span></td><td>Antonello Ciccozzi</td><td>Dei (Il Mulino)</td><td>Monitorare — Dei 3ª ed. in arrivo rinforza, ma proporre Tassan complementare</td><td><span class="badge badge-media">MEDIA</span></td></tr>
+            <tr><td>Perugia LM-85bis</td><td><span class="badge badge-lm85">LM-85bis</span></td><td>Daniele Parbuono</td><td>Kottak (McGraw-Hill)</td><td>Proporre Tassan come complementare al Kottak</td><td><span class="badge badge-media">MEDIA</span></td></tr>
+            <tr><td>Salerno</td><td><span class="badge badge-l19">L-19</span></td><td>Federico Scarpelli</td><td>Dei (Il Mulino)</td><td>Proporre Tassan o Schultz & Lavenda in affiancamento</td><td><span class="badge badge-media">MEDIA</span></td></tr>
+            <tr><td>Messina (×2)</td><td><span class="badge badge-l19">L-19</span>/<span class="badge badge-lm85">LM-85bis</span></td><td>Nucera / Schirripa</td><td>Palumbo et al. (Hoepli)</td><td>Auto-adozione forte — difficile da scalzare</td><td><span class="badge badge-develop">DEVELOP</span></td></tr>
+            <tr><td>Napoli Benincasa (×2)</td><td><span class="badge badge-l19">L-19</span></td><td>Galletti / Sanità</td><td>Palumbo et al. (Hoepli)</td><td>Hoepli consolidato — monitorare nel medio periodo</td><td><span class="badge badge-develop">DEVELOP</span></td></tr>
+        </tbody>
+    </table>
+
+    <div class="qw-box">
+        <h4>⚡ Quick Win — Azioni Immediate (Q1-Q2 2026)</h4>
+        <ul>
+            <li><strong>Bergamo (Daniele):</strong> Primo contatto urgente — cattedra senza testo indicato. Inviare copie saggio di Schultz & Lavenda + Tassan. Proporre pacchetto "manuale + complementare educativo" a prezzo scontato.</li>
+            <li><strong>Campania Vanvitelli (Valitutto, LM-85bis):</strong> Contatto entro marzo 2026. Dei sta uscendo in nuova edizione — momento di "transizione" ideale per inserire il Tassan come complementare o sostitutivo. Il profilo LM-85bis è perfetto per il Tassan.</li>
+            <li><strong>Bologna LM-85bis (Crivellaro):</strong> Attualmente usa Benadusi (editore minore Editpress). Proporre Tassan come principale + Benadusi come complementare: inversione di ruolo che rafforza Zanichelli senza eliminare il Benadusi.</li>
+            <li><strong>Difesa fortino romano:</strong> Contattare Sapienza (Iuso), LUMSA (Caltagirone), Unilink (Pitzalis) per offrire supporto didattico esclusivo: webinar con Tassan, slide PPT, test di autovalutazione. Consolidare prima che Dei 3ª ed. arrivi sugli scaffali.</li>
+            <li><strong>Tassan 2ª edizione:</strong> Avviare dialogo con l'autrice per pianificare aggiornamento entro 2027. Inserire capitoli su: didattica digitale, bambini e migrazioni post-2020, Antropocene nell'educazione.</li>
+            <li><strong>Telematiche:</strong> Mappare urgentemente le adozioni nelle telematiche L-19 (Pegaso, eCampus). Se Schultz & Lavenda ha e-book nativo, proporlo come testo ideale per le piattaforme digitali.</li>
+        </ul>
+    </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- FOOTER -->
+<div class="footer">
+    Zanichelli Market Intelligence — Antropologia Culturale L-19 / LM-85bis | Dati aggiornati al 27/02/2026 | Promotore: Sergio — Funzionario Commerciale
+</div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+function switchTab(tabId){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+function toggleCollapsible(el){el.classList.toggle('open')}
+function filterTable(){
+    const ed=document.getElementById('filterEditore').value.toLowerCase();
+    const cl=document.getElementById('filterClasse').value.toLowerCase();
+    const sr=document.getElementById('filterSearch').value.toLowerCase();
+    document.querySelectorAll('#adozioniTable tbody tr').forEach(r=>{
+        const cells=r.querySelectorAll('td');
+        const rEd=(cells[6]?.textContent||'').toLowerCase();
+        const rCl=(cells[1]?.textContent||'').toLowerCase();
+        const rTx=r.textContent.toLowerCase();
+        r.style.display=((!ed||rEd.includes(ed))&&(!cl||rCl.includes(cl))&&(!sr||rTx.includes(sr)))?'':'none';
+    });
+}
+let sortDir={};
+function sortTable(col){
+    const tb=document.getElementById('adozioniTable').querySelector('tbody');
+    const rows=Array.from(tb.querySelectorAll('tr'));
+    sortDir[col]=!sortDir[col];
+    rows.sort((a,b)=>{
+        const av=(a.querySelectorAll('td')[col]?.textContent||'').trim();
+        const bv=(b.querySelectorAll('td')[col]?.textContent||'').trim();
+        return sortDir[col]?av.localeCompare(bv,'it'):bv.localeCompare(av,'it');
+    });
+    rows.forEach(r=>tb.appendChild(r));
+}
+
+const zB='#003C82',zA='#E63946',zG='#2A9D8F',zY='#E9C46A',zO='#F4A261',zP='#6C5CE7',g4='#9CA3AF';
+
+// Doughnut Market Share
+new Chart(document.getElementById('chartDoughnut').getContext('2d'),{
+    type:'doughnut',
+    data:{
+        labels:['Zanichelli (21,4%)','Il Mulino (17,9%)','Hoepli (17,9%)','Einaudi (10,7%)','McGraw-Hill (10,7%)','Altri (21,4%)'],
+        datasets:[{data:[21.4,17.9,17.9,10.7,10.7,21.4],backgroundColor:[zA,zB,zO,'#6366F1','#10B981',g4],borderWidth:2,borderColor:'#fff'}]
+    },
+    options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:10}}},cutout:'55%'}
+});
+
+// Bar — Presenze per editore (principali + complementari)
+new Chart(document.getElementById('chartBar').getContext('2d'),{
+    type:'bar',
+    data:{
+        labels:['Zanichelli','Il Mulino','Hoepli','Einaudi','McGraw-Hill','Carocci','Mondadori','Meltemi','Cortina','Altri'],
+        datasets:[
+            {label:'Manuali principali',data:[6,5,5,3,3,1,1,0,0,3],backgroundColor:zA},
+            {label:'Complementari',data:[5,2,0,1,0,2,0,3,2,8],backgroundColor:zG}
+        ]
+    },
+    options:{responsive:true,indexAxis:'y',scales:{x:{stacked:true,beginAtZero:true,ticks:{stepSize:1}},y:{stacked:true}},plugins:{legend:{position:'bottom',labels:{font:{size:12}}}}}
+});
+
+// Bar — Zanichelli per classe e ruolo
+new Chart(document.getElementById('chartZanClasse').getContext('2d'),{
+    type:'bar',
+    data:{
+        labels:['LM-85bis','L-19'],
+        datasets:[
+            {label:'Zanichelli Principale',data:[5,1],backgroundColor:zA},
+            {label:'Zanichelli Complementare',data:[2,3],backgroundColor:zO}
+        ]
+    },
+    options:{responsive:true,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{position:'bottom'}}}
+});
+
+// Bar — Prospettive Teoriche
+new Chart(document.getElementById('chartProspettive').getContext('2d'),{
+    type:'bar',
+    data:{
+        labels:['Evoluzionismo','Funzionalismo','Strutturalismo','Particol. Storico','Cultura e Pers.','Interpretativa','Post-coloniale','Critica/Marx.','Ermeneutica'],
+        datasets:[{label:'Livello (1=Bassa, 2=Media, 3=Alta)',data:[3,3,3,2,2,2,2,2,1],backgroundColor:[zA,zB,zG,zO,zY,zP,'#6366F1','#10B981',g4],borderRadius:6}]
+    },
+    options:{responsive:true,scales:{y:{beginAtZero:true,max:3,ticks:{stepSize:1,callback:v=>['','Bassa','Media','Alta'][v]}},x:{ticks:{font:{size:10}}}},plugins:{legend:{display:false}}}
+});
+</script>
+
+</body>
+</html>

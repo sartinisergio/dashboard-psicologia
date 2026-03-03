@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test — Analisi Ponderata Adozioni L-24</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --zanichelli-blue: #003C82;
+            --zanichelli-dark: #00264D;
+            --zanichelli-light: #E8EFF7;
+            --zanichelli-accent: #E63946;
+            --zanichelli-accent-light: #FFF0F1;
+            --zanichelli-green: #2A9D8F;
+            --zanichelli-orange: #E9A820;
+            --zanichelli-gray: #6C757D;
+            --zanichelli-gray-light: #F8F9FA;
+            --zanichelli-border: #DEE2E6;
+            --zanichelli-white: #FFFFFF;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --radius: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--zanichelli-gray-light);
+            color: #212529;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--zanichelli-blue), var(--zanichelli-dark));
+            color: white;
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-md);
+        }
+        .header h1 { font-size: 1.5rem; font-weight: 700; }
+        .header .badge-test {
+            background: var(--zanichelli-accent);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+
+        /* Tabs navigazione materie */
+        .tabs-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 24px;
+            background: var(--zanichelli-white);
+            padding: 12px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+        }
+        .tab-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--zanichelli-border);
+            border-radius: 6px;
+            background: var(--zanichelli-white);
+            color: var(--zanichelli-blue);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { background: var(--zanichelli-light); }
+        .tab-btn.active {
+            background: var(--zanichelli-blue);
+            color: white;
+            border-color: var(--zanichelli-blue);
+        }
+        .tab-btn.tab-riepilogo {
+            background: var(--zanichelli-accent);
+            color: white;
+            border-color: var(--zanichelli-accent);
+        }
+        .tab-btn.tab-riepilogo:not(.active) {
+            background: var(--zanichelli-accent-light);
+            color: var(--zanichelli-accent);
+            border-color: var(--zanichelli-accent);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Cards */
+        .card {
+            background: var(--zanichelli-white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .card h2 {
+            font-size: 1.15rem;
+            color: var(--zanichelli-blue);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .card h3 {
+            font-size: 1rem;
+            color: var(--zanichelli-dark);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .card .subtitle {
+            font-size: 0.85rem;
+            color: var(--zanichelli-gray);
+            margin-bottom: 16px;
+        }
+
+        /* KPI strip */
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .kpi-box {
+            background: var(--zanichelli-light);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+        }
+        .kpi-box .kpi-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--zanichelli-blue);
+        }
+        .kpi-box .kpi-label {
+            font-size: 0.78rem;
+            color: var(--zanichelli-gray);
+            margin-top: 4px;
+        }
+        .kpi-box.accent { background: var(--zanichelli-accent-light); }
+        .kpi-box.accent .kpi-value { color: var(--zanichelli-accent); }
+        .kpi-box.green { background: #E6F5F3; }
+        .kpi-box.green .kpi-value { color: var(--zanichelli-green); }
+
+        /* Tabelle */
+        .table-wrapper { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        thead th {
+            background: var(--zanichelli-blue);
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        tbody td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--zanichelli-border);
+        }
+        tbody tr:hover { background: var(--zanichelli-light); }
+        tbody tr.row-zanichelli { background: #FFF8E1; font-weight: 600; }
+        tbody tr.row-zanichelli:hover { background: #FFF0C0; }
+        .delta-pos { color: var(--zanichelli-green); font-weight: 700; }
+        .delta-neg { color: var(--zanichelli-accent); font-weight: 700; }
+        .delta-neutral { color: var(--zanichelli-gray); }
+
+        /* Box opportunità */
+        .opportunity-box {
+            border-left: 4px solid var(--zanichelli-accent);
+            background: var(--zanichelli-accent-light);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 20px 24px;
+            margin-top: 16px;
+        }
+        .opportunity-box h3 {
+            color: var(--zanichelli-accent);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+        .opportunity-box table thead th {
+            background: var(--zanichelli-accent);
+        }
+
+        /* Box nessuna opportunità */
+        .no-opportunity {
+            border-left: 4px solid var(--zanichelli-border);
+            background: var(--zanichelli-gray-light);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 16px 24px;
+            margin-top: 16px;
+            color: var(--zanichelli-gray);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin: 16px 0;
+        }
+        .chart-container-small {
+            position: relative;
+            height: 280px;
+            margin: 16px 0;
+        }
+
+        /* Nota metodologica */
+        .note-box {
+            background: #FFF9E6;
+            border: 1px solid #F0E0A0;
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            font-size: 0.8rem;
+            color: #6B5A00;
+            margin-bottom: 20px;
+        }
+        .note-box strong { color: #4A3D00; }
+
+        /* Badge assente */
+        .badge-absent {
+            display: inline-block;
+            background: var(--zanichelli-gray-light);
+            color: var(--zanichelli-gray);
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Dettaglio adozioni toggle */
+        .detail-toggle {
+            background: none;
+            border: 1px solid var(--zanichelli-blue);
+            color: var(--zanichelli-blue);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .detail-toggle:hover {
+            background: var(--zanichelli-blue);
+            color: white;
+        }
+        .detail-panel {
+            display: none;
+            margin-top: 12px;
+        }
+        .detail-panel.open { display: block; }
+
+        /* Riepilogo trasversale */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        .summary-card {
+            background: var(--zanichelli-white);
+            border: 2px solid var(--zanichelli-border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .summary-card h4 {
+            font-size: 0.9rem;
+            color: var(--zanichelli-blue);
+            margin-bottom: 10px;
+        }
+        .summary-card .big-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--zanichelli-blue);
+        }
+        .summary-card .big-number.red { color: var(--zanichelli-accent); }
+        .summary-card .big-number.green { color: var(--zanichelli-green); }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--zanichelli-gray);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 16px; }
+            .header h1 { font-size: 1.1rem; }
+            .container { padding: 12px; }
+            .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+            .chart-container { height: 260px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Analisi Ponderata delle Adozioni — Classe L-24</h1>
+    <span class="badge-test">FILE DI TEST</span>
+</div>
+
+<div class="container">
+
+    <div class="note-box">
+        <strong>Nota metodologica.</strong> Le quote ponderate sono calcolate sugli iscritti effettivi dei corsi di laurea in cui ciascun esame è presente, attribuendo l'editore in base al <strong>testo indicato in Bibliografia 1</strong> (testo principale d'esame). Le presenze Zanichelli in posizione secondaria (Bibliografia 2 o 3) sono riportate separatamente come opportunità di consolidamento. I dati iscritti di <strong>Milano Statale</strong> e <strong>Parma</strong> non sono disponibili (corsi non ancora attivi all'epoca del censimento MUR) e le relative cattedre sono escluse dal calcolo ponderato.
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="showTab('psicogeneral')">Psicologia Generale</button>
+        <button class="tab-btn" onclick="showTab('psicoclinica')">Psicologia Clinica</button>
+        <button class="tab-btn" onclick="showTab('psicosviluppo')">Psicologia Sviluppo</button>
+        <button class="tab-btn" onclick="showTab('psicosociale')">Psicologia Sociale</button>
+        <button class="tab-btn" onclick="showTab('psicometria')">Psicometria</button>
+        <button class="tab-btn" onclick="showTab('antropologia')">Antropologia Culturale</button>
+        <button class="tab-btn" onclick="showTab('sociologia')">Sociologia Generale</button>
+        <button class="tab-btn tab-riepilogo" onclick="showTab('riepilogo')">Riepilogo Trasversale</button>
+    </div>
+
+    <!-- ==================== PSICOLOGIA GENERALE ==================== -->
+    <div id="psicogeneral" class="tab-content active">
+        <div class="card">
+            <h2>Psicologia Generale</h2>
+            <p class="subtitle">Classe L-24 — Scienze e Tecniche Psicologiche</p>
+            <div class="kpi-strip">
+                <div class="kpi-box">
+                    <div class="kpi-value">14.447</div>
+                    <div class="kpi-label">Mercato effettivo (studenti)</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-value">62</div>
+                    <div class="kpi-label">Cattedre mappate</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-value">233</div>
+                    <div class="kpi-label">Media iscritti / cattedra</div>
+                </div>
+                <div class="kpi-box accent">
+                    <div class="kpi-value">12,4%</div>
+                    <div class="kpi-label">Quota ponderata Zanichelli</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-value">−7,0 pp</div>
+                    <div class="kpi-label">Delta vs quota cattedre (19,4%)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Quote di mercato per editore e titolo (Bibliografia 1)</h3>
+            <div class="chart-container">
+                <canvas id="chartPsicoGen"></canvas>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr><th>Editore</th><th>Titolo principale</th><th>Cattedre</th><th>% Catt.</th><th>Studenti</th><th>% Pond.</th><th>Delta</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row-zanichelli"><td>Zanichelli</td><td>Schacter et al., Psicologia generale</td><td>12</td><td>19,4%</td><td>1.790</td><td>12,4%</td><td class="delta-neg">−7,0 pp</td></tr>
+                        <tr><td>McGraw-Hill</td><td>Holt / Feldman / Ciceri / Passer / Amoretti</td><td>12</td><td>19,4%</td><td>3.040</td><td>21,0%</td><td class="delta-pos">+1,7 pp</td></tr>
+                        <tr><td>Il Mulino</td><td>Anolli-Legrenzi / Girotto-Zorzi / Legrenzi</td><td>6</td><td>9,7%</td><td>2.561</td><td>17,7%</td><td class="delta-pos">+8,0 pp</td></tr>
+                        <tr><td>Piccin</td><td>Atkinson-Hilgard / Carlson / Goldstein</td><td>9</td><td>14,5%</td><td>1.474</td><td>10,2%</td><td class="delta-neg">−4,3 pp</td></tr>
+                        <tr><td>Pearson</td><td>Gerrig-Zimbardo / Ciccarelli-White / Buss</td><td>6</td><td>9,7%</td><td>1.228</td><td>8,5%</td><td class="delta-neg">−1,2 pp</td></tr>
+                        <tr><td>Carocci</td><td>Occhionero / Dell'Acqua-Turatto</td><td>3</td><td>4,8%</td><td>551</td><td>3,8%</td><td class="delta-neg">−1,0 pp</td></tr>
+                        <tr><td>R. Cortina</td><td>Cherubini et al.</td><td>1</td><td>1,6%</td><td>241</td><td>1,7%</td><td class="delta-neutral">+0,1 pp</td></tr>
+                        <tr><td>Idelson-Gnocchi</td><td>Eysenck / Eysenck-Keane</td><td>2</td><td>3,2%</td><td>310</td><td>2,1%</td><td class="delta-neg">−1,1 pp</td></tr>
+                        <tr><td>Mondadori</td><td>Turatto / Mastandrea-Fagioli</td><td>2</td><td>3,2%</td><td>240</td><td>1,7%</td><td class="delta-neg">−1,6 pp</td></tr>
+                        <tr><td>UTET</td><td>Coon & Mitterer</td><td>1</td><td>1,6%</td><td>244</td><td>1,7%</td><td class="delta-neutral">+0,1 pp</td></tr>
+                        <tr><td>Laterza</td><td>Bressan</td><td>1</td><td>1,6%</td><td>183</td><td>1,3%</td><td class="delta-neutral">−0,3 pp</td></tr>
+                        <tr><td style="color:#999">Non identif. / Leganto</td><td style="color:#999">—</td><td>2</td><td>3,2%</td><td>78</td><td>0,5%</td><td class="delta-neutral">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="detail-toggle" onclick="toggleDetail('detPsicoGen')">Dettaglio adozioni Zanichelli ▾</button>
+            <div id="detPsicoGen" class="detail-panel">
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Ateneo</th><th>Titolo</th><th>Docente</th><th>Iscritti</th></tr></thead>
+                        <tbody>
+                            <tr><td>Roma Tor Vergata</td><td>Schacter et al.</td><td>Sperduti, Monachesi</td><td>239</td></tr>
+                            <tr><td>Lecce Salento</td><td>Schacter et al.</td><td>Angelelli</td><td>228</td></tr>
+                            <tr><td>L'Aquila</td><td>Schacter et al.</td><td>Tempesta</td><td>236</td></tr>
+                            <tr><td>Catania</td><td>Schacter et al.</td><td>Foti</td><td>196</td></tr>
+                            <tr><td>Messina (ME)</td><td>Schacter et al.</td><td>Fabio</td><td>177</td></tr>
+                            <tr><td>Torino (P-Z)</td><td>Schacter et al.</td><td>Colle</td><td>133</td></tr>
+                            <tr><td>Roma Europea (Disp.)</td><td>Schacter et al.</td><td>Brunetti</td><td>119</td></tr>
+                            <tr><td>Roma Europea (Pari)</td><td>Schacter et al.</td><td>Del Gatto</td><td>119</td></tr>
+                            <tr><td>Molise</td><td>Schacter et al.</td><td>Sulpizio</td><td>111</td></tr>
+                            <tr><td>Roma Sapienza STP</td><td>Schacter et al.</td><td>Piccardi, Sdoia</td><td>99</td></tr>
+                            <tr><td>Roma LUMSA</td><td>Schacter et al.</td><td>Arduino, Primativo</td><td>83</td></tr>
+                            <tr><td>Benevento G. Fortunato</td><td>Schacter et al.</td><td>Bonavita</td><td>50</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="opportunity-box">
+            <h3>⚡ Opportunità — Titoli Zanichelli in bibliografia complementare (6 cattedre · 1.057 studenti)</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Ateneo</th><th>Iscritti</th><th>Testo Zanichelli</th><th>Posizione</th><th>Bibl. 1 (concorrente)</th><th>Editore Bibl. 1</th></tr></thead>
+                    <tbody>
+                        <tr><td>Roma Sapienza Salute</td><td>255</td><td>Gray, Psicologia generale + Revlin, Psico cognitiva</td><td>Bibl. 2 + 3</td><td>Goldstein, Psicologia cognitiva</td><td>Piccin</td></tr>
+                        <tr><td>Campania Vanvitelli</td><td>240</td><td>Schacter, Psicologia generale</td><td>Bibl. 2</td><td>Occhionero, Intro psicologia gen.</td><td>Carocci</td></tr>
+                        <tr><td>Bologna (Psico Gen. I)</td><td>128</td><td>D'Urso & Giusberti, Esperimenti di Psicologia</td><td>Bibl. 3</td><td>Occhionero, Intro psicologia gen.</td><td>Carocci</td></tr>
+                        <tr><td>Roma Sapienza STP *</td><td>99</td><td>D'Urso & Giusberti, Esperimenti di Psicologia</td><td>Bibl. 2</td><td>Schacter (Zanichelli — doppia presenza)</td><td>Zanichelli</td></tr>
+                        <tr><td>Trieste (mod. Percezione)</td><td>95</td><td>Burro & Zani, Sensazione e Percezione</td><td>Bibl. 2</td><td>Baddeley, La memoria</td><td>Il Mulino</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:0.75rem; color:#999; margin-top:8px;">* Cattedra già conteggiata come Zanichelli primaria (Schacter in Bibl. 1). Segnalata per il secondo titolo Zanichelli nel programma.</p>
+        </div>
+    </div>
+
+    <!-- ==================== PSICOLOGIA CLINICA ==================== -->
+    <div id="psicoclinica" class="tab-content">
+        <div class="card">
+            <h2>Psicologia Clinica</h2>
+            <p class="subtitle">Classe L-24 — Scienze e Tecniche Psicologiche</p>
+            <div class="kpi-strip">
+                <div class="kpi-box">
+                    <div class="kpi-value">13.919</div>
+                    <div class="kpi-label">Mercato effettivo (studenti)</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-value">52</div>
+                    <div class="kpi-label">Cattedre mappate</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-value">268</div>
+                    <div class="kpi-label">Media iscritti / cattedra</div>
+                </div>
+                <div class="kpi-box green">
+                    <div class="kpi-value">22,3%</div>
+                    <div class="kpi-label">Quota ponderata Zanichelli</div>
+                </div>
+                <div class="kpi-box green">
+                    <div class="kpi-value">+10,8 pp</div>
+                    <div class="kpi-label">Delta vs quota cattedre (11,5%)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Quote di mercato per editore e titolo (Bibliografia 1)</h3>
+            <div class="chart-container">
+                <canvas id="chartPsicoClin"></canvas>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Editore</th><th>Titolo principale</th><th>Cattedre</th><th>% Catt.</th><th>Studenti</th><th>% Pond.</th><th>Delta</th></tr></thead>
+                    <tbody>
+                        <tr><td>Piccin</td><td>Verrocchio, Manuale di Psicologia Clinica</td><td>16</td><td>30,8%</td><td>4.276</td><td>30,7%</td><td class="delta-neutral">−0,1 pp</td></tr>
+                        <tr class="row-zanichelli"><td>Zanichelli</td><td>Kring & Johnson, Psicologia Clinica</td><td>6</td><td>11,5%</td><td>3.110</td><td>22,3%</td><td class="delta-pos">+10,8 pp</td></tr>
+                        <tr><td>Pearson</td><td>Hooley & Nock, Psicopatologia e psico clinica</td><td>8</td><td>15,4%</td><td>2.353</td><td>16,9%</td><td class="delta-pos">+1,5 pp</td></tr>
+                        <tr><td>R. Cortina</td><td>Muzi / Castonguay / Lingiardi</td><td>4</td><td>7,7%</td><td>2.084</td><td>15,0%</td><td class="delta-pos">+7,3 pp</td></tr>
+                        <tr><td>Carocci</td><td>Cordella / Cionini / Mondini</td><td>4</td><td>7,7%</td><td>1.023</td><td>7,3%</td><td class="delta-neutral">−0,3 pp</td></tr>
+                        <tr><td>Franco Angeli</td><td>Del Corno & Lang, Elementi di psico clinica</td><td>4</td><td>7,7%</td><td>818</td><td>5,9%</td><td class="delta-neg">−1,8 pp</td></tr>
+                        <tr><td>Il Mulino</td><td>Rossi / Boniwell</td><td>2</td><td>3,8%</td><td>274</td><td>2,0%</td><td class="delta-neg">−1,9 pp</td></tr>
+                        <tr><td>EdiSES</td><td>Turchi, Manuale Critico Psico Clinica</td><td>1</td><td>1,9%</td><td>258</td><td>1,9%</td><td class="delta-neutral">0,0 pp</td></tr>
+                        <tr><td>Giunti</td><td>Craparo & Mucci</td><td>1</td><td>1,9%</td><td>150</td><td>1,1%</td><td class="delta-neutral">−0,9 pp</td></tr>
+                        <tr><td>Kappa</td><td>Lombardo</td><td>1</td><td>1,9%</td><td>148</td><td>1,1%</td><td class="delta-neutral">−0,9 pp</td></tr>
+                        <tr><td style="color:#999">Slide / Leganto / nan</td><td style="color:#999">—</td><td>4</td><td>7,7%</td><td>297</td><td>2,1%</td><td class="delta-neutral">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="detail-toggle" onclick="toggleDetail('detPsicoClin')">Dettaglio adozioni Zanichelli ▾</button>
+            <div id="detPsicoClin" class="detail-panel">
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Ateneo</th><th>Titolo</th><th>Docente</th><th>Iscritti</th></tr></thead>
+                        <tbody>
+                            <tr><td>Roma Marconi</td><td>Kring et al. (2023)</td><td>Baglioni</td><td>1.246</td></tr>
+                            <tr><td>Roma Niccolò Cusano</td><td>Kring et al. (2017)</td><td>Vegni</td><td>905</td></tr>
+                            <tr><td>Modena e Reggio Emilia</td><td>Kring et al. (2017)</td><td>Varallo</td><td>381</td></tr>
+                            <tr><td>Trento</td><td>Kring & Johnson (2023)</td><td>Corazza</td><td>251</td></tr>
+                            <tr><td>Padova STP</td><td>Kring & Johnson (2023)</td><td>Novara</td><td>229</td></tr>
+                            <tr><td>Sassari</td><td>Kring, Psicologia clinica</td><td>Enna</td><td>98</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="opportunity-box">
+            <h3>⚡ Opportunità — Titoli Zanichelli in bibliografia complementare (4 cattedre · 1.134 studenti)</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Ateneo</th><th>Iscritti</th><th>Testo Zanichelli</th><th>Posizione</th><th>Bibl. 1 (concorrente)</th><th>Editore Bibl. 1</th></tr></thead>
+                    <tbody>
+                        <tr><td>Roma Sapienza Proc. Soc.</td><td>386</td><td>Kring & Johnson, Psicologia Clinica</td><td>Bibl. 2</td><td>Verrocchio, Manuale Psico Clinica</td><td>Piccin</td></tr>
+                        <tr><td>Padova Sociali-Lavoro</td><td>258</td><td>Kring & Johnson (2023, cap. 3)</td><td>Bibl. 3</td><td>Turchi & Vendramini</td><td>University Press</td></tr>
+                        <tr><td>Trento *</td><td>251</td><td>Corazza & Esposito, Psico nuove dipendenze (2025)</td><td>Bibl. 2</td><td>Kring & Johnson (Zanichelli — doppia)</td><td>Zanichelli</td></tr>
+                        <tr><td>Genova (Biggio)</td><td>239</td><td>Kring & Johnson (2023)</td><td>Bibl. 2</td><td>Slide AulaWeb (nessun manuale)</td><td>—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size:0.75rem; color:#999; margin-top:8px;">* Cattedra già conteggiata come Zanichelli primaria. Segnalata per il secondo titolo Zanichelli (Corazza & Esposito).</p>
+        </div>
+    </div>
+
+    <!-- ==================== PSICOLOGIA DELLO SVILUPPO ==================== -->
+    <div id="psicosviluppo" class="tab-content">
+        <div class="card">
+            <h2>Psicologia dello Sviluppo</h2>
+            <p class="subtitle">Classe L-24 — Scienze e Tecniche Psicologiche</p>
+            <div class="kpi-strip">
+                <div class="kpi-box"><div class="kpi-value">15.316</div><div class="kpi-label">Mercato effettivo (studenti)</div></div>
+                <div class="kpi-box"><div class="kpi-value">59</div><div class="kpi-label">Cattedre mappate</div></div>
+                <div class="kpi-box"><div class="kpi-value">260</div><div class="kpi-label">Media iscritti / cattedra</div></div>
+                <div class="kpi-box green"><div class="kpi-value">9,5%</div><div class="kpi-label">Quota ponderata Zanichelli</div></div>
+                <div class="kpi-box green"><div class="kpi-value">+6,1 pp</div><div class="kpi-label">Delta vs quota cattedre (3,4%)</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Quote di mercato per editore e titolo (Bibliografia 1)</h3>
+            <div class="chart-container">
+                <canvas id="chartPsicoSvil"></canvas>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Editore</th><th>Titolo principale</th><th>Cattedre</th><th>% Catt.</th><th>Studenti</th><th>% Pond.</th><th>Delta</th></tr></thead>
+                    <tbody>
+                        <tr><td>McGraw-Hill</td><td>Santrock / Leman / Begotti / etc.</td><td>31</td><td>52,5%</td><td>7.492</td><td>48,9%</td><td class="delta-neg">−3,6 pp</td></tr>
+                        <tr><td>Il Mulino</td><td>Camaioni / Macchi Cassia / Berti / Caravita / Kloep</td><td>10</td><td>16,9%</td><td>2.534</td><td>16,5%</td><td class="delta-neutral">−0,4 pp</td></tr>
+                        <tr class="row-zanichelli"><td>Zanichelli</td><td>Belsky, Psicologia dello sviluppo</td><td>2</td><td>3,4%</td><td>1.452</td><td>9,5%</td><td class="delta-pos">+6,1 pp</td></tr>
+                        <tr><td>Pearson</td><td>Gillibrand / Tambelli</td><td>5</td><td>8,5%</td><td>1.347</td><td>8,8%</td><td class="delta-neutral">+0,3 pp</td></tr>
+                        <tr><td>UTET</td><td>Vianello et al.</td><td>2</td><td>3,4%</td><td>563</td><td>3,7%</td><td class="delta-neutral">+0,3 pp</td></tr>
+                        <tr><td>Carocci</td><td>Ligorio & Cacciamani</td><td>2</td><td>3,4%</td><td>530</td><td>3,5%</td><td class="delta-neutral">+0,1 pp</td></tr>
+                        <tr><td>Piccin</td><td>Shaffer & Kipp</td><td>1</td><td>1,7%</td><td>255</td><td>1,7%</td><td class="delta-neutral">0,0 pp</td></tr>
+                        <tr><td>Bollati Boringhieri</td><td>Piaget</td><td>1</td><td>1,7%</td><td>187</td><td>1,2%</td><td class="delta-neutral">−0,5 pp</td></tr>
+                        <tr><td>Hogrefe</td><td>Casalini</td><td>1</td><td>1,7%</td><td>105</td><td>0,7%</td><td class="delta-neutral">−1,0 pp</td></tr>
+                        <tr><td>Franco Angeli</td><td>Ligorio & Sansone</td><td>1</td><td>1,7%</td><td>50</td><td>0,3%</td><td class="delta-neutral">−1,4 pp</td></tr>
+                        <tr><td style="color:#999">Non identif. / Leganto</td><td style="color:#999">—</td><td>3</td><td>5,1%</td><td>855</td><td>5,6%</td><td class="delta-neutral">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="detail-toggle" onclick="toggleDetail('detPsicoSvil')">Dettaglio adozioni Zanichelli ▾</button>
+            <div id="detPsicoSvil" class="detail-panel">
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Ateneo</th><th>Titolo</th><th>Docente</th><th>Iscritti</th></tr></thead>
+                        <tbody>
+                            <tr><td>Roma Uninettuno</td><td>Belsky, Psicologia dello sviluppo</td><td>Bombi</td><td>1.341</td></tr>
+                            <tr><td>Molise</td><td>Belsky, Psicologia dello sviluppo</td><td>Baralla</td><td>111</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="no-opportunity">Nessuna presenza Zanichelli in bibliografia complementare per questa materia.</div>
+    </div>
+
+    <!-- ==================== PSICOLOGIA SOCIALE ==================== -->
+    <div id="psicosociale" class="tab-content">
+        <div class="card">
+            <h2>Psicologia Sociale</h2>
+            <p class="subtitle">Classe L-24 — Scienze e Tecniche Psicologiche</p>
+            <div class="kpi-strip">
+                <div class="kpi-box"><div class="kpi-value">17.043</div><div class="kpi-label">Mercato effettivo (studenti)</div></div>
+                <div class="kpi-box"><div class="kpi-value">57</div><div class="kpi-label">Cattedre mappate</div></div>
+                <div class="kpi-box"><div class="kpi-value">299</div><div class="kpi-label">Media iscritti / cattedra</div></div>
+                <div class="kpi-box"><div class="kpi-value"><span class="badge-absent">Assente</span></div><div class="kpi-label">Quota Zanichelli</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Quote di mercato per editore e titolo (Bibliografia 1)</h3>
+            <div class="chart-container">
+                <canvas id="chartPsicoSoc"></canvas>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Editore</th><th>Titolo principale</th><th>Cattedre</th><th>% Catt.</th><th>Studenti</th><th>% Pond.</th><th>Delta</th></tr></thead>
+                    <tbody>
+                        <tr><td>McGraw-Hill</td><td>Myers et al. / AAVV Teorie e metodi</td><td>16</td><td>28,1%</td><td>4.607</td><td>27,0%</td><td class="delta-neutral">−1,0 pp</td></tr>
+                        <tr><td>Il Mulino</td><td>Andrighetto-Riva / Hewstone / Boca / Palmonari / Aronson / Attili</td><td>13</td><td>22,8%</td><td>3.807</td><td>22,3%</td><td class="delta-neutral">−0,5 pp</td></tr>
+                        <tr><td>Pearson</td><td>Hogg & Vaughan</td><td>8</td><td>14,0%</td><td>2.625</td><td>15,4%</td><td class="delta-pos">+1,4 pp</td></tr>
+                        <tr><td>R. Cortina</td><td>Brambilla-Sacchi / Carnaghi-Arcuri</td><td>2</td><td>3,5%</td><td>323</td><td>1,9%</td><td class="delta-neg">−1,6 pp</td></tr>
+                        <tr><td>Laterza</td><td>Castelli, Psicologia sociale cognitiva</td><td>1</td><td>1,8%</td><td>320</td><td>1,9%</td><td class="delta-neutral">+0,1 pp</td></tr>
+                        <tr><td>UTET</td><td>Crisp & Turner</td><td>1</td><td>1,8%</td><td>329</td><td>1,9%</td><td class="delta-neutral">+0,2 pp</td></tr>
+                        <tr><td>Carocci</td><td>Mannetti</td><td>1</td><td>1,8%</td><td>236</td><td>1,4%</td><td class="delta-neutral">−0,4 pp</td></tr>
+                        <tr><td>EDRA</td><td>Van Lange et al.</td><td>1</td><td>1,8%</td><td>238</td><td>1,4%</td><td class="delta-neutral">−0,4 pp</td></tr>
+                        <tr><td>Giunti</td><td>Mantovani</td><td>1</td><td>1,8%</td><td>35</td><td>0,2%</td><td class="delta-neg">−1,5 pp</td></tr>
+                        <tr><td style="color:#999">Non identif. / Leganto</td><td style="color:#999">—</td><td>2</td><td>3,5%</td><td>90</td><td>0,5%</td><td class="delta-neutral">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="no-opportunity">Nessuna presenza Zanichelli — né in bibliografia principale né in bibliografia complementare — per questa materia.</div>
+    </div>
+
+    <!-- ==================== PSICOMETRIA ==================== -->
+    <div id="psicometria" class="tab-content">
+        <div class="card">
+            <h2>Psicometria</h2>
+            <p class="subtitle">Classe L-24 — Scienze e Tecniche Psicologiche</p>
+            <div class="kpi-strip">
+                <div class="kpi-box"><div class="kpi-value">15.911</div><div class="kpi-label">Mercato effettivo (studenti)</div></div>
+                <div class="kpi-box"><div class="kpi-value">51</div><div class="kpi-label">Cattedre mappate</div></div>
+                <div class="kpi-box"><div class="kpi-value">312</div><div class="kpi-label">Media iscritti / cattedra</div></div>
+                <div class="kpi-box"><div class="kpi-value"><span class="badge-absent">Assente</span></div><div class="kpi-label">Quota Zanichelli</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Quote di mercato per editore e titolo (Bibliografia 1)</h3>
+            <div class="chart-container">
+                <canvas id="chartPsicometria"></canvas>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Editore</th><th>Titolo principale</th><th>Cattedre</th><th>% Catt.</th><th>Studenti</th><th>% Pond.</th><th>Delta</th></tr></thead>
+                    <tbody>
+                        <tr><td>McGraw-Hill</td><td>Chiorri / Balsamo / Shaughnessy</td><td>13</td><td>25,5%</td><td>3.855</td><td>24,2%</td><td class="delta-neutral">−1,3 pp</td></tr>
+                        <tr><td>Pearson</td><td>Aron-Coups / Cicchitelli / Gallucci / Agresti</td><td>11</td><td>21,6%</td><td>3.428</td><td>21,5%</td><td class="delta-neutral">−0,1 pp</td></tr>
+                        <tr><td>Il Mulino</td><td>Ercolani / Mannarini / Gnisci / Pastore / Piccolo / Cristante</td><td>10</td><td>19,6%</td><td>3.595</td><td>22,6%</td><td class="delta-pos">+3,0 pp</td></tr>
+                        <tr><td>Carocci</td><td>Barbaranelli / Albano-Testa / Picone</td><td>4</td><td>7,8%</td><td>1.550</td><td>9,7%</td><td class="delta-pos">+1,9 pp</td></tr>
+                        <tr><td>R. Cortina</td><td>Lang, I test che lo psicologo deve conoscere</td><td>1</td><td>2,0%</td><td>605</td><td>3,8%</td><td class="delta-pos">+1,8 pp</td></tr>
+                        <tr><td>Laterza</td><td>Primi & Chiesi</td><td>2</td><td>3,9%</td><td>349</td><td>2,2%</td><td class="delta-neg">−1,7 pp</td></tr>
+                        <tr><td>Edra</td><td>Areni et al., Esercitazioni di psicometria</td><td>2</td><td>3,9%</td><td>294</td><td>1,8%</td><td class="delta-neg">−2,1 pp</td></tr>
+                        <tr><td>Giunti</td><td>Cristante/Lis/Sambin</td><td>1</td><td>2,0%</td><td>229</td><td>1,4%</td><td class="delta-neutral">−0,5 pp</td></tr>
+                        <tr><td>LED</td><td>Barbaranelli, Analisi dei dati</td><td>1</td><td>2,0%</td><td>1.341</td><td>8,4%</td><td class="delta-pos">+6,5 pp</td></tr>
+                        <tr><td>Franco Angeli</td><td>Faraci & Ricci</td><td>1</td><td>2,0%</td><td>150</td><td>0,9%</td><td class="delta-neutral">−1,0 pp</td></tr>
+                        <tr><td style="color:#999">Non identif. / nan</td><td style="color:#999">—</td><td>5</td><td>9,8%</td><td>1.774</td><td>11,2%</td><td class="delta-neutral">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="no-opportunity">Nessuna presenza Zanichelli — né in bibliografia principale né in bibliografia complementare — per questa materia.</div>
+    </div>
+
+    <!-- ==================== ANTROPOLOGIA CULTURALE ==================== -->
+    <div id="antropologia" class="tab-content">
+        <div class="card">
+            <h2>Antropologia Culturale</h2>
+            <p class="subtitle">Classe L-24 — Scienze e Tecniche Psicologiche</p>
+            <div class="kpi-strip">
+                <div class="kpi-box"><div class="kpi-value">5.910</div><div class="kpi-label">Mercato effettivo (studenti)</div></div>
+                <div class="kpi-box"><div class="kpi-value">16</div><div class="kpi-label">Cattedre mappate</div></div>
+                <div class="kpi-box"><div class="kpi-value">369</div><div class="kpi-label">Media iscritti / cattedra</div></div>
+                <div class="kpi-box accent"><div class="kpi-value">5,6%</div><div class="kpi-label">Quota ponderata Zanichelli</div></div>
+                <div class="kpi-box"><div class="kpi-value">−0,7 pp</div><div class="kpi-label">Delta vs quota cattedre (6,3%)</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Quote di mercato per editore e titolo (Bibliografia 1)</h3>
+            <div class="chart-container">
+                <canvas id="chartAntro"></canvas>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Editore</th><th>Titolo principale</th><th>Cattedre</th><th>% Catt.</th><th>Studenti</th><th>% Pond.</th><th>Delta</th></tr></thead>
+                    <tbody>
+                        <tr><td>Il Mulino</td><td>Dei, Antropologia culturale</td><td>3</td><td>18,8%</td><td>1.882</td><td>31,8%</td><td class="delta-pos">+13,1 pp</td></tr>
+                        <tr><td>Carocci</td><td>Marazzi / Pizza</td><td>2</td><td>12,5%</td><td>762</td><td>12,9%</td><td class="delta-neutral">+0,4 pp</td></tr>
+                        <tr><td>TAB Edizioni</td><td>Boros, Addomesticare la morte</td><td>2</td><td>12,5%</td><td>431</td><td>7,3%</td><td class="delta-neg">−5,2 pp</td></tr>
+                        <tr><td>Mondadori Univ.</td><td>Fabietti, Elementi di antropologia culturale</td><td>2</td><td>12,5%</td><td>428</td><td>7,2%</td><td class="delta-neg">−5,3 pp</td></tr>
+                        <tr><td>UTET</td><td>Robbins, Antropologia culturale</td><td>1</td><td>6,3%</td><td>386</td><td>6,5%</td><td class="delta-neutral">+0,3 pp</td></tr>
+                        <tr class="row-zanichelli"><td>Zanichelli</td><td>Fabietti, Storia dell'antropologia</td><td>1</td><td>6,3%</td><td>329</td><td>5,6%</td><td class="delta-neutral">−0,7 pp</td></tr>
+                        <tr><td>Hoepli</td><td>Palumbo/Pizza/Schirippa</td><td>1</td><td>6,3%</td><td>320</td><td>5,4%</td><td class="delta-neutral">−0,8 pp</td></tr>
+                        <tr><td>Einaudi</td><td>Engelke, Pensare come un antropologo</td><td>1</td><td>6,3%</td><td>235</td><td>4,0%</td><td class="delta-neg">−2,3 pp</td></tr>
+                        <tr><td>Laterza</td><td>Matera, Antropologia contemporanea</td><td>1</td><td>6,3%</td><td>164</td><td>2,8%</td><td class="delta-neg">−3,5 pp</td></tr>
+                        <tr><td style="color:#999">Dispense / Non identif.</td><td style="color:#999">—</td><td>2</td><td>12,5%</td><td>867</td><td>14,7%</td><td class="delta-neutral">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="detail-toggle" onclick="toggleDetail('detAntro')">Dettaglio adozione Zanichelli ▾</button>
+            <div id="detAntro" class="detail-panel">
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>Ateneo</th><th>Titolo</th><th>Docente</th><th>Iscritti</th></tr></thead>
+                        <tbody>
+                            <tr><td>Campania Vanvitelli</td><td>Fabietti, Storia dell'antropologia (2020)</td><td>D'Aloisio</td><td>329</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="opportunity-box">
+            <h3>⚡ Opportunità — Titoli Zanichelli in bibliografia complementare (2 cattedre · 399 studenti)</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Ateneo</th><th>Iscritti</th><th>Testo Zanichelli</th><th>Posizione</th><th>Bibl. 1 (concorrente)</th><th>Editore Bibl. 1</th></tr></thead>
+                    <tbody>
+                        <tr><td>Foggia</td><td>235</td><td>Tassan, Antropologia per insegnare</td><td>Bibl. 2</td><td>Engelke, Pensare come un antropologo</td><td>Einaudi</td></tr>
+                        <tr><td>Pavia</td><td>164</td><td>Tassan, Antropologia per insegnare</td><td>Bibl. 2</td><td>Matera, Antropologia contemporanea</td><td>Laterza</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SOCIOLOGIA GENERALE ==================== -->
+    <div id="sociologia" class="tab-content">
+        <div class="card">
+            <h2>Sociologia Generale</h2>
+            <p class="subtitle">Classe L-24 — Scienze e Tecniche Psicologiche</p>
+            <div class="kpi-strip">
+                <div class="kpi-box"><div class="kpi-value">7.799</div><div class="kpi-label">Mercato effettivo (studenti)</div></div>
+                <div class="kpi-box"><div class="kpi-value">31</div><div class="kpi-label">Cattedre mappate</div></div>
+                <div class="kpi-box"><div class="kpi-value">252</div><div class="kpi-label">Media iscritti / cattedra</div></div>
+                <div class="kpi-box"><div class="kpi-value"><span class="badge-absent">Assente</span></div><div class="kpi-label">Quota Zanichelli</div></div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>Quote di mercato per editore e titolo (Bibliografia 1)</h3>
+            <div class="chart-container">
+                <canvas id="chartSocio"></canvas>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Editore</th><th>Titolo principale</th><th>Cattedre</th><th>% Catt.</th><th>Studenti</th><th>% Pond.</th><th>Delta</th></tr></thead>
+                    <tbody>
+                        <tr><td>McGraw-Hill</td><td>Croteau, Sociologia generale</td><td>7</td><td>22,6%</td><td>1.783</td><td>22,9%</td><td class="delta-neutral">+0,3 pp</td></tr>
+                        <tr><td>Il Mulino</td><td>Bagnasco / Smelser / Cavalli</td><td>7</td><td>22,6%</td><td>1.635</td><td>21,0%</td><td class="delta-neg">−1,6 pp</td></tr>
+                        <tr><td>Franco Angeli</td><td>Bianco / Giarelli</td><td>3</td><td>9,7%</td><td>1.176</td><td>15,1%</td><td class="delta-pos">+5,4 pp</td></tr>
+                        <tr><td>Pearson</td><td>Manza / O'Byrne</td><td>3</td><td>9,7%</td><td>878</td><td>11,3%</td><td class="delta-pos">+1,6 pp</td></tr>
+                        <tr><td>Mondadori</td><td>Ambrosini, Sociologia</td><td>4</td><td>12,9%</td><td>666</td><td>8,5%</td><td class="delta-neg">−4,4 pp</td></tr>
+                        <tr><td>Carocci</td><td>Ghisleni, Teoria sociale</td><td>1</td><td>3,2%</td><td>570</td><td>7,3%</td><td class="delta-pos">+4,1 pp</td></tr>
+                        <tr><td>Vita & Pensiero</td><td>Bichi, Sociologia</td><td>2</td><td>6,5%</td><td>374</td><td>4,8%</td><td class="delta-neg">−1,6 pp</td></tr>
+                        <tr><td>UTET</td><td>La Mendola</td><td>1</td><td>3,2%</td><td>366</td><td>4,7%</td><td class="delta-pos">+1,5 pp</td></tr>
+                        <tr><td>Maggioli</td><td>Millefiorini</td><td>1</td><td>3,2%</td><td>329</td><td>4,2%</td><td class="delta-pos">+1,0 pp</td></tr>
+                        <tr><td>Mimesis</td><td>Bourdieu</td><td>1</td><td>3,2%</td><td>320</td><td>4,1%</td><td class="delta-neutral">+0,9 pp</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="no-opportunity">Nessuna presenza Zanichelli — né in bibliografia principale né in bibliografia complementare — per questa materia.</div>
+    </div>
+
+    <!-- ==================== RIEPILOGO TRASVERSALE ==================== -->
+    <div id="riepilogo" class="tab-content">
+        <div class="card">
+            <h2>Riepilogo Trasversale — Zanichelli nella Classe L-24</h2>
+            <p class="subtitle">Confronto quote cattedre vs quote ponderate per studenti · Solo Bibliografia 1</p>
+
+            <div class="chart-container">
+                <canvas id="chartRiepilogo"></canvas>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Materia</th><th>Mercato (stud.)</th><th>Catt. Z.</th><th>% Cattedre</th><th>Stud. Z.</th><th>% Ponderata</th><th>Delta</th><th>Segnale</th></tr></thead>
+                    <tbody>
+                        <tr><td>Psicologia Clinica</td><td>13.919</td><td>6</td><td>11,5%</td><td>3.110</td><td>22,3%</td><td class="delta-pos">+10,8 pp</td><td>Presidio grandi atenei</td></tr>
+                        <tr><td>Psicologia Sviluppo</td><td>15.316</td><td>2</td><td>3,4%</td><td>1.452</td><td>9,5%</td><td class="delta-pos">+6,1 pp</td><td>Effetto Uninettuno</td></tr>
+                        <tr><td>Psicologia Generale</td><td>14.447</td><td>12</td><td>19,4%</td><td>1.790</td><td>12,4%</td><td class="delta-neg">−7,0 pp</td><td>Atenei medio-piccoli</td></tr>
+                        <tr><td>Antropologia Culturale</td><td>5.910</td><td>1</td><td>6,3%</td><td>329</td><td>5,6%</td><td class="delta-neutral">−0,7 pp</td><td>Sostanzialmente allineato</td></tr>
+                        <tr><td>Psicologia Sociale</td><td>17.043</td><td>0</td><td>0%</td><td>0</td><td>0%</td><td class="delta-neutral">—</td><td>Assente</td></tr>
+                        <tr><td>Psicometria</td><td>15.911</td><td>0</td><td>0%</td><td>0</td><td>0%</td><td class="delta-neutral">—</td><td>Assente</td></tr>
+                        <tr><td>Sociologia Generale</td><td>7.799</td><td>0</td><td>0%</td><td>0</td><td>0%</td><td class="delta-neutral">—</td><td>Assente</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Bacino complessivo di esposizione Zanichelli</h3>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h4>Bibliografia 1 (testo principale)</h4>
+                    <div class="big-number">6.681</div>
+                    <p style="font-size:0.85rem; color:#666; margin-top:6px;">studenti su 21 cattedre in 4 materie</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Bibliografie complementari (Bibl. 2/3)</h4>
+                    <div class="big-number" style="color:var(--zanichelli-orange);">2.590</div>
+                    <p style="font-size:0.85rem; color:#666; margin-top:6px;">studenti su 12 cattedre in 3 materie</p>
+                </div>
+                <div class="summary-card">
+                    <h4>Bacino totale di esposizione</h4>
+                    <div class="big-number green">9.271</div>
+                    <p style="font-size:0.85rem; color:#666; margin-top:6px;">studenti esposti ad almeno un titolo Zanichelli</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Mappa completa presenze secondarie — Opportunità di upgrade</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>Materia</th><th>Ateneo</th><th>Iscritti</th><th>Testo Zanichelli</th><th>Pos.</th><th>Concorrente Bibl. 1</th></tr></thead>
+                    <tbody>
+                        <tr><td rowspan="5" style="vertical-align:top; font-weight:600;">Psico Generale</td><td>Roma Sapienza Salute</td><td>255</td><td>Gray + Revlin</td><td>B2+B3</td><td>Goldstein (Piccin)</td></tr>
+                        <tr><td>Campania Vanvitelli</td><td>240</td><td>Schacter</td><td>B2</td><td>Occhionero (Carocci)</td></tr>
+                        <tr><td>Bologna</td><td>128</td><td>D'Urso & Giusberti</td><td>B3</td><td>Occhionero (Carocci)</td></tr>
+                        <tr><td>Roma Sapienza STP</td><td>99</td><td>D'Urso & Giusberti</td><td>B2</td><td>Schacter (Zanichelli)</td></tr>
+                        <tr><td>Trieste</td><td>95</td><td>Burro & Zani</td><td>B2</td><td>Baddeley (Il Mulino)</td></tr>
+                        <tr><td rowspan="4" style="vertical-align:top; font-weight:600;">Psico Clinica</td><td>Roma Sapienza Proc. Soc.</td><td>386</td><td>Kring & Johnson</td><td>B2</td><td>Verrocchio (Piccin)</td></tr>
+                        <tr><td>Padova Soc.-Lavoro</td><td>258</td><td>Kring & Johnson (cap. 3)</td><td>B3</td><td>Turchi (University Press)</td></tr>
+                        <tr><td>Trento</td><td>251</td><td>Corazza & Esposito</td><td>B2</td><td>Kring & Johnson (Zanichelli)</td></tr>
+                        <tr><td>Genova (Biggio)</td><td>239</td><td>Kring & Johnson</td><td>B2</td><td>Slide (nessun manuale)</td></tr>
+                        <tr><td rowspan="2" style="vertical-align:top; font-weight:600;">Antropologia</td><td>Foggia</td><td>235</td><td>Tassan</td><td>B2</td><td>Engelke (Einaudi)</td></tr>
+                        <tr><td>Pavia</td><td>164</td><td>Tassan</td><td>B2</td><td>Matera (Laterza)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<p class="footer-note">File di test — Analisi Ponderata Adozioni L-24 · Dati a.a. 2025-26 · Generato il 27/02/2026<br>I dati iscritti di Milano Statale e Parma non sono disponibili (corsi L-24 non ancora attivi all'epoca del censimento MUR).</p>
+
+<script>
+// === Tab navigation ===
+function showTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+    // Trigger chart resize
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+}
+
+// === Detail toggle ===
+function toggleDetail(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+    const btn = el.previousElementSibling;
+    btn.textContent = el.classList.contains('open') ? 'Chiudi dettaglio ▴' : 'Dettaglio adozioni Zanichelli ▾';
+}
+
+// === Colori editori ===
+const colors = {
+    'Zanichelli': '#003C82',
+    'McGraw-Hill': '#D32F2F',
+    'Il Mulino': '#6A1B9A',
+    'Piccin': '#00838F',
+    'Pearson': '#0277BD',
+    'Carocci': '#EF6C00',
+    'R. Cortina': '#2E7D32',
+    'Idelson-Gnocchi': '#5D4037',
+    'Mondadori': '#C62828',
+    'UTET': '#F9A825',
+    'Laterza': '#AD1457',
+    'Franco Angeli': '#4527A0',
+    'EDRA': '#00695C',
+    'Giunti': '#FF8F00',
+    'Hoepli': '#1565C0',
+    'Einaudi': '#37474F',
+    'TAB Edizioni': '#795548',
+    'EdiSES': '#827717',
+    'Kappa': '#78909C',
+    'LED': '#9E9D24',
+    'Vita & Pensiero': '#8D6E63',
+    'Maggioli': '#546E7A',
+    'Mimesis': '#4E342E',
+    'Hogrefe': '#00897B',
+    'Bollati B.': '#7B1FA2',
+    'University Press': '#607D8B',
+    'Altro': '#BDBDBD'
+};
+
+function getColor(ed) { return colors[ed] || '#90A4AE'; }
+
+// === Funzione generica per bar chart editori ===
+function createEditorChart(canvasId, labels, cattedreData, studentiData) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: '% Cattedre',
+                    data: cattedreData,
+                    backgroundColor: 'rgba(0, 60, 130, 0.3)',
+                    borderColor: 'rgba(0, 60, 130, 0.8)',
+                    borderWidth: 1
+                },
+                {
+                    label: '% Ponderata (studenti)',
+                    data: studentiData,
+                    backgroundColor: labels.map(l => l === 'Zanichelli' ? 'rgba(230, 57, 70, 0.7)' : 'rgba(42, 157, 143, 0.6)'),
+                    borderColor: labels.map(l => l === 'Zanichelli' ? 'rgba(230, 57, 70, 1)' : 'rgba(42, 157, 143, 1)'),
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { font: { size: 11, family: 'Segoe UI' } } },
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) { return ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + '%'; }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { callback: v => v + '%', font: { size: 11 } },
+                    title: { display: true, text: 'Quota di mercato', font: { size: 12 } }
+                },
+                x: { ticks: { font: { size: 10 }, maxRotation: 45 } }
+            }
+        }
+    });
+}
+
+// === GRAFICI ===
+
+// Psicologia Generale
+createEditorChart('chartPsicoGen',
+    ['McGraw-Hill', 'Zanichelli', 'Il Mulino', 'Piccin', 'Pearson', 'Carocci', 'R. Cortina', 'Idelson-G.', 'Mondadori', 'UTET', 'Laterza'],
+    [19.4, 19.4, 9.7, 14.5, 9.7, 4.8, 1.6, 3.2, 3.2, 1.6, 1.6],
+    [21.0, 12.4, 17.7, 10.2, 8.5, 3.8, 1.7, 2.1, 1.7, 1.7, 1.3]
+);
+
+// Psicologia Clinica
+createEditorChart('chartPsicoClin',
+    ['Piccin', 'Zanichelli', 'Pearson', 'R. Cortina', 'Carocci', 'Franco Angeli', 'Il Mulino', 'EdiSES', 'Giunti', 'Kappa'],
+    [30.8, 11.5, 15.4, 7.7, 7.7, 7.7, 3.8, 1.9, 1.9, 1.9],
+    [30.7, 22.3, 16.9, 15.0, 7.3, 5.9, 2.0, 1.9, 1.1, 1.1]
+);
+
+// Psicologia Sviluppo
+createEditorChart('chartPsicoSvil',
+    ['McGraw-Hill', 'Il Mulino', 'Zanichelli', 'Pearson', 'UTET', 'Carocci', 'Piccin', 'Bollati B.', 'Hogrefe', 'Franco Angeli'],
+    [52.5, 16.9, 3.4, 8.5, 3.4, 3.4, 1.7, 1.7, 1.7, 1.7],
+    [48.9, 16.5, 9.5, 8.8, 3.7, 3.5, 1.7, 1.2, 0.7, 0.3]
+);
+
+// Psicologia Sociale
+createEditorChart('chartPsicoSoc',
+    ['McGraw-Hill', 'Il Mulino', 'Pearson', 'R. Cortina', 'Laterza', 'UTET', 'Carocci', 'EDRA', 'Giunti'],
+    [28.1, 22.8, 14.0, 3.5, 1.8, 1.8, 1.8, 1.8, 1.8],
+    [27.0, 22.3, 15.4, 1.9, 1.9, 1.9, 1.4, 1.4, 0.2]
+);
+
+// Psicometria
+createEditorChart('chartPsicometria',
+    ['McGraw-Hill', 'Pearson', 'Il Mulino', 'Carocci', 'R. Cortina', 'LED', 'Laterza', 'Edra', 'Giunti', 'Franco Angeli'],
+    [25.5, 21.6, 19.6, 7.8, 2.0, 2.0, 3.9, 3.9, 2.0, 2.0],
+    [24.2, 21.5, 22.6, 9.7, 3.8, 8.4, 2.2, 1.8, 1.4, 0.9]
+);
+
+// Antropologia Culturale
+createEditorChart('chartAntro',
+    ['Il Mulino', 'Carocci', 'TAB Ed.', 'Mondadori U.', 'UTET', 'Zanichelli', 'Hoepli', 'Einaudi', 'Laterza'],
+    [18.8, 12.5, 12.5, 12.5, 6.3, 6.3, 6.3, 6.3, 6.3],
+    [31.8, 12.9, 7.3, 7.2, 6.5, 5.6, 5.4, 4.0, 2.8]
+);
+
+// Sociologia Generale
+createEditorChart('chartSocio',
+    ['McGraw-Hill', 'Il Mulino', 'Franco Angeli', 'Pearson', 'Mondadori', 'Carocci', 'Vita&Pens.', 'UTET', 'Maggioli', 'Mimesis'],
+    [22.6, 22.6, 9.7, 9.7, 12.9, 3.2, 6.5, 3.2, 3.2, 3.2],
+    [22.9, 21.0, 15.1, 11.3, 8.5, 7.3, 4.8, 4.7, 4.2, 4.1]
+);
+
+// === RIEPILOGO CHART ===
+(function() {
+    const ctx = document.getElementById('chartRiepilogo').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Psico Generale', 'Psico Clinica', 'Psico Sviluppo', 'Psico Sociale', 'Psicometria', 'Antropologia', 'Sociologia'],
+            datasets: [
+                {
+                    label: '% Cattedre',
+                    data: [19.4, 11.5, 3.4, 0, 0, 6.3, 0],
+                    backgroundColor: 'rgba(0, 60, 130, 0.35)',
+                    borderColor: 'rgba(0, 60, 130, 0.9)',
+                    borderWidth: 2
+                },
+                {
+                    label: '% Ponderata (studenti)',
+                    data: [12.4, 22.3, 9.5, 0, 0, 5.6, 0],
+                    backgroundColor: 'rgba(230, 57, 70, 0.6)',
+                    borderColor: 'rgba(230, 57, 70, 1)',
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { font: { size: 12, family: 'Segoe UI' } } },
+                title: { display: true, text: 'Zanichelli — Quote cattedre vs quote ponderate', font: { size: 14, family: 'Segoe UI', weight: '600' }, color: '#003C82' },
+                tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + '%'; } } }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 25,
+                    ticks: { callback: v => v + '%', font: { size: 11 } },
+                    title: { display: true, text: 'Quota Zanichelli', font: { size: 12 } }
+                },
+                x: { ticks: { font: { size: 11 } } }
+            }
+        }
+    });
+})();
+</script>
+
+</body>
+</html>

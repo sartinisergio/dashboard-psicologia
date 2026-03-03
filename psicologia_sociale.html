@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Dashboard Psicologia Sociale L-24</title>
+<style>
+:root{--zanichelli-blue:#003C82;--zanichelli-light:#0068C8;--zanichelli-accent:#E63946;--zanichelli-green:#2A9D8F;--zanichelli-orange:#F4A261;--zanichelli-gold:#E9C46A;--zanichelli-purple:#7B2D8E;--bg-primary:#F0F4F8;--bg-card:#FFF;--text-primary:#1A1A2E;--text-secondary:#4A5568;--border-color:#E2E8F0;--shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 10px 30px rgba(0,0,0,.12)}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+.top-toolbar{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border-color);padding:10px 2rem;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.toolbar-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border-color);background:#fff;color:var(--text-primary);transition:all .2s;font-family:inherit}.toolbar-btn:hover{background:#F0F4FF;border-color:var(--zanichelli-blue);color:var(--zanichelli-blue)}.toolbar-btn.primary{background:var(--zanichelli-blue);color:#fff;border-color:var(--zanichelli-blue)}.toolbar-btn.primary:hover{background:var(--zanichelli-light)}.toolbar-spacer{flex:1}.toolbar-title{font-size:13px;color:var(--text-secondary);font-weight:500}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,var(--zanichelli-light) 100%);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}.header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.05);border-radius:50%}.header-content{max-width:1400px;margin:0 auto;position:relative;z-index:1}.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}.logo-area{display:flex;align-items:center;gap:1rem}.logo-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700}.brand{font-size:1.4rem;font-weight:700;letter-spacing:.5px}.header-badge{background:rgba(255,255,255,.15);padding:.4rem 1rem;border-radius:20px;font-size:.85rem;backdrop-filter:blur(10px)}.header h1{font-size:1.9rem;font-weight:700;margin-bottom:.3rem}.header .subtitle{font-size:1rem;opacity:.9}.header-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem}.header-kpi{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,.15)}.header-kpi .kpi-value{font-size:1.8rem;font-weight:800}.header-kpi .kpi-label{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.nav-tabs{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;transform:translateY(-1.2rem)}.nav-tab{padding:.6rem 1.3rem;background:var(--bg-card);border:none;border-radius:10px 10px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-secondary);box-shadow:var(--shadow-sm);transition:all .3s}.nav-tab:hover{color:var(--zanichelli-blue)}.nav-tab.active{background:var(--zanichelli-blue);color:#fff}
+.main-content{max-width:1400px;margin:0 auto;padding:.5rem 2rem 3rem}.tab-panel{display:none}.tab-panel.active{display:block}.section{margin-bottom:2rem}.section-title{font-size:1.15rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--zanichelli-light);display:flex;align-items:center;gap:.5rem}.section-title .icon{width:28px;height:28px;background:var(--zanichelli-blue);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card{background:var(--bg-card);border-radius:14px;box-shadow:var(--shadow-md);padding:1.5rem;margin-bottom:1.2rem;border:1px solid var(--border-color);transition:transform .2s,box-shadow .2s}.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1.2rem}.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.chart-container{position:relative;width:100%;max-width:100%;margin:0 auto}.chart-container.chart-sm{height:280px}.chart-container.chart-md{height:360px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}.data-table th{background:var(--zanichelli-blue);color:#fff;padding:.7rem .8rem;text-align:left;font-weight:600;position:sticky;top:0;white-space:nowrap}.data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--border-color);vertical-align:top}.data-table tr:hover td{background:#F7FAFC}.data-table-wrapper{max-height:520px;overflow-y:auto;border-radius:10px;border:1px solid var(--border-color)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}.badge-mgh{background:#FFEDD5;color:#9A3412}.badge-pea{background:#DBEAFE;color:#1E40AF}.badge-mul{background:#D1FAE5;color:#065F46}.badge-utet{background:#E2E8F0;color:#334155}.badge-cor{background:#FCE7F3;color:#9D174D}.badge-car{background:#CCFBF1;color:#115E59}.badge-lat{background:#FEF3C7;color:#92400E}.badge-alt{background:#F1F5F9;color:#475569}.badge-zanichelli{background:#E63946;color:#fff}
+.metric-card{background:var(--bg-card);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border-color)}.metric-card .metric-value{font-size:1.8rem;font-weight:800;color:var(--zanichelli-blue)}.metric-card .metric-label{font-size:.8rem;color:var(--text-secondary);margin-top:.3rem}
+.highlight-box{background:linear-gradient(135deg,#EBF4FF 0%,#F0F7FF 100%);border-left:4px solid var(--zanichelli-blue);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-bottom:1rem}.highlight-box.zanichelli-highlight{background:linear-gradient(135deg,#FFF5F5 0%,#FFF0F0 100%);border-left-color:var(--zanichelli-accent)}.highlight-box.alert-box{background:linear-gradient(135deg,#FEF3C7 0%,#FFFBEB 100%);border-left-color:#D97706}.highlight-box h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}.highlight-box p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.competitor-card{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;border:1px solid var(--border-color);margin-bottom:.8rem;background:var(--bg-card)}.competitor-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}.competitor-info{flex:1}.competitor-info .comp-title{font-weight:700;font-size:.92rem}.competitor-info .comp-publisher{font-size:.8rem;color:var(--text-secondary)}.competitor-info .comp-adoptions{font-size:.82rem;font-weight:600;color:var(--zanichelli-blue);margin-top:.2rem}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.swot-box{border-radius:12px;padding:1.2rem}.swot-box h4{font-size:.95rem;font-weight:700;margin-bottom:.6rem}.swot-box ul{list-style:none;padding:0}.swot-box ul li{padding:.3rem 0;font-size:.84rem;padding-left:1.2rem;position:relative}.swot-box ul li::before{content:'→';position:absolute;left:0;font-weight:700}.swot-strengths{background:#D1FAE5;border:1px solid #6EE7B7}.swot-strengths h4{color:#065F46}.swot-weaknesses{background:#FEE2E2;border:1px solid #FCA5A5}.swot-weaknesses h4{color:#991B1B}.swot-opportunities{background:#DBEAFE;border:1px solid #93C5FD}.swot-opportunities h4{color:#1E40AF}.swot-threats{background:#FEF3C7;border:1px solid #FCD34D}.swot-threats h4{color:#92400E}
+.collapsible{background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;color:var(--zanichelli-blue);user-select:none;transition:background .2s}.collapsible-header:hover{background:#F0F4FF}.collapsible-header .arrow{transition:transform .3s;font-size:12px}.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}.collapsible.open .collapsible-body{max-height:15000px}.cc{padding:0 22px 20px;font-size:.88rem;line-height:1.75;color:var(--text-primary)}.cc p{margin-bottom:10px}.cc ul{margin:8px 0 12px 18px}.cc ul li{margin-bottom:5px}.cc strong{color:var(--zanichelli-blue)}.cc h4{color:var(--zanichelli-light);margin:16px 0 8px;font-size:.95rem;font-weight:600}
+.spec-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}.spec-table th{background:var(--zanichelli-blue);color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}.spec-table td{padding:8px 10px;border-bottom:1px solid var(--border-color);vertical-align:top}.spec-table tr:hover{background:#F8FAFC}.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;margin:1px}.tag-a{background:#D1FAE5;color:#065F46}.tag-m{background:#FEF3C7;color:#92400E}.tag-b{background:#FEE2E2;color:#991B1B}
+.pill-list{display:flex;flex-wrap:wrap;gap:.5rem}.pill{padding:.35rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.id-card{background:var(--bg-card);border-radius:14px;border:2px solid var(--zanichelli-blue);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-md)}.id-card.scenario-b{border-color:var(--zanichelli-accent)}.id-card-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:2px dashed var(--border-color)}.id-card-header .id-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}.id-card-header h3{font-size:1.05rem;font-weight:700}.id-card-header p{font-size:.82rem;color:var(--text-secondary)}.id-section{margin-bottom:1rem}.id-section h5{font-size:.88rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}.id-section p,.id-section ul{font-size:.84rem;color:var(--text-secondary);line-height:1.65}.id-section ul{margin-left:1.2rem;margin-top:.3rem}.id-section ul li{margin-bottom:.3rem}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}.filter-bar input,.filter-bar select{padding:8px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}.filter-bar input:focus,.filter-bar select:focus{border-color:var(--zanichelli-light)}.filter-bar input{width:240px}.filter-bar label{font-size:12px;color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.8rem;border-top:1px solid var(--border-color);max-width:1400px;margin:0 auto}
+@media print{.tab-panel{display:block!important}.nav-tabs,.top-toolbar,.filter-bar{display:none!important}.data-table-wrapper{max-height:none!important;overflow:visible!important}.data-table th{position:static!important}body{background:#fff!important}.card,.collapsible{box-shadow:none!important;border:1px solid #ccc!important;break-inside:avoid;transform:none!important}.collapsible-body{max-height:none!important;overflow:visible!important}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr!important}.badge-zanichelli{background:#E63946!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.header,.header-kpi,.section-title .icon,.data-table th,.competitor-rank,.swot-box,.highlight-box,.id-card-header .id-icon{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+@media(max-width:768px){.header h1{font-size:1.4rem}.header-kpis{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.swot-grid{grid-template-columns:1fr}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="top-toolbar">
+    <a href="index.html" class="toolbar-btn primary">← Torna alla Dashboard</a>
+    <div class="toolbar-spacer"></div>
+    <span class="toolbar-title">Psicologia Sociale — L-24</span>
+    <button class="toolbar-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+</div>
+
+<div class="header">
+    <div class="header-content">
+        <div class="header-top">
+            <div class="logo-area"><div class="logo-icon">Z</div><span class="brand">ZANICHELLI</span></div>
+            <div class="header-badge">📊 Intelligence Report — Febbraio 2026</div>
+        </div>
+        <h1>Psicologia Sociale — L-24</h1>
+        <p class="subtitle">Analisi adozioni, competitor, contenuti e posizionamento nei corsi di Scienze e Tecniche Psicologiche</p>
+        <div class="header-kpis">
+            <div class="header-kpi"><div class="kpi-value">52</div><div class="kpi-label">Insegnamenti censiti</div></div>
+            <div class="header-kpi"><div class="kpi-value">~35</div><div class="kpi-label">Atenei coinvolti</div></div>
+            <div class="header-kpi"><div class="kpi-value">0</div><div class="kpi-label">Adozioni Zanichelli</div></div>
+            <div class="header-kpi"><div class="kpi-value">0%</div><div class="kpi-label">Quota Zanichelli — Assente</div></div>
+            <div class="header-kpi"><div class="kpi-value">~40%</div><div class="kpi-label">McGraw-Hill (Myers) — Leader</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('panoramica')">Panoramica</button>
+    <button class="nav-tab" onclick="showTab('adozioni')">Mappa Adozioni</button>
+    <button class="nav-tab" onclick="showTab('competitor')">Competitor</button>
+    <button class="nav-tab" onclick="showTab('contenuti')">Contenuti & Programmi</button>
+    <button class="nav-tab" onclick="showTab('zanichelli')">Posizionamento Zanichelli</button>
+</div>
+
+<div class="main-content">
+
+<!-- ALERT ANALISI PONDERATA -->
+<div style="background:linear-gradient(135deg,#003865 0%,#0066B3 100%);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <div style="color:#fff;font-size:13.5px;line-height:1.6">
+    <strong style="font-size:14px">⚖️ Analisi Ponderata disponibile</strong><br>
+    <span style="opacity:.85">Le quote di mercato di questa materia pesate per numero di studenti effettivi sono ora consultabili nella dashboard principale.</span>
+  </div>
+  <a href="index.html?section=ponderata&materia=pond-psisoc" style="display:inline-flex;align-items:center;gap:6px;background:#E63946;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;font-size:12.5px;font-weight:600;white-space:nowrap">Vai all'Analisi Ponderata →</a>
+</div>
+<!-- FINE ALERT -->
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-panel active" id="panoramica">
+    <div class="section">
+        <div class="section-title"><div class="icon">📈</div> Quadro di sintesi del mercato</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli è completamente assente — mercato dominato da McGraw-Hill e Il Mulino</h4>
+            <p>Il manuale <strong>Myers, Twenge, Marta & Pozzi (McGraw-Hill)</strong> è il testo più adottato con <strong>~21 cattedre (~40%)</strong>. Segue <strong>Il Mulino</strong> con un portafoglio frammentato di titoli (Andrighetto-Riva, Palmonari-Cavazza, Boca-Bocchiaro, Aronson, Hewstone, Attili) per un totale di <strong>~15 cattedre (~29%)</strong>. <strong>Pearson (Hogg & Vaughan)</strong> è terzo con <strong>~9 cattedre (~17%)</strong>. Zanichelli non ha <strong>nessun titolo</strong> nel catalogo di Psicologia Sociale: è un mercato interamente da conquistare, con un bacino di 52 insegnamenti su ~35 atenei. La curatura italiana del Myers è affidata a Elena Marta e Maura Pozzi (Cattolica), che sono anche docenti adottanti — un modello efficace di fidelizzazione.</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-orange);">McGraw-Hill</div><div class="metric-label">Leader — ~40% (Myers-Twenge)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-green);">Il Mulino</div><div class="metric-label">Secondo — ~29% (portafoglio frammentato)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-blue);">Pearson</div><div class="metric-label">Terzo — ~17% (Hogg & Vaughan)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-accent);">Zanichelli</div><div class="metric-label">Assente — 0 titoli, 0 cattedre</div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🏢</div> Market Share Editori</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartMarketShare"></canvas></div></div>
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartEditoreBar"></canvas></div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📅</div> Distribuzione per Semestre</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-sm"><canvas id="chartSemestre"></canvas></div></div>
+            <div class="card">
+                <div class="highlight-box">
+                    <h4>Note sulla distribuzione</h4>
+                    <p>Psicologia Sociale è collocata prevalentemente al <strong>I o II anno</strong>, con netta prevalenza del <strong>II semestre</strong>. Molti programmi telematici non specificano il semestre. La materia è meno "fondativa" di Psicologia Generale (I anno, I semestre) e più spesso posizionata come completamento nel percorso L-24. Il mercato editoriale è relativamente stabile: il Myers è alla 4ª ed. italiana (2023), l'Hogg-Vaughan alla 9ª ed. (2023), l'Andrighetto-Riva al 2020.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-panel" id="adozioni">
+    <div class="section">
+        <div class="section-title"><div class="icon">🗺️</div> Adozioni per Ateneo — Dettaglio completo</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="filter-bar">
+                <label>🔍 Cerca:</label>
+                <input type="text" id="searchTable" placeholder="Ateneo, docente, testo..." oninput="filterTable()">
+                <label>Editore:</label>
+                <select id="filterEditore" onchange="filterTable()">
+                    <option value="">Tutti</option><option value="McGraw">McGraw-Hill</option><option value="Mulino">Il Mulino</option><option value="Pearson">Pearson</option><option value="UTET">UTET</option><option value="Carocci">Carocci</option><option value="Laterza">Laterza</option><option value="Cortina">Cortina</option>
+                </select>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="mainTable">
+                    <thead><tr><th onclick="sortTable(0)">Ateneo ↕</th><th>Insegnamento</th><th>Docente</th><th>Sem.</th><th>Testo Principale</th><th>Editore</th></tr></thead>
+                    <tbody>
+<tr><td>Benevento G. Fortunato</td><td>Psicologia Sociale</td><td>Antonella Petrella</td><td>—</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale 3ª ed. (2017)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Bergamo</td><td>Psicologia Sociale</td><td>Alberto Zatti</td><td>II</td><td>Testi su piattaforma Leganto</td><td><span class="badge badge-alt">Leganto / N.D.</span></td></tr>
+<tr><td>Bologna</td><td>Psicologia Sociale</td><td>Crocetti, Fino</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale 3ª ed. (2019)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Cagliari</td><td>Psicologia Sociale</td><td>Cristina Cabras</td><td>II</td><td>Hewstone, Stroebe, Jonas — Intro alla psicologia sociale 5ª ed. (Il Mulino 2015)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Campania Vanvitelli</td><td>Psicologia Sociale</td><td>Silvia Galdi</td><td>II</td><td>Crisp, Turner — Psicologia sociale 4ª ed. (UTET 2021)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Catania (1)</td><td>Psicologia Sociale 1</td><td>Zira Hichy</td><td>—</td><td>Hogg, Vaughan — Psicologia sociale 9ª ed. (Pearson 2023)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Catania (2)</td><td>Psicologia Sociale 2</td><td>Andrea Zammitti</td><td>—</td><td>Hogg, Vaughan — Psicologia sociale 9ª ed. (Pearson 2023)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Catanzaro</td><td>Psicol. Sociale: Teorie e Metodi</td><td>Antonio Aquino</td><td>II</td><td>Myers, Twenge — Psicologia sociale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Chieti-Pescara (Alparone)</td><td>Psicologia Sociale I</td><td>Francesca R. Alparone</td><td>II</td><td>Hewstone, Stroebe, Jonas — Intro alla psicologia sociale (Il Mulino 2015)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Chieti-Pescara (Pagliaro)</td><td>Psicologia Sociale I</td><td>Stefano Pagliaro</td><td>I</td><td>Pacilli — Uomini duri (Il Mulino 2021)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Enna Kore</td><td>Psicologia sociale</td><td>Paola Magnano</td><td>I</td><td>Hogg, Vaughan — Psicologia sociale 9ª ed. (Pearson 2023)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Firenze (Matera)</td><td>Psicologia Sociale</td><td>Camilla Matera</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale 4ª ed. (2022)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Firenze (Nerini)</td><td>Psicologia Sociale</td><td>Amanda Nerini</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale 4ª ed. (2022)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Foggia</td><td>Psicologia Sociale</td><td>Ciro Esposito</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale 4ª ed. (2019)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Genova</td><td>Psicologia Sociale</td><td>Luca Andrighetto</td><td>II</td><td>Andrighetto, Riva — Psicologia sociale (Il Mulino 2020)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>L'Aquila</td><td>Psicologia Sociale</td><td>Angelo Valicante</td><td>I</td><td>Mannetti — Psicologia sociale (Carocci 2002)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Lecce Salento</td><td>Psicologia Sociale</td><td>Mini Mannarini</td><td>I</td><td>Andrighetto, Riva — Psicologia sociale (Il Mulino 2020)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Milano-Bicocca (1)</td><td>Psicologia Sociale - 2</td><td>Elisabetta Camussi</td><td>—</td><td>Hogg, Vaughan — Psicologia sociale (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Milano-Bicocca (2)</td><td>Psicologia Sociale - 1</td><td>Lorenzo Montali</td><td>—</td><td>Hogg, Vaughan — Psicologia sociale (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Milano Cattolica (Pozzi)</td><td>Psicologia sociale</td><td>Maura Pozzi</td><td>—</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano Cattolica (Marta)</td><td>Psicologia sociale</td><td>Marta, Parise, Pozzi</td><td>—</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano San Raffaele</td><td>Psicol. Sociale delle Organizzazioni</td><td>Sabrina Burgoni</td><td>I</td><td>Testi su Leganto</td><td><span class="badge badge-alt">Leganto / N.D.</span></td></tr>
+<tr><td>Milano Statale</td><td>Psicologia sociale</td><td>Davide Mazzoni</td><td>I</td><td>Andrighetto, Riva — Psicologia sociale (Il Mulino 2020)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Modena e Reggio Emilia</td><td>Psicologia sociale</td><td>Veronica M. Cocco</td><td>I</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale 4ª ed. (2022)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Molise</td><td>Psicologia sociale</td><td>Vincenzo Muto</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Napoli Benincasa</td><td>Psicologia sociale</td><td>Luigi A. Castelli</td><td>—</td><td>Castelli — Psicologia sociale cognitiva (Laterza 2004)</td><td><span class="badge badge-lat">Laterza</span></td></tr>
+<tr><td>Napoli Federico II (Caso)</td><td>Psicol. Sociale: Teorie e Metodi</td><td>Daniela Caso</td><td>I</td><td>AA.VV. — Teorie e metodi della psicol. sociale (McGraw-Hill-Create 2024)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Napoli Federico II (Donizzetti)</td><td>Psicol. Sociale: Teorie e Metodi</td><td>Anna Rosa Donizzetti</td><td>I</td><td>AA.VV. — Teorie e metodi della psicol. sociale (McGraw-Hill-Create 2024)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Padova (Cadinu)</td><td>Psicologia Sociale</td><td>Maria R. Cadinu</td><td>I</td><td>Hogg, Vaughan — Psicologia sociale 2ª ed. (Pearson 2016)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Padova (Castelli Cogn.)</td><td>Psicologia Sociale</td><td>Luigi A. Castelli</td><td>I</td><td>Hogg, Vaughan — Psicologia sociale (Pearson 2012)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Padova (Castelli Sc.Tecn.)</td><td>Psicologia Sociale</td><td>Luigi A. Castelli</td><td>I</td><td>Hogg, Vaughan — Psicologia sociale 9ª ed. (Pearson 2023)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Padova (Fuochi)</td><td>Psicologia Sociale</td><td>Giulia Fuochi</td><td>II</td><td>Palmonari, Cavazza, Rubini — Psicologia sociale (Il Mulino 2012)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Guizzo)</td><td>Psicologia Sociale</td><td>Francesca Guizzo</td><td>I</td><td>Hogg, Vaughan — Psicologia sociale 9ª ed. (Pearson 2023)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Palermo</td><td>Psicologia Sociale</td><td>Scaffidi Abbate, Giammusso</td><td>II</td><td>Boca, Bocchiaro, Scaffidi Abbate — Intro alla psicologia sociale (Il Mulino 2017)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Parma</td><td>Psicologia Sociale</td><td>Chiara Imperato</td><td>II</td><td>Palmonari, Cavazza, Rubini — Psicologia sociale (Il Mulino 2012)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Pavia</td><td>Psicologia Sociale</td><td>Fulvia Castelli</td><td>II</td><td>Aronson, Wilson, Sommers — Psicologia Sociale (Il Mulino 2019)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Perugia</td><td>Psicologia Sociale</td><td>Monia Vagni</td><td>I</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale 4ª ed. (2022)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Pisa</td><td>Psicologia Sociale</td><td>Andrea Guerri</td><td>II</td><td>Mantovani — Manuale di Psicologia Sociale (Giunti 2003)</td><td><span class="badge badge-alt">Giunti</span></td></tr>
+<tr><td>Roma Europea</td><td>Psicologia Sociale</td><td>Angelo Panno</td><td>II</td><td>Andrighetto, Riva — Psicologia sociale (Il Mulino 2020)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma LUMSA</td><td>Psicologia Sociale 2</td><td>Ioana Livia Zagrean</td><td>A</td><td>Boca, Bocchiaro, Scaffidi Abbate — Intro alla psicol. sociale (Il Mulino 2017)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Marconi</td><td>Psicologia sociale</td><td>Silvia Di Battista</td><td>—</td><td>Hogg, Vaughan — Psicologia sociale (Pearson 2016)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Roma Sapienza (Salute)</td><td>Psicol. Sociale: Teorie e Metodi</td><td>Mauro Giacomantonio</td><td>II</td><td>Mannetti — Psicologia sociale (Carocci 2002)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Roma Sapienza (Proc. Soc.)</td><td>Psicol. Sociale: Teorie e Metodi</td><td>Ankica Kosic</td><td>II</td><td>Crisp, Turner — Psicologia sociale (UTET 2017)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Roma Tor Vergata</td><td>Psicologia Sociale</td><td>Theodorou, Milani, Scarci</td><td>—</td><td>Hogg, Vaughan — Psicologia sociale 9ª ed. (Pearson 2023)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Roma Unicusano</td><td>Psicologia Sociale</td><td>Antonella Guarino</td><td>—</td><td>Andrighetto, Riva — Psicologia sociale (Il Mulino 2020)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Uninettuno</td><td>Teorie e metodi della Psicol. Sociale</td><td>Alicja Malina</td><td>—</td><td>Myers — Psicologia sociale (McGraw-Hill 2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Sassari</td><td>Psicologia Sociale</td><td>Sandro Costarelli</td><td>I</td><td>Attili — Psicologia Sociale (Il Mulino 2011)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Torino (A)</td><td>Psicologia sociale A</td><td>Stefano Tartaglia</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Torino (B)</td><td>Psicologia sociale B</td><td>Michele Roccato</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Torino (C)</td><td>Psicologia sociale C</td><td>Rollero, Russo</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale (2022)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Trento</td><td>Psicologia sociale</td><td>Jeroen Vaes</td><td>II</td><td>Aronson, Wilson, Sommers — Psicologia Sociale (Il Mulino 2019)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Trieste</td><td>Psicologia Sociale</td><td>Andrea Carnaghi</td><td>I</td><td>Carnaghi, Arcuri — Parole e Categorie (Cortina)</td><td><span class="badge badge-cor">Cortina</span></td></tr>
+<tr><td>Urbino</td><td>Psicologia Sociale</td><td>Daniela M. Pajardi</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Valle d'Aosta</td><td>Psicologia sociale</td><td>Mariagrazia Monaci</td><td>II</td><td>Myers, Twenge, Marta, Pozzi — Psicologia sociale (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Verona</td><td>Psicol. sociale: teorie e metodi</td><td>Elena Trifiletti</td><td>—</td><td>Andrighetto, Riva — Psicologia sociale (Il Mulino 2020)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-panel" id="competitor">
+    <div class="section">
+        <div class="section-title"><div class="icon">⚔️</div> Ranking Manuali per numero di adozioni</div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">1</div><div class="competitor-info"><div class="comp-title">Myers, Twenge, Marta & Pozzi — <em>Psicologia sociale</em></div><div class="comp-publisher">McGraw-Hill — 4ª ed. italiana 2022/2023</div><div class="comp-adoptions">~21 cattedre — Benevento, Bologna, Catanzaro, Firenze ×2, Foggia, Milano Cattolica ×2, Modena, Molise, Napoli Benincasa (compl.), Napoli Fed. II ×2, Perugia, Torino ×3, Uninettuno, Unicusano (compl.), Urbino, Valle d'Aosta</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#3B82F6;">2</div><div class="competitor-info"><div class="comp-title">Hogg & Vaughan — <em>Psicologia sociale. Teorie e applicazioni</em></div><div class="comp-publisher">Pearson — 9ª ed. 2023 (curatura Carrus)</div><div class="comp-adoptions">~9 cattedre — Catania ×2, Enna, Milano-Bicocca ×2, Padova ×4 (Cadinu, Castelli ×2, Guizzo), Roma Marconi, Roma Tor Vergata</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-green);">3</div><div class="competitor-info"><div class="comp-title">Andrighetto & Riva — <em>Psicologia sociale. Fondamenti teorici ed empirici</em></div><div class="comp-publisher">Il Mulino — 2020</div><div class="comp-adoptions">~6 cattedre — Genova, Lecce Salento, Milano Statale, Roma Europea, Roma Sapienza (compl.), Roma Unicusano, Verona</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#264653;">4</div><div class="competitor-info"><div class="comp-title">Palmonari, Cavazza, Rubini — <em>Psicologia sociale</em></div><div class="comp-publisher">Il Mulino — 2ª ed. 2012</div><div class="comp-adoptions">~2 cattedre principali (Padova-Fuochi, Parma) + complementare in altre sedi</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#EC4899;">5</div><div class="competitor-info"><div class="comp-title">Boca, Bocchiaro, Scaffidi Abbate — <em>Introduzione alla psicologia sociale</em></div><div class="comp-publisher">Il Mulino — 3ª ed. 2017</div><div class="comp-adoptions">~2 cattedre — Palermo, Roma LUMSA</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#64748B;">6</div><div class="competitor-info"><div class="comp-title">Aronson, Wilson, Sommers — <em>Psicologia Sociale</em></div><div class="comp-publisher">Il Mulino — 5ª ed. 2019 (curatura Villano)</div><div class="comp-adoptions">~2 cattedre — Pavia, Trento</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#78716C;">7</div><div class="competitor-info"><div class="comp-title">Altri: Crisp-Turner (UTET), Hewstone (Il Mulino), Mannetti (Carocci), Attili (Il Mulino)</div><div class="comp-publisher">Vari editori</div><div class="comp-adoptions">UTET: Campania + Sapienza (Kosic); Carocci: L'Aquila + Sapienza (Giacomantonio); Il Mulino-Hewstone: Cagliari + Chieti; Attili: Sassari</div></div></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📚</div> Analisi comparativa dei manuali principali</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">Myers, Twenge, Marta & Pozzi — Psicologia sociale (McGraw-Hill) — LEADER<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Leader assoluto</strong> con ~40% delle cattedre. La curatura italiana è di Elena Marta e Maura Pozzi (Cattolica), che sono anche docenti adottanti — un modello di fidelizzazione efficace.</p>
+                <h4>Punti di forza</h4>
+                <p>Panorama esaustivo: integra matrice statunitense ed europea. Piattaforma Connect. Curatura italiana attiva e connessa alla rete accademica. Aggiornamento frequente (4ª ed. 2023). Stile accessibile per studenti del I-II anno.</p>
+                <h4>Punti di debolezza</h4>
+                <p>Forte impronta americana che alcuni docenti considerano distante dalla tradizione europea (Tajfel, Moscovici). L'estensione può essere eccessiva per corsi da 6 CFU. Alcune sedi usano ancora edizioni datate (3ª ed. 2017/2019 a Benevento, Bologna, Foggia).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Hogg & Vaughan — Psicologia sociale. Teorie e applicazioni (Pearson)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Secondo manuale per diffusione (~17%). Forte a Padova (4 cattedre con Castelli), Catania, Bicocca, Tor Vergata.</p>
+                <h4>Punti di forza</h4>
+                <p>Approccio europeo più marcato (Hogg è fra i teorici dell'Identità Sociale). Struttura chiara "teorie e applicazioni". 9ª ed. (2023) aggiornata. Piattaforma MyLab. Curatura Carrus.</p>
+                <h4>Punti di debolezza</h4>
+                <p>Forte radicamento a Padova grazie al docente Castelli (che lo adotta in 3 corsi). Alcune sedi usano ancora edizioni vecchie (2012, 2016).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Andrighetto & Riva — Psicologia sociale (Il Mulino 2020)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Testo italiano recente con ~6 cattedre. Andrighetto (Genova) e Riva (Bicocca) sono autori attivi nel sistema accademico italiano.</p>
+                <h4>Punti di forza</h4>
+                <p><strong>Autori italiani:</strong> visione aggiornata e criticamente rivista della psicologia sociale. Forte enfasi su fondamenti empirici. Prospettiva allineata alla ricerca italiana ed europea contemporanea. Prezzo competitivo.</p>
+                <h4>Punti di debolezza</h4>
+                <p>Una sola edizione (2020) — non ancora aggiornato. Meno esteso del Myers o dell'Hogg. Assenza di piattaforma digitale integrata (solo Pandoracampus).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Il portafoglio frammentato de Il Mulino<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Il Mulino è il secondo editore complessivo (~29%) ma con <strong>almeno 7 titoli diversi</strong>: Andrighetto-Riva, Palmonari-Cavazza, Boca-Bocchiaro, Aronson-Villano, Hewstone, Attili, più monografie complementari (Arcuri-Cadinu "Gli stereotipi", Pacilli "Uomini duri"). La frammentazione impedisce di raggiungere massa critica su un singolo titolo. Il Palmonari-Cavazza (2012) e l'Attili (2011) sono datati. L'Aronson (2019) ha curatura Villano e posizionamento più forte di molti altri.</p>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-panel" id="contenuti">
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Nucleo Minimo di Contenuti (presenza >90%)</div>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid var(--zanichelli-blue);"><h4 style="color:var(--zanichelli-blue);margin-bottom:.5rem;">Social Cognition</h4><p style="font-size:.85rem;color:var(--text-secondary);">Percezione sociale, attribuzione causale, schemi ed euristiche. Base teorica e metodologica comune a quasi tutti i corsi.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-green);"><h4 style="color:var(--zanichelli-green);margin-bottom:.5rem;">Il Sé & Identità</h4><p style="font-size:.85rem;color:var(--text-secondary);">Concetto di sé, identità sociale, autoregolazione. Collegamento con la teoria dell'identità sociale (Tajfel, Turner).</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-orange);"><h4 style="color:var(--zanichelli-orange);margin-bottom:.5rem;">Atteggiamenti & Persuasione</h4><p style="font-size:.85rem;color:var(--text-secondary);">Struttura, formazione, cambiamento degli atteggiamenti. Modelli di persuasione (ELM, HSM). Relazione atteggiamento-comportamento.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-accent);"><h4 style="color:var(--zanichelli-accent);margin-bottom:.5rem;">Influenza Sociale</h4><p style="font-size:.85rem;color:var(--text-secondary);">Conformismo (Asch), obbedienza (Milgram), influenza della minoranza (Moscovici). Presente in tutti i programmi.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-purple);"><h4 style="color:var(--zanichelli-purple);margin-bottom:.5rem;">Dinamiche di Gruppo</h4><p style="font-size:.85rem;color:var(--text-secondary);">Struttura del gruppo, leadership, processi decisionali, polarizzazione, groupthink.</p></div>
+            <div class="card" style="border-left:4px solid #264653;"><h4 style="color:#264653;margin-bottom:.5rem;">Pregiudizio, Stereotipi & Discriminazione</h4><p style="font-size:.85rem;color:var(--text-secondary);">Relazioni intergruppi, categorizzazione sociale, riduzione del pregiudizio. Nucleo identitario della disciplina.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📑</div> Nucleo Esteso (presenza 50-70%)</div>
+        <div class="card">
+            <div class="pill-list">
+                <span class="pill" style="background:#DBEAFE;color:#1E40AF;">Comunicazione e linguaggio</span>
+                <span class="pill" style="background:#D1FAE5;color:#065F46;">Relazioni intime e attrazione</span>
+                <span class="pill" style="background:#FEF3C7;color:#92400E;">Aggressività</span>
+                <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Comportamento prosociale</span>
+                <span class="pill" style="background:#FEE2E2;color:#991B1B;">Media digitali e social</span>
+                <span class="pill" style="background:#E0F2FE;color:#075985;">Deumanizzazione e oggettivazione</span>
+                <span class="pill" style="background:#FCE7F3;color:#9D174D;">Psicologia ambientale</span>
+                <span class="pill" style="background:#F0FDF4;color:#166534;">Neuroscienze sociali</span>
+                <span class="pill" style="background:#FFF7ED;color:#9A3412;">Rappresentazioni sociali</span>
+                <span class="pill" style="background:#F5F3FF;color:#6D28D9;">Negoziazione e conflitto</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🔬</div> Specificità e Approfondimenti</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">1. Prospettive / Scuole Teoriche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <table class="spec-table">
+                    <thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Note</th></tr></thead>
+                    <tbody>
+                        <tr><td>Social Cognition</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Base comune a quasi tutti i corsi</td></tr>
+                        <tr><td>Identità Sociale (Scuola Europea)</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita/Implicita</td><td>Tajfel, Turner — centrale nelle relazioni intergruppi</td></tr>
+                        <tr><td>Rappresentazioni Sociali</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Cattolica, Federico II, Salento, Bicocca, Parma</td></tr>
+                        <tr><td>Cognitivo-Evoluzionista</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Roma Marconi</td></tr>
+                        <tr><td>Ricerca-Azione (Lewiniana)</td><td><span class="tag tag-b">Bassa</span></td><td>Implicita</td><td>Bicocca, Modena</td></tr>
+                        <tr><td>Psicologia Politica</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Bergamo, Parma</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">2. Tematiche emergenti: Media Digitali e Pregiudizio<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <h4>Media Digitali e Nuove Tecnologie</h4>
+                <p>Tematica in forte ascesa. Moduli strutturati a Genova (psicologia dei media digitali), Modena (testo obbligatorio su media digitali), Palermo (testo Riva-Mancini 2023). Sezioni dedicate a Parma (ruolo di Internet), Tor Vergata (nuove tecnologie), Pisa (comunicazione virtuale). Focus su identità digitale a Modena e Urbino. Ambito emergente a Verona. Letture facoltative a Uninettuno.</p>
+                <h4>Psicologia del Pregiudizio — Focus approfondito</h4>
+                <p><strong>Genova:</strong> intero Modulo 2 dedicato, con Brambilla-Sacchi come testo. <strong>Torino (tutti i canali A, B, C):</strong> Brambilla-Sacchi obbligatorio per tutti. <strong>Cagliari:</strong> specializzazione su pregiudizio di genere e oggettivazione sessuale. <strong>Trieste:</strong> misurazione esplicita/implicita del pregiudizio, deumanizzazione, linguaggio sessista. <strong>Campania Vanvitelli:</strong> sezione specifica su bias intergruppi con Arcuri-Cadinu. <strong>Padova:</strong> ampio spazio a stereotipi e relazioni intergruppi. <strong>Valle d'Aosta:</strong> Brambilla-Sacchi o Volpato tra i testi a scelta.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">3. Modelli di Strutturazione del Corso<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Modello a Tre Macro-Aree (~40%):</strong> Cognizione Sociale → Influenza Sociale → Relazioni Sociali. Bologna, Chieti, Foggia, Cattolica.</p>
+                <p><strong>Modello Sequenziale Manualistico (~35%):</strong> Segue l'ordine dei capitoli del manuale. Enna, Catania, Tor Vergata, Unicusano.</p>
+                <p><strong>Modello Teoria + Laboratorio (~25%):</strong> Separazione tra didattica frontale e attività pratiche. Sapienza, Foggia, Verona, Valle d'Aosta.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">4. Limiti dell'Analisi<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Bergamo e San Raffaele rimandano a Leganto senza dettaglio bibliografico. La prospettiva teorica è spesso deducibile solo dal manuale scelto. Ambiguità terminologiche: "Cognizione Sociale" usato come sinonimo dell'intero corso o come singolo modulo. I CFU non sono sempre indicati esplicitamente.</p>
+            </div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📊</div> Prospettive Teoriche — Diffusione nei programmi</div>
+        <div class="card"><div class="chart-container chart-md"><canvas id="chartTeorie"></canvas></div></div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-panel" id="zanichelli">
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Zanichelli è completamente assente — Analisi per un eventuale ingresso</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>0 titoli, 0 cattedre — Psicologia Sociale è un mercato da zero per Zanichelli</h4>
+            <p>Zanichelli non ha <strong>nessun manuale</strong> di Psicologia Sociale nel catalogo. È una delle materie analizzate in L-24 dove l'assenza è totale, insieme a Psicometria e Sociologia Generale. Il mercato vale 52 insegnamenti su ~35 atenei ed è dominato da McGraw-Hill (Myers, ~40%) e Il Mulino (portafoglio frammentato, ~29%), con Pearson terzo (~17%). L'ingresso richiede una decisione editoriale strutturale: traduzione di un manuale internazionale o creazione di un manuale italiano originale.</p>
+        </div>
+        <div class="swot-grid">
+            <div class="swot-box swot-strengths">
+                <h4>✅ Fattori Favorevoli per un Ingresso</h4>
+                <ul>
+                    <li>Brand Zanichelli forte e riconosciuto — già presente in L-24 con Schacter (Psicol. Generale)</li>
+                    <li>Mercato frammentato sul fronte Il Mulino: 7 titoli nessuno con massa critica paragonabile al Myers</li>
+                    <li>Diversi manuali datati in uso: Mannetti 2002 (L'Aquila, Sapienza), Attili 2011 (Sassari), Palmonari 2012 (Padova, Parma), Mantovani 2003 (Pisa)</li>
+                    <li>Atenei senza testo dichiarato: Bergamo (Leganto), San Raffaele (Leganto)</li>
+                    <li>Nessun competitor ha un manuale italiano aggiornato con piattaforma digitale integrata</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-weaknesses">
+                <h4>⚠️ Barriere all'Ingresso</h4>
+                <ul>
+                    <li>Nessuna presenza pregressa: partire da zero è più difficile che consolidare</li>
+                    <li>Myers (McGraw-Hill) e Hogg (Pearson) hanno fidelizzazione decennale</li>
+                    <li>Connect (McGraw-Hill) e MyLab (Pearson) come barriere digitali</li>
+                    <li>Curatori del Myers (Marta, Pozzi) sono docenti influenti alla Cattolica — effetto rete</li>
+                    <li>Andrighetto-Riva (Il Mulino) già occupa la nicchia "manuale italiano recente"</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-opportunities">
+                <h4>🚀 Opportunità</h4>
+                <ul>
+                    <li>~8 cattedre con manuali datati (pre-2015): target immediato per un prodotto nuovo</li>
+                    <li>Nessun manuale copre adeguatamente le tematiche digitali — nicchia in crescita</li>
+                    <li>Psicologia del pregiudizio in forte crescita come tema specialistico — spazio per companion monografico</li>
+                    <li>Cross-selling con Schacter: proporre pacchetto Psicol. Generale + Sociale negli atenei dove Zanichelli è già presente</li>
+                    <li>Telematiche in espansione (Benevento, Marconi, Unicusano, Uninettuno) — permeabili a nuovi titoli</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-threats">
+                <h4>🔶 Minacce</h4>
+                <ul>
+                    <li>Myers alla 4ª ed. (2023) — aggiornamento recente e fidelizzazione consolidata</li>
+                    <li>Hogg alla 9ª ed. (2023) — Pearson in buona posizione con MyLab</li>
+                    <li>Andrighetto-Riva (Il Mulino 2020) già copre la nicchia "autori italiani"</li>
+                    <li>Inerzia accademica: i docenti di psicologia sociale sono tradizionalmente legati ai loro manuali</li>
+                    <li>Il Mulino potrebbe aggiornare Andrighetto-Riva o lanciare una nuova edizione, chiudendo la finestra</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📋</div> Scenari di Ingresso</div>
+
+        <div class="id-card">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-blue);">📘</div>
+                <div>
+                    <h3>Scenario A — Traduzione di un manuale internazionale</h3>
+                    <p>Portare in Italia un manuale anglosassone non ancora tradotto</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>📌 Logica</h5>
+                <p>I due grandi manuali americani (Myers/McGraw-Hill e Aronson/Il Mulino) e il manuale europeo (Hogg/Pearson) sono già coperti. Restano alcuni testi internazionali non ancora tradotti che potrebbero posizionarsi nella fascia media. Tuttavia, il mercato italiano mostra una crescente preferenza per autori italiani (l'Andrighetto-Riva è il testo con la crescita più rapida), il che rende la traduzione meno attraente rispetto a 10 anni fa.</p>
+            </div>
+            <div class="id-section">
+                <h5>🎯 Valutazione</h5>
+                <p>Scenario <strong>meno raccomandato</strong>. Il rischio è alto: i principali manuali sono già coperti, la domanda si sposta verso autori italiani, e il tempo per costruire fidelizzazione è lungo. Se si sceglie questa strada, il candidato più interessante sarebbe un testo con forte enfasi su media digitali e neuroscienze sociali — le due aree emergenti meno coperte dai manuali attuali.</p>
+            </div>
+        </div>
+
+        <div class="id-card scenario-b">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-accent);">📕</div>
+                <div>
+                    <h3>Scenario B — Nuovo manuale italiano di Psicologia Sociale (raccomandato)</h3>
+                    <p>Un testo che competa direttamente con l'Andrighetto-Riva e con il Myers</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>🎯 Logica strategica</h5>
+                <p>L'Andrighetto-Riva (Il Mulino, 2020) ha dimostrato che esiste domanda per un manuale italiano moderno: in 5 anni ha conquistato ~6 cattedre da zero. Ma è un testo compatto, con una sola edizione, senza piattaforma digitale competitiva. Un <strong>manuale Zanichelli italiano</strong> con struttura più estesa, piattaforma digitale nativa, e team autoriale più ampio potrebbe posizionarsi come "il Myers italiano" — la stessa ampiezza e sistematicità, ma con contesto culturale, esempi e ricerche italiane ed europee.</p>
+            </div>
+            <div class="id-section">
+                <h5>📌 Contenuti differenzianti</h5>
+                <ul>
+                    <li><strong>Nucleo classico completo:</strong> Social cognition, atteggiamenti, influenza sociale, gruppi, pregiudizio — allineato al nucleo minimo di tutti i programmi</li>
+                    <li><strong>Capitolo dedicato a Media Digitali:</strong> Identità online, influenza nei social, disinformazione, cyberbullismo — la lacuna più grave dei manuali attuali</li>
+                    <li><strong>Capitolo su Neuroscienze Sociali:</strong> Tema emergente a Roma Europea, Marconi, Parma, Trieste</li>
+                    <li><strong>Sezione su Psicologia del Pregiudizio estesa:</strong> Deumanizzazione, oggettivazione, linguaggio sessista, pregiudizio implicito — il tema con la crescita più forte</li>
+                    <li><strong>Metodologia integrata:</strong> Ogni capitolo con box "Come si studia?" su metodi sperimentali specifici — richiesto a Foggia, Sapienza, Verona</li>
+                    <li><strong>Contesto italiano:</strong> Ricerche italiane, dati ISTAT, contesti sociali italiani come esempi nativi</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>👥 Profilo autori ideale</h5>
+                <p>Team di 3-4 autori italiani con specializzazioni complementari: uno/a esperto/a di social cognition e atteggiamenti, uno/a di relazioni intergruppi e pregiudizio, uno/a di psicologia dei media digitali, uno/a di metodologia della ricerca psicosociale. Coinvolgere ricercatori attivi in atenei dove il Myers o l'Hogg dominano: ad esempio, Torino (3 canali Myers), Padova (4 canali Hogg), Firenze (2 canali Myers). Il target è rubare quote sia al Myers (troppo americano) sia all'Andrighetto-Riva (troppo compatto).</p>
+            </div>
+            <div class="id-section">
+                <h5>📐 Formato e tempistica</h5>
+                <p>~500-550 pp. per corsi da 8-9 CFU con versione essenziale ~350 pp. per 6 CFU. Piattaforma digitale nativa con quiz adattivi, video di esperimenti classici (Milgram, Asch, Zimbardo), casi di studio italiani. Uscita ideale: A.A. 2028/2029. Target realistico primo triennio: 6-10 cattedre (12-20%).</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Atenei Target — Se Zanichelli entrasse nel mercato</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Priorità</th><th>Ateneo</th><th>Situazione attuale</th><th>Perché è un target</th><th>Azione suggerita</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>L'Aquila</td><td>Mannetti (Carocci, 2002)</td><td>Manuale datato 24 anni; alta probabilità di cambio</td><td>Contatto Valicante; primo target per nuovo manuale</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>Sassari</td><td>Attili (Il Mulino, 2011)</td><td>Manuale datato 15 anni</td><td>Contatto Costarelli; copia saggio</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>Pisa</td><td>Mantovani (Giunti, 2003)</td><td>Manuale datato 23 anni; editore di nicchia</td><td>Contatto Guerri; proposta aggiornamento radicale</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>Roma Sapienza (Giacomantonio)</td><td>Mannetti (Carocci, 2002)</td><td>Stesso manuale datato; ateneo strategico</td><td>Contatto Giacomantonio; leva Sapienza (Schacter già presente)</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>Bergamo</td><td>Leganto — nessun testo</td><td>Finestra completamente aperta</td><td>Contatto Zatti; copia saggio</td></tr>
+<tr><td><span class="badge" style="background:#FFEDD5;color:#9A3412;">MEDIA</span></td><td>Milano San Raffaele</td><td>Leganto — nessun testo</td><td>Finestra aperta; ateneo prestigioso</td><td>Contatto Burgoni</td></tr>
+<tr><td><span class="badge" style="background:#FFEDD5;color:#9A3412;">MEDIA</span></td><td>Padova (Fuochi)</td><td>Palmonari-Cavazza (Il Mulino, 2012)</td><td>Manuale del 2012; 1 cattedra separata dai 4 canali Hogg</td><td>Monitoraggio; target se Il Mulino non aggiorna</td></tr>
+<tr><td><span class="badge" style="background:#FFEDD5;color:#9A3412;">MEDIA</span></td><td>Parma</td><td>Palmonari-Cavazza (Il Mulino, 2012)</td><td>Stesso manuale datato</td><td>Contatto Imperato</td></tr>
+<tr><td><span class="badge" style="background:#FFEDD5;color:#9A3412;">MEDIA</span></td><td>Benevento</td><td>Myers 3ª ed. (2017)</td><td>Edizione datata; telematica permeabile</td><td>Proporre aggiornamento o alternativa</td></tr>
+<tr><td><span class="badge" style="background:#DBEAFE;color:#1E40AF;">DEVELOP</span></td><td>Torino (3 canali)</td><td>Myers 2022/2023</td><td>3 cattedre = alto impatto; ma Myers consolidato</td><td>Lungo termine; target se si pubblica un manuale italiano con autore torinese</td></tr>
+<tr><td><span class="badge" style="background:#DBEAFE;color:#1E40AF;">DEVELOP</span></td><td>Padova (4 canali Hogg)</td><td>Hogg-Vaughan (Pearson)</td><td>4 cattedre ma Castelli è molto legato a Pearson</td><td>Target Scenario B solo con coinvolgimento autoriale padovano</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="footer">
+    <p>Zanichelli Editore — Intelligence Report Psicologia Sociale L-24 | Febbraio 2026 | Dati raccolti da syllabi accademici A.A. 2024-2026</p>
+    <p style="margin-top:.3rem;">Dashboard generata per uso interno — Promozione Editoriale Universitaria</p>
+</div>
+
+<script>
+const ZB='#003C82',ZL='#0068C8',ZA='#E63946',ZG='#2A9D8F',ZO='#F4A261',ZGo='#E9C46A',ZP='#7B2D8E';
+
+new Chart(document.getElementById('chartMarketShare'),{
+    type:'doughnut',
+    data:{labels:['McGraw-Hill (Myers+Create)','Il Mulino (Andrighetto+Palmonari+Boca+Aronson+Hewstone+Attili)','Pearson (Hogg & Vaughan)','UTET (Crisp-Turner)','Carocci (Mannetti)','Cortina','Laterza','Altro / N.D.'],
+        datasets:[{data:[21,15,9,2,2,1,1,1],backgroundColor:['#F97316',ZG,'#3B82F6','#64748B','#14B8A6','#EC4899',ZO,'#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},padding:8}},title:{display:true,text:'Distribuzione adozioni per editore (52 insegnamenti)',font:{size:14,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartEditoreBar'),{
+    type:'bar',
+    data:{labels:['McGraw-Hill','Il Mulino','Pearson','UTET','Carocci','Cortina','Laterza','Altro/N.D.'],
+        datasets:[{label:'N° adozioni',data:[21,15,9,2,2,1,1,1],backgroundColor:['#F97316',ZG,'#3B82F6','#64748B','#14B8A6','#EC4899',ZO,'#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'N° cattedre per editore',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,grid:{color:'#EDF2F7'}},y:{grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('chartSemestre'),{
+    type:'pie',
+    data:{labels:['I Semestre','II Semestre','Annuale','Non specificato'],
+        datasets:[{data:[11,22,1,18],backgroundColor:[ZB,ZG,ZO,'#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},title:{display:true,text:'Distribuzione per Semestre',font:{size:13,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartTeorie'),{
+    type:'bar',
+    data:{labels:['Social Cognition','Identità Sociale (Tajfel/Turner)','Rappresentazioni Sociali','Cognitivo-Evoluzionista','Ricerca-Azione (Lewiniana)','Psicologia Politica'],
+        datasets:[{label:'Diffusione nei programmi',data:[95,85,40,10,10,5],backgroundColor:[ZB,ZL,ZG,ZO,ZP,'#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Diffusione prospettive teoriche nei programmi (%)',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,max:100,grid:{color:'#EDF2F7'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}}}
+});
+
+function showTab(tabId){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById(tabId).classList.add('active');event.target.classList.add('active')}
+function toggleC(h){h.parentElement.classList.toggle('open')}
+function filterTable(){const s=document.getElementById('searchTable').value.toLowerCase();const e=document.getElementById('filterEditore').value.toLowerCase();document.querySelectorAll('#mainTable tbody tr').forEach(r=>{const t=r.textContent.toLowerCase();r.style.display=(!s||t.includes(s))&&(!e||t.includes(e))?'':'none'})}
+let sortDir={};function sortTable(c){const tb=document.querySelector('#mainTable tbody');const rows=Array.from(tb.querySelectorAll('tr'));sortDir[c]=!sortDir[c];rows.sort((a,b)=>{const at=a.children[c].textContent.trim().toLowerCase();const bt=b.children[c].textContent.trim().toLowerCase();return sortDir[c]?at.localeCompare(bt):bt.localeCompare(at)});rows.forEach(r=>tb.appendChild(r))}
+</script>
+</body>
+</html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sociologia Generale — L-19 / LM-85bis | Zanichelli Market Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--zanichelli-blue:#003C82;--zanichelli-blue-light:#0055B8;--zanichelli-blue-pale:#E8F0FE;--zanichelli-accent:#E63946;--zanichelli-accent-light:#FDEAEC;--zanichelli-green:#2A9D8F;--zanichelli-green-light:#E6F5F3;--zanichelli-yellow:#E9C46A;--zanichelli-yellow-light:#FFF8E7;--zanichelli-orange:#F4A261;--zanichelli-purple:#6C5CE7;--zanichelli-purple-light:#F0EEFF;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;--gray-800:#1F2937;--gray-900:#111827;--shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);--shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);--radius:12px;--radius-sm:8px;--radius-xs:6px}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-800);line-height:1.6}
+.toolbar{position:sticky;top:0;z-index:1000;background:#fff;border-bottom:1px solid var(--gray-200);padding:10px 24px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow-sm)}.toolbar a,.toolbar button{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-xs);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:all .2s}.toolbar a{color:var(--zanichelli-blue);border:1px solid var(--zanichelli-blue);background:#fff}.toolbar a:hover{background:var(--zanichelli-blue-pale)}.toolbar button{color:#fff;background:var(--zanichelli-blue);border:1px solid var(--zanichelli-blue)}.toolbar button:hover{background:var(--zanichelli-blue-light)}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,#001F44 100%);color:#fff;padding:40px 24px 30px}.header-inner{max-width:1280px;margin:0 auto}.header h1{font-size:28px;font-weight:800;margin-bottom:4px}.header .subtitle{font-size:14px;opacity:.8;margin-bottom:24px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}.kpi-card{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius-sm);padding:16px;text-align:center}.kpi-card .kpi-value{font-size:28px;font-weight:800}.kpi-card .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;opacity:.8;margin-top:2px}
+.tabs-container{background:#fff;border-bottom:1px solid var(--gray-200);position:sticky;top:52px;z-index:999;box-shadow:var(--shadow-sm)}.tabs{max-width:1280px;margin:0 auto;display:flex;overflow-x:auto}.tab-btn{padding:14px 20px;font-size:13px;font-weight:600;color:var(--gray-500);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s}.tab-btn:hover{color:var(--zanichelli-blue);background:var(--zanichelli-blue-pale)}.tab-btn.active{color:var(--zanichelli-blue);border-bottom-color:var(--zanichelli-blue)}
+.content{max-width:1280px;margin:0 auto;padding:24px}.tab-panel{display:none}.tab-panel.active{display:block}
+.highlight-box{background:linear-gradient(135deg,var(--zanichelli-blue-pale),#F0F4FF);border-left:4px solid var(--zanichelli-blue);border-radius:var(--radius-sm);padding:20px 24px;margin-bottom:24px;font-size:14px}.highlight-box.accent{background:linear-gradient(135deg,var(--zanichelli-accent-light),#FFF0F1);border-left-color:var(--zanichelli-accent)}.highlight-box.green{background:linear-gradient(135deg,var(--zanichelli-green-light),#F0FAF8);border-left-color:var(--zanichelli-green)}.highlight-box strong{color:var(--zanichelli-blue)}.highlight-box.accent strong{color:var(--zanichelli-accent)}.highlight-box.green strong{color:var(--zanichelli-green)}
+.section-title{font-size:20px;font-weight:700;color:var(--gray-900);margin:32px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--gray-200)}
+.metric-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}.metric-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}.metric-card .mc-label{font-size:12px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px}.metric-card .mc-value{font-size:24px;font-weight:800;color:var(--gray-900);margin:4px 0}.metric-card .mc-sub{font-size:12px;color:var(--gray-500)}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}.chart-box{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}.chart-box h3{font-size:15px;font-weight:700;margin-bottom:16px;color:var(--gray-800)}
+.table-wrapper{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:24px}.table-controls{padding:16px;display:flex;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--gray-200);background:var(--gray-50)}.table-controls select,.table-controls input{padding:8px 12px;border:1px solid var(--gray-300);border-radius:var(--radius-xs);font-size:13px;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--zanichelli-blue);color:#fff;padding:12px 14px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px;cursor:pointer;white-space:nowrap}th:hover{background:var(--zanichelli-blue-light)}td{padding:10px 14px;border-bottom:1px solid var(--gray-100);vertical-align:top}tr:hover{background:var(--gray-50)}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700}.badge-l19{background:#DBEAFE;color:#1E40AF}.badge-lm85{background:#D1FAE5;color:#065F46}.badge-alta{background:var(--zanichelli-accent);color:#fff}.badge-media{background:var(--zanichelli-orange);color:#fff}.badge-develop{background:var(--zanichelli-blue);color:#fff}
+.competitor-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm);display:flex;gap:16px;align-items:flex-start}.competitor-rank{width:40px;height:40px;border-radius:50%;background:var(--zanichelli-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}.competitor-rank.gold{background:#F59E0B}.competitor-rank.silver{background:#94A3B8}.competitor-rank.bronze{background:#CD7F32}.competitor-info{flex:1}.competitor-info h4{font-size:15px;font-weight:700;margin-bottom:4px}.competitor-info .ci-meta{font-size:12px;color:var(--gray-500);margin-bottom:8px}.competitor-info .ci-desc{font-size:13px;color:var(--gray-600);line-height:1.5}.competitor-info .ci-badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;margin-right:6px;margin-top:8px}
+.collapsible{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-sm);margin-bottom:12px;overflow:hidden}.collapsible-header{padding:14px 20px;font-weight:700;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--gray-50);transition:background .2s}.collapsible-header:hover{background:var(--gray-100)}.collapsible-header::after{content:'▸';transition:transform .2s;font-size:16px}.collapsible.open .collapsible-header::after{transform:rotate(90deg)}.collapsible-body{padding:0 20px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease}.collapsible.open .collapsible-body{padding:16px 20px;max-height:5000px}
+.core-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}.core-card{border-radius:var(--radius-sm);padding:16px;font-size:13px}.core-card h4{font-size:13px;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}.cc-blue{background:var(--zanichelli-blue-pale);border-left:3px solid var(--zanichelli-blue)}.cc-green{background:var(--zanichelli-green-light);border-left:3px solid var(--zanichelli-green)}.cc-orange{background:var(--zanichelli-yellow-light);border-left:3px solid var(--zanichelli-orange)}.cc-purple{background:var(--zanichelli-purple-light);border-left:3px solid var(--zanichelli-purple)}.cc-red{background:var(--zanichelli-accent-light);border-left:3px solid var(--zanichelli-accent)}.cc-gray{background:var(--gray-100);border-left:3px solid var(--gray-400)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}.pill{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;background:var(--gray-100);color:var(--gray-700)}
+.spec-table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:13px}.spec-table th{background:var(--gray-700);font-size:12px}.spec-table td{padding:10px 14px}.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:600}.tag-alta{background:#DCFCE7;color:#166534}.tag-media{background:#FEF3C7;color:#92400E}.tag-bassa{background:#FEE2E2;color:#991B1B}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}.swot-box{border-radius:var(--radius);padding:20px}.swot-box h4{font-size:14px;font-weight:700;margin-bottom:10px}.swot-box ul{padding-left:18px;font-size:13px}.swot-box li{margin-bottom:6px}.swot-s{background:#DCFCE7;border:1px solid #86EFAC}.swot-s h4{color:#166534}.swot-w{background:#FEE2E2;border:1px solid #FCA5A5}.swot-w h4{color:#991B1B}.swot-o{background:#DBEAFE;border:1px solid #93C5FD}.swot-o h4{color:#1E40AF}.swot-t{background:#FEF3C7;border:1px solid #FDE68A}.swot-t h4{color:#92400E}
+.id-card{border-radius:var(--radius);padding:24px;margin-bottom:16px}.id-card h4{font-size:16px;font-weight:700;margin-bottom:12px}.id-card-blue{background:linear-gradient(135deg,#EBF4FF,#DBEAFE);border:2px solid var(--zanichelli-blue)}.id-card-blue h4{color:var(--zanichelli-blue)}.id-card-red{background:linear-gradient(135deg,#FFF0F1,var(--zanichelli-accent-light));border:2px solid var(--zanichelli-accent)}.id-card-red h4{color:var(--zanichelli-accent)}.id-field{margin-bottom:10px;font-size:13px}.id-field strong{color:var(--gray-700)}
+.target-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px}.target-table th{background:var(--zanichelli-blue);color:#fff;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase}.target-table td{padding:10px 14px;border-bottom:1px solid var(--gray-100)}.target-table tr:hover{background:var(--gray-50)}
+.qw-box{background:linear-gradient(135deg,#FFF8E7,#FFFBF0);border:2px solid var(--zanichelli-yellow);border-radius:var(--radius);padding:20px;margin-bottom:24px}.qw-box h4{color:#92400E;font-size:15px;margin-bottom:10px}.qw-box ul{padding-left:18px;font-size:13px}.qw-box li{margin-bottom:6px}
+.footer{text-align:center;padding:24px;font-size:12px;color:var(--gray-400);border-top:1px solid var(--gray-200);margin-top:40px}
+@media(max-width:768px){.chart-grid{grid-template-columns:1fr}.swot-grid{grid-template-columns:1fr}.kpi-row{grid-template-columns:repeat(2,1fr)}.header h1{font-size:22px}}
+@media print{.toolbar,.tabs-container{display:none}.tab-panel{display:block!important;page-break-inside:avoid}.header{padding:20px}body{font-size:11px}}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+    <a href="index.html">← Torna alla Dashboard</a>
+    <button onclick="window.print()">🖨 Stampa / Salva PDF</button>
+</div>
+
+<div class="header">
+    <div class="header-inner">
+        <h1>📊 Sociologia Generale</h1>
+        <div class="subtitle">Analisi di Mercato Editoriale — Classe L-19 | Aggiornamento Febbraio 2026</div>
+        <div class="kpi-row">
+            <div class="kpi-card"><div class="kpi-value" style="color:#4ADE80">35</div><div class="kpi-label">Cattedre Analizzate</div></div>
+            <div class="kpi-card"><div class="kpi-value" style="color:var(--zanichelli-yellow)">29</div><div class="kpi-label">Atenei Coinvolti</div></div>
+            <div class="kpi-card"><div class="kpi-value" style="color:var(--zanichelli-orange)">8</div><div class="kpi-label">Manuali Principali Distinti</div></div>
+            <div class="kpi-card"><div class="kpi-value" style="color:var(--zanichelli-accent)">0%</div><div class="kpi-label">Quota Zanichelli</div></div>
+            <div class="kpi-card"><div class="kpi-value" style="color:#93C5FD">100%</div><div class="kpi-label">Solo L-19</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('panoramica')">Panoramica</button>
+        <button class="tab-btn" onclick="switchTab('mappa')">Mappa Adozioni</button>
+        <button class="tab-btn" onclick="switchTab('competitor')">Competitor</button>
+        <button class="tab-btn" onclick="switchTab('contenuti')">Contenuti & Programmi</button>
+        <button class="tab-btn" onclick="switchTab('posizionamento')">Posizionamento Zanichelli</button>
+    </div>
+</div>
+
+<div class="content">
+
+<!-- ===================== TAB PANORAMICA ===================== -->
+<div id="panoramica" class="tab-panel active">
+    <div class="highlight-box">
+        <strong>Sintesi:</strong> Il mercato della Sociologia Generale nella L-19 è dominato da <strong>Il Mulino</strong> con il 32,3% delle adozioni principali, grazie soprattutto alla famiglia Bagnasco/Barbagli/Cavalli e a Giddens/Sutton. Seguono <strong>UTET</strong> (16,1%), <strong>Pearson</strong> (12,9%), <strong>McGraw-Hill</strong> e <strong>Carocci</strong> (9,7% ciascuno). Zanichelli è <strong>assente dal catalogo</strong> in questa disciplina e quindi non ha adozioni. Tutte le 35 cattedre appartengono alla classe L-19. La Sociologia Generale non risulta come esame autonomo nella LM-85bis, dove è eventualmente integrata in altri insegnamenti. Il mercato è frammentato con molte auto-adozioni e titoli di nicchia.
+    </div>
+
+    <div class="metric-cards">
+        <div class="metric-card" style="border-left:4px solid var(--zanichelli-blue)">
+            <div class="mc-label">🥇 Il Mulino — Leader</div>
+            <div class="mc-value" style="color:var(--zanichelli-blue)">32,3%</div>
+            <div class="mc-sub">10 adozioni su 31 note (Giddens 3, Bagnasco 3, Smelser 2, Van Tubergen 1, Cerulo 1)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">🥈 UTET</div>
+            <div class="mc-value" style="color:var(--zanichelli-orange)">16,1%</div>
+            <div class="mc-sub">5 adozioni (Gammaitoni 3, Gallino/Borgna 2)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">🥉 Pearson</div>
+            <div class="mc-value" style="color:var(--zanichelli-green)">12,9%</div>
+            <div class="mc-sub">4 adozioni (Manza 3, Gherardi 1)</div>
+        </div>
+        <div class="metric-card">
+            <div class="mc-label">4° McGraw-Hill / Carocci</div>
+            <div class="mc-value" style="color:var(--gray-600)">9,7%</div>
+            <div class="mc-sub">3 adozioni ciascuno</div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-box">
+            <h3>Market Share — Manuali Principali (31 cattedre note)</h3>
+            <canvas id="chartDoughnut" height="280"></canvas>
+        </div>
+        <div class="chart-box">
+            <h3>Top Manuali per Numero di Adozioni</h3>
+            <canvas id="chartBar" height="280"></canvas>
+        </div>
+    </div>
+
+    <h2 class="section-title">Distribuzione Temporale</h2>
+    <div class="metric-cards">
+        <div class="metric-card"><div class="mc-label">I Semestre</div><div class="mc-value">13</div><div class="mc-sub">Bologna (×3), Bolzano, Ferrara, Firenze (×2), Foggia, Padova (×2), Palermo, Parma, Torino (×2)</div></div>
+        <div class="metric-card"><div class="mc-label">II Semestre</div><div class="mc-value">13</div><div class="mc-sub">Basilicata, Bergamo, Catania (×2), Palermo, Perugia, Roma Tre (×2), Sassari, Siena, Trieste, Udine, Verona</div></div>
+        <div class="metric-card"><div class="mc-label">Annuale / N.D.</div><div class="mc-value">9</div><div class="mc-sub">Benevento, Milano Cattolica, Modena, Napoli, Roma Marconi, Roma Tre (Tognonato), Roma Unicusano, Urbino, Viterbo</div></div>
+    </div>
+
+    <div class="highlight-box">
+        <strong>Contesto:</strong> La Sociologia Generale è una materia strutturale nella L-19, presente in quasi tutti i corsi di laurea. Il bacino è di <strong>70.254 iscritti</strong> L-19. L'insegnamento varia da 5-6 CFU (nuclei essenziali) a 9-12 CFU (con approfondimenti metodologici e monografie). Non è presente come esame autonomo nella LM-85bis. Il mercato è caratterizzato da un alto numero di auto-adozioni e una forte frammentazione editoriale nella coda lunga.
+    </div>
+</div>
+
+<!-- ===================== TAB MAPPA ADOZIONI ===================== -->
+<div id="mappa" class="tab-panel">
+    <h2 class="section-title">Mappa Completa delle Adozioni</h2>
+    <div class="table-wrapper">
+        <div class="table-controls">
+            <select id="filterEditore" onchange="filterTable()">
+                <option value="">Tutti gli editori</option>
+                <option value="Il Mulino">Il Mulino</option>
+                <option value="UTET">UTET</option>
+                <option value="Pearson">Pearson</option>
+                <option value="McGraw-Hill">McGraw-Hill</option>
+                <option value="Carocci">Carocci</option>
+                <option value="Laterza">Laterza</option>
+            </select>
+            <input type="text" id="filterSearch" placeholder="🔍 Cerca ateneo o docente..." oninput="filterTable()" style="flex:1;min-width:200px;">
+        </div>
+        <div style="overflow-x:auto">
+        <table id="adozioniTable">
+            <thead><tr><th onclick="sortTable(0)">Ateneo</th><th onclick="sortTable(1)">Classe</th><th onclick="sortTable(2)">Docente</th><th onclick="sortTable(3)">Anno</th><th onclick="sortTable(4)">Sem.</th><th onclick="sortTable(5)">Manuale Principale</th><th onclick="sortTable(6)">Editore</th></tr></thead>
+            <tbody>
+                <tr><td>Basilicata</td><td><span class="badge badge-l19">L-19</span></td><td>Giulia Salzano</td><td>—</td><td>II</td><td>Cerulo, <em>Sociologia delle emozioni</em> (2024)</td><td>Il Mulino</td></tr>
+                <tr><td>Benevento G. Fortunato</td><td><span class="badge badge-l19">L-19</span></td><td>Elvira Martini</td><td>—</td><td>—</td><td>Bagnasco/Barbagli/Cavalli, <em>Corso di Sociologia</em> (2012)</td><td>Il Mulino</td></tr>
+                <tr><td>Bologna (Campus BO)</td><td><span class="badge badge-l19">L-19</span></td><td>Ghigi, Tuorto</td><td>—</td><td>I</td><td>Giddens/Sutton, <em>Fondamenti di sociologia</em> (2022)</td><td>Il Mulino</td></tr>
+                <tr><td>Bologna (Campus Rimini)</td><td><span class="badge badge-l19">L-19</span></td><td>Giovanna Russo</td><td>—</td><td>I</td><td>Giddens/Sutton, <em>Fondamenti di sociologia</em> (2021)</td><td>Il Mulino</td></tr>
+                <tr><td>Bologna (Infanzia)</td><td><span class="badge badge-l19">L-19</span></td><td>Ettore Scappini</td><td>—</td><td>I</td><td>Van Tubergen, <em>Introduzione alla sociologia</em> (2022)</td><td>Il Mulino</td></tr>
+                <tr><td>Bolzano</td><td><span class="badge badge-l19">L-19</span></td><td>Ilaria Riccioni</td><td>1</td><td>I</td><td><em>Non indicato</em></td><td>N.D.</td></tr>
+                <tr><td>Catania</td><td><span class="badge badge-l19">L-19</span></td><td>A. G. Gamuzza</td><td>—</td><td>—</td><td>Smelser, <em>Manuale di sociologia</em> (2011)</td><td>Il Mulino</td></tr>
+                <tr><td>Catania</td><td><span class="badge badge-l19">L-19</span></td><td>A. M. Leonora</td><td>—</td><td>—</td><td>Smelser, <em>Manuale di sociologia</em> (2011)</td><td>Il Mulino</td></tr>
+                <tr><td>Ferrara</td><td><span class="badge badge-l19">L-19</span></td><td>Andrea Rubin</td><td>1</td><td>I</td><td>Croteau/Hoynes, <em>Sociologia generale</em> (2022)</td><td>McGraw-Hill</td></tr>
+                <tr><td>Firenze</td><td><span class="badge badge-l19">L-19</span></td><td>Giacomo Bazzani</td><td>1</td><td>I</td><td>Manza/Arum/Haney, <em>Progetto sociologia</em> (2025)</td><td>Pearson</td></tr>
+                <tr><td>Firenze</td><td><span class="badge badge-l19">L-19</span></td><td>Eugene Nulman</td><td>1</td><td>I</td><td>Manza/Arum/Haney, <em>Progetto sociologia</em> (2025)</td><td>Pearson</td></tr>
+                <tr><td>Foggia</td><td><span class="badge badge-l19">L-19</span></td><td>—</td><td>1</td><td>I</td><td><em>Non disponibile</em></td><td>N.D.</td></tr>
+                <tr><td>Milano Cattolica</td><td><span class="badge badge-l19">L-19</span></td><td>Monica Martinelli</td><td>—</td><td>—</td><td><em>Non disponibile</em></td><td>N.D.</td></tr>
+                <tr><td>Modena e RE</td><td><span class="badge badge-l19">L-19</span></td><td>—</td><td>2</td><td>II</td><td><em>Non disponibile</em></td><td>N.D.</td></tr>
+                <tr><td>Napoli Benincasa</td><td><span class="badge badge-l19">L-19</span></td><td>Tarantino, Pizzo</td><td>—</td><td>—</td><td>Forgacs, <em>Margini d'Italia</em> (2014)</td><td>Laterza</td></tr>
+                <tr><td>Padova (Rovigo)</td><td><span class="badge badge-l19">L-19</span></td><td>Calabretta, Gusmeroli</td><td>1</td><td>I</td><td>Jedlowski, <em>Il mondo in questione</em> (2009)</td><td>Carocci</td></tr>
+                <tr><td>Padova</td><td><span class="badge badge-l19">L-19</span></td><td>Paolo Gusmeroli</td><td>1</td><td>I</td><td>Jedlowski, <em>Il mondo in questione</em> (2009)</td><td>Carocci</td></tr>
+                <tr><td>Palermo</td><td><span class="badge badge-l19">L-19</span></td><td>Bartholini, Mannoia</td><td>1</td><td>II</td><td>Bichi, <em>Manuale di Sociologia generale</em> (2022)</td><td>Vita e Pensiero</td></tr>
+                <tr><td>Palermo</td><td><span class="badge badge-l19">L-19</span></td><td>Michele Mannoia</td><td>1</td><td>I</td><td>Ghisleni/Privitera, <em>Sociologie contemporanee</em> (2009)</td><td>UTET</td></tr>
+                <tr><td>Parma</td><td><span class="badge badge-l19">L-19</span></td><td>D'Apice, Gherardi</td><td>1</td><td>II</td><td>Gherardi, <em>Scoprire la sociologia</em> (2020)</td><td>Pearson</td></tr>
+                <tr><td>Perugia</td><td><span class="badge badge-l19">L-19</span></td><td>Marta Picchio</td><td>1</td><td>II</td><td>Cavalli, "Sociologia" (Treccani 1998)</td><td>Treccani</td></tr>
+                <tr><td>Roma Marconi</td><td><span class="badge badge-l19">L-19</span></td><td>Andrea Grippo</td><td>—</td><td>—</td><td>Croteau/Hoynes, <em>Sociologia generale</em></td><td>McGraw-Hill</td></tr>
+                <tr><td>Roma Tre</td><td><span class="badge badge-l19">L-19</span></td><td>Milena Gammaitoni</td><td>3</td><td>II</td><td>Gammaitoni, <em>La Sociologia</em> (2025)</td><td>UTET</td></tr>
+                <tr><td>Roma Tre</td><td><span class="badge badge-l19">L-19</span></td><td>Milena Gammaitoni</td><td>2</td><td>II</td><td>Gammaitoni, <em>La Sociologia</em> (2025)</td><td>UTET</td></tr>
+                <tr><td>Roma Tre</td><td><span class="badge badge-l19">L-19</span></td><td>C. A. Tognonato</td><td>1</td><td>A</td><td>Ferrarotti, <em>Opere</em> (Marietti 2019)</td><td>Marietti</td></tr>
+                <tr><td>Roma Unicusano</td><td><span class="badge badge-l19">L-19</span></td><td>S. Carrarini</td><td>1</td><td>—</td><td>Bagnasco/Barbagli/Cavalli, <em>Corso di sociologia</em> (2012)</td><td>Il Mulino</td></tr>
+                <tr><td>Sassari</td><td><span class="badge badge-l19">L-19</span></td><td>Chiara Ceseracciu</td><td>—</td><td>II</td><td>Bagnasco/Barbagli/Cavalli, <em>Elementi di sociologia</em> (2013)</td><td>Il Mulino</td></tr>
+                <tr><td>Siena</td><td><span class="badge badge-l19">L-19</span></td><td>Francesca Bianchi</td><td>1</td><td>II</td><td>Giddens/Sutton, <em>Fondamenti di sociologia</em> (2021)</td><td>Il Mulino</td></tr>
+                <tr><td>Torino</td><td><span class="badge badge-l19">L-19</span></td><td>Paola Borgna</td><td>1</td><td>I</td><td>Gallino/Borgna, <em>Manuale di sociologia</em> (2008)</td><td>UTET</td></tr>
+                <tr><td>Torino</td><td><span class="badge badge-l19">L-19</span></td><td>M. A. Gallina</td><td>1</td><td>I</td><td>Borgna, <em>Manuale di sociologia</em> (2008)</td><td>UTET</td></tr>
+                <tr><td>Trieste</td><td><span class="badge badge-l19">L-19</span></td><td>Anna Zenarolla</td><td>1</td><td>II</td><td>Manza/Arum/Haney, <em>Progetto Sociologia</em> (2025)</td><td>Pearson</td></tr>
+                <tr><td>Udine</td><td><span class="badge badge-l19">L-19</span></td><td>Antonella Pocecco</td><td>—</td><td>II</td><td>Ungaro, <em>Capire la società contemporanea</em> (2015)</td><td>Carocci</td></tr>
+                <tr><td>Urbino</td><td><span class="badge badge-l19">L-19</span></td><td>Benedetta Polini</td><td>2</td><td>I</td><td>Croteau/Hoynes, <em>Sociologia generale</em></td><td>McGraw-Hill</td></tr>
+                <tr><td>Viterbo Tuscia</td><td><span class="badge badge-l19">L-19</span></td><td>Simona Fallocco</td><td>—</td><td>—</td><td>De Mucci/Fallocco, <em>Individuale e collettivo</em> (2023)</td><td>Rubbettino</td></tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <h2 class="section-title">Presenza Zanichelli</h2>
+    <div class="highlight-box accent">
+        <strong>Zanichelli non ha titoli in catalogo</strong> per la Sociologia Generale. Non sono quindi possibili adozioni in questa disciplina. Il mercato è occupato interamente da altri editori, con Il Mulino in posizione di netta leadership.
+    </div>
+</div>
+
+<!-- ===================== TAB COMPETITOR ===================== -->
+<div id="competitor" class="tab-panel">
+    <h2 class="section-title">Ranking Manuali Principali</h2>
+
+    <div class="competitor-card">
+        <div class="competitor-rank gold">1</div>
+        <div class="competitor-info">
+            <h4>Bagnasco, Barbagli, Cavalli — Corso / Elementi / Concetti base di sociologia</h4>
+            <div class="ci-meta">Il Mulino | 3ª ed. 2012 (Corso), 2013 (Elementi), 2009 (Concetti) | 674 / 450 / 300 pp.</div>
+            <div class="ci-desc">La "famiglia" di manuali italiani più longeva e adottata. Tre versioni a diverso livello di estensione per adattarsi ai diversi carichi di CFU. Scritti da tre sociologi di riferimento. Presenti a Benevento, Palermo, Roma Unicusano, Sassari. Il Corso (674 pp.) è per 9-12 CFU, gli Elementi per 6-8, i Concetti base per 4-6. Punto debole: le edizioni non sono recenti.</div>
+            <span class="ci-badge" style="background:#DBEAFE;color:#1E40AF">3 adozioni (diverse versioni)</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank gold">1</div>
+        <div class="competitor-info">
+            <h4>Giddens & Sutton — Fondamenti di sociologia</h4>
+            <div class="ci-meta">Il Mulino | 6ª ed. 2022 | ~500 pp. | ~€ 34</div>
+            <div class="ci-desc">Manuale internazionale di riferimento, con approccio globale e attenzione ai temi contemporanei. Adattamento italiano curato da Barbagli. Edizione 2022 aggiornata. Adottato a Bologna (Campus BO e Rimini) e Siena. Apprezzato per chiarezza e struttura modulare.</div>
+            <span class="ci-badge" style="background:#DBEAFE;color:#1E40AF">3 adozioni</span>
+            <span class="ci-badge" style="background:#D1FAE5;color:#065F46">Edizione recente (2022)</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank bronze">3</div>
+        <div class="competitor-info">
+            <h4>Manza, Arum, Haney — Progetto sociologia</h4>
+            <div class="ci-meta">Pearson | 3ª ed. italiana 2025 | 586 pp. | ~€ 41</div>
+            <div class="ci-desc">Manuale americano di nuova generazione, basato su domande-chiave e forte legame con la ricerca empirica. La 3ª edizione italiana (gennaio 2025, curatore Santoro) è la più recente sul mercato. Adottato a Firenze (2 cattedre) e Trieste. In crescita grazie alla freschezza dell'impostazione.</div>
+            <span class="ci-badge" style="background:#FEF3C7;color:#92400E">3 adozioni</span>
+            <span class="ci-badge" style="background:#D1FAE5;color:#065F46">Edizione più recente (2025)</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank">4</div>
+        <div class="competitor-info">
+            <h4>Croteau & Hoynes — Sociologia generale. Teorie, metodo, concetti</h4>
+            <div class="ci-meta">McGraw-Hill | 3ª ed. italiana 2022 | ~400 pp. | ~€ 37</div>
+            <div class="ci-desc">Manuale pragmatico focalizzato su temi, concetti e strumenti. Curato da Antonelli e Rossi. Presente a Ferrara, Roma Marconi e Urbino. Buon equilibrio tra accessibilità e rigore. Piattaforma Connect integrata.</div>
+            <span class="ci-badge" style="background:#E0E7FF;color:#4338CA">3 adozioni</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank">5</div>
+        <div class="competitor-info">
+            <h4>Gammaitoni (a cura di) — La Sociologia: Storia e storie, teorie e ricerca empirica</h4>
+            <div class="ci-meta">UTET | 2025 | Auto-adozione</div>
+            <div class="ci-desc">Testo recente, auto-adottato dalla curatrice nelle sue 2 cattedre a Roma Tre. Anche il manuale Gallino/Borgna (UTET 2008) e Ghisleni/Privitera (UTET 2009) portano a un totale di 5 adozioni UTET. Legame forte tra UTET e la scuola sociologica torinese/romana.</div>
+            <span class="ci-badge" style="background:#FEF3C7;color:#92400E">5 adozioni UTET totali</span>
+        </div>
+    </div>
+
+    <div class="competitor-card">
+        <div class="competitor-rank">6</div>
+        <div class="competitor-info">
+            <h4>Jedlowski — Il mondo in questione</h4>
+            <div class="ci-meta">Carocci | 2009 | ~350 pp.</div>
+            <div class="ci-desc">Introduzione alla storia del pensiero sociologico. Adottato a Padova (2 sedi: Padova e Rovigo). Testo con taglio storico-autoriale piuttosto che tematico. Datato (2009) ma ancora scelto per la qualità dell'impianto.</div>
+            <span class="ci-badge" style="background:#E0E7FF;color:#4338CA">2 adozioni (Padova)</span>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Analisi Comparativa Dettagliata</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:12px"><strong>Frammentazione:</strong> Il mercato della Sociologia Generale è il più frammentato tra le materie analizzate. Oltre ai 6 manuali principali, si contano almeno 8 testi con una sola adozione (Smelser, Van Tubergen, Cerulo, Bichi, Ferrarotti, Forgacs, Ungaro, De Mucci/Fallocco). Molti di questi sono auto-adozioni o scelte idiosincratiche.</p>
+            <p style="margin-bottom:12px"><strong>Aggiornamento:</strong> Manza (3ª ed. 2025) e Gammaitoni (2025) sono i più recenti. Giddens (2022) e Croteau (2022) sono ragionevolmente aggiornati. Bagnasco (2012), Jedlowski (2009), Smelser (2011) e Gallino/Borgna (2008) sono datati.</p>
+            <p style="margin-bottom:12px"><strong>Complementari:</strong> Il panorama complementare è dominato dai classici (Durkheim, Weber, Simmel, Goffman, Berger/Luckmann), da Carocci (Jedlowski, Satta, Besozzi), Laterza (Saraceno) e da editori minori (FrancoAngeli, Meltemi, Armando). Il Mulino è presente anche nel complementare con Berger/Luckmann e con titoli come Cerulo, Pulcini, Turnaturi.</p>
+            <p><strong>Auto-adozioni:</strong> Fenomeno molto diffuso: Gammaitoni (Roma Tre), Tognonato (Roma Tre), Gallina (Torino), Fallocco (Viterbo), Gherardi (Parma). Circa il 15% delle cattedre presenta auto-adozione come manuale principale.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== TAB CONTENUTI & PROGRAMMI ===================== -->
+<div id="contenuti" class="tab-panel">
+    <h2 class="section-title">Nucleo Minimo di Contenuti Comuni</h2>
+    <div class="core-cards">
+        <div class="core-card cc-blue"><h4>Epistemologia</h4>La sociologia come scienza, immaginazione sociologica, distinzione senso comune / conoscenza scientifica</div>
+        <div class="core-card cc-green"><h4>Teoria Classica</h4>Durkheim (fatto sociale), Weber (azione sociale, modernità), Marx (conflitto, classi)</div>
+        <div class="core-card cc-purple"><h4>Concetti Base</h4>Cultura, socializzazione, norme, status, ruolo, interazione, gruppi, istituzioni</div>
+        <div class="core-card cc-orange"><h4>Stratificazione</h4>Disuguaglianze sociali, classi, mobilità, devianza e controllo sociale</div>
+    </div>
+
+    <h2 class="section-title">Nucleo Esteso (variabile per curriculum e CFU)</h2>
+    <div class="pills">
+        <span class="pill">Sociologia dell'educazione</span>
+        <span class="pill">Metodologia della ricerca sociale</span>
+        <span class="pill">Globalizzazione</span>
+        <span class="pill">Società liquida (Bauman)</span>
+        <span class="pill">Genere e sessualità</span>
+        <span class="pill">Migrazioni e multiculturalismo</span>
+        <span class="pill">Sociologia delle emozioni</span>
+        <span class="pill">Famiglia e genitorialità</span>
+        <span class="pill">Infanzia e servizi 0-6</span>
+        <span class="pill">Devianza e marginalità</span>
+        <span class="pill">Big Data e digitalizzazione</span>
+        <span class="pill">Sociologia della cura</span>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Specificità Tematiche per Ateneo</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px"><strong>Basilicata (Salzano):</strong> Sociologia delle emozioni come tema monografico centrale (Cerulo, Tomelleri, Turnaturi, Pulcini).</p>
+            <p style="margin-bottom:10px"><strong>Bologna (Scappini):</strong> Focus specifico su infanzia e servizi 0-6 con la "nuova sociologia dell'infanzia" (Satta, Carocci 2024).</p>
+            <p style="margin-bottom:10px"><strong>Ferrara (Rubin):</strong> Modello metodologico-applicativo con studio integrale di classici (Durkheim <em>Il suicidio</em>, Weber, Simmel).</p>
+            <p style="margin-bottom:10px"><strong>Firenze (Bazzani/Nulman):</strong> Manza (Pearson 2025) + O'Byrne + Gherardi. Approccio empirico con forte attenzione alla ricerca.</p>
+            <p style="margin-bottom:10px"><strong>Napoli Benincasa:</strong> Marginalità e territori — analisi dei "margini d'Italia" (manicomi, baraccopoli, campi nomadi).</p>
+            <p style="margin-bottom:10px"><strong>Padova:</strong> Focus monografico su famiglia, genitorialità e relazioni di intimità (Saraceno, Morgan).</p>
+            <p style="margin-bottom:10px"><strong>Palermo:</strong> Approccio cronologico/autoriale con Scuola di Chicago, devianza (Merton), intersezionalità, genere.</p>
+            <p style="margin-bottom:10px"><strong>Roma Tre (Gammaitoni):</strong> Auto-adozione UTET 2025 + classici (Goffman, Berger/Luckmann, Weber, Durkheim). Sociologia delle arti.</p>
+            <p style="margin-bottom:10px"><strong>Siena (Bianchi):</strong> Sociologia della cura e pratiche di attenzione nella vita quotidiana. Modulo intero su sociologia dell'educazione.</p>
+            <p><strong>Torino (Borgna/Gallina):</strong> Scuola sociologica torinese (Gallino). Gallina: dipendenze, bullismo/cyberbullismo.</p>
+        </div>
+    </div>
+
+    <h2 class="section-title">Prospettive Teoriche</h2>
+    <table class="spec-table">
+        <thead><tr><th>Prospettiva Teorica</th><th>Presenza</th><th>Modalità</th><th>Note</th></tr></thead>
+        <tbody>
+            <tr><td>Positivismo (Durkheim/Comte)</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Base epistemologica in quasi tutti i programmi</td></tr>
+            <tr><td>Sociologia Comprendente (Weber)</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Azione sociale, modernità</td></tr>
+            <tr><td>Interazionismo Simbolico (Goffman/Mead)</td><td><span class="tag tag-alta">Alta</span></td><td>Esplicita</td><td>Molto presente per la rilevanza nell'educazione</td></tr>
+            <tr><td>Funzionalismo (Parsons/Merton)</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Struttura sociale, devianza</td></tr>
+            <tr><td>Conflittualismo (Marx/Dahrendorf)</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Stratificazione, disuguaglianze</td></tr>
+            <tr><td>Costruzionismo Sociale (Berger/Luckmann)</td><td><span class="tag tag-media">Media</span></td><td>Esplicita</td><td>Testo a scelta frequente</td></tr>
+            <tr><td>Teoria Critica (Francoforte)</td><td><span class="tag tag-bassa">Bassa</span></td><td>Implicita</td><td>Sporadica, media e cultura</td></tr>
+            <tr><td>Network Analysis</td><td><span class="tag tag-bassa">Bassa</span></td><td>Esplicita</td><td>Bologna, Sassari</td></tr>
+        </tbody>
+    </table>
+
+    <div class="chart-box" style="margin-bottom:24px">
+        <h3>Presenza delle Prospettive Teoriche</h3>
+        <canvas id="chartProspettive" height="200"></canvas>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Modelli di Strutturazione del Corso</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px"><strong>Modello Bipartito (Generale + Monografico):</strong> Prima parte sui concetti base, seconda su un tema specifico (emozioni in Basilicata, esclusione sociale a Napoli, famiglia a Padova).</p>
+            <p style="margin-bottom:10px"><strong>Modello Cronologico/Autoriale:</strong> Segue l'evoluzione storica del pensiero dai classici ai contemporanei (Palermo, Roma Tre).</p>
+            <p style="margin-bottom:10px"><strong>Modello Modulare Tematico:</strong> Organizzato per grandi aree (Cultura, Socializzazione, Stratificazione, Politica/Economia). Benevento, Catania, Roma Marconi, Roma Unicusano.</p>
+            <p><strong>Modello Metodologico-Applicativo:</strong> Integra teoria con laboratori di ricerca o analisi di casi studio. Firenze, Siena.</p>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Differenze tra Programmi 6 CFU e 12 CFU</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px"><strong>6 CFU (Basilicata, Foggia, Parma, Perugia, Sassari, Udine):</strong> 30-40 ore di lezione. Nucleo minimo: fondamenti epistemologici, classici, concetti base. Un manuale + eventuale testo a scelta. Metodologia solo accennata.</p>
+            <p style="margin-bottom:10px"><strong>9-12 CFU (Ferrara, Firenze, Roma Marconi, Siena, Torino):</strong> 60-72 ore. Struttura più complessa: moduli integrati (Siena divide in Sociologia Generale + Sociologia dell'educazione), approfondimenti tematici (Roma Marconi: capitalismo delle piattaforme, social network, socializzazione di genere), applicazione pratica (Ferrara: caso studio). Bibliografia vasta con classici obbligatori.</p>
+            <p><strong>Metodologia:</strong> Nei corsi da 12 CFU è un pilastro (Siena: tecniche creative di ricerca; Roma Marconi: modulo dedicato a logica e metodi). Nei corsi da 6 CFU è solo un accenno introduttivo.</p>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Focus: Lo Studio della Devianza</div>
+        <div class="collapsible-body">
+            <p style="margin-bottom:10px"><strong>Approccio Teorico-Manuale:</strong> La devianza come concetto cardine del nucleo minimo, dopo socializzazione e gruppi. Catania, Sassari, Perugia, Ferrara, Viterbo.</p>
+            <p style="margin-bottom:10px"><strong>Approccio Interazionale/Stigma:</strong> Costruzione sociale del deviante, etichettamento. Firenze (devianza non come "malattia" ma dinamica sociale), Udine (stereotipo, pregiudizio, Alterità).</p>
+            <p style="margin-bottom:10px"><strong>Approccio Clinico-Istituzionale:</strong> Istituzioni totali, margini della società. Napoli Benincasa (manicomi, baraccopoli, campi nomadi, Becker <em>Outsiders</em>). Palermo (Scuola di Chicago, Hobo, gang, Merton).</p>
+            <p><strong>Approccio Specialistico/Educativo:</strong> Dipendenze e cyberbullismo. Torino (Gallina): testi su sostanze negli adolescenti e bullismo/cyberbullismo. Roma Tre: suicidio (Durkheim), personalità autoritaria (Adorno).</p>
+        </div>
+    </div>
+
+    <div class="collapsible" onclick="toggleCollapsible(this)">
+        <div class="collapsible-header">Limiti dell'Analisi</div>
+        <div class="collapsible-body">
+            <p>L'analisi è limitata dall'assenza dei CFU in alcuni programmi e dalla mancanza di bibliografia dichiarata in 4 atenei (Bolzano, Foggia, Milano Cattolica, Modena). In diversi casi le prospettive teoriche sono solo implicite nei temi trattati. Tutte le cattedre appartengono alla classe L-19: la Sociologia Generale non compare come esame autonomo nella LM-85bis.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== TAB POSIZIONAMENTO ZANICHELLI ===================== -->
+<div id="posizionamento" class="tab-panel">
+    <div class="highlight-box accent">
+        <strong>Zanichelli è assente dal catalogo</strong> per la Sociologia Generale. Non esiste un titolo Zanichelli per questa disciplina. L'analisi del posizionamento si limita quindi alla mappatura del mercato e alla valutazione dell'opportunità di ingresso.
+    </div>
+
+    <h2 class="section-title">Analisi SWOT — Opportunità di Ingresso</h2>
+    <div class="swot-grid">
+        <div class="swot-box swot-s">
+            <h4>⬆ Fattori Favorevoli</h4>
+            <ul>
+                <li>Rete commerciale Zanichelli già attiva in tutti gli atenei L-19</li>
+                <li>Esperienza nella traduzione/curatela di manuali internazionali (Schultz & Lavenda, Smith & Mackie)</li>
+                <li>Piattaforma digitale ZTE come elemento differenziante</li>
+                <li>35 cattedre = mercato ampio, il più grande tra le materie analizzate in L-19</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-w">
+            <h4>⬇ Fattori Sfavorevoli</h4>
+            <ul>
+                <li>Zero presenza = nessuna base da cui partire, nessun "campione" interno</li>
+                <li>Entrare in un mercato dove Il Mulino ha il 32% e una gamma completa di titoli è molto costoso</li>
+                <li>Il Mulino controlla anche Giddens, il brand internazionale più forte in Italia</li>
+                <li>Forte frammentazione e auto-adozioni rendono difficile una penetrazione rapida</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-o">
+            <h4>→ Opportunità</h4>
+            <ul>
+                <li>Nessun manuale specifico "Sociologia per educatori" esiste sul mercato</li>
+                <li>Bagnasco (2012), Jedlowski (2009), Smelser (2011) sono datati — cattedre in potenziale transizione</li>
+                <li>4 cattedre senza testo indicato (Bolzano, Foggia, Milano Cattolica, Modena)</li>
+                <li>Le telematiche (41,5% iscritti L-19) non sono analizzate — possibile punto d'ingresso</li>
+                <li>Pearson cresce con Manza (2025) — dimostra che c'è spazio per nuovi entranti internazionali</li>
+            </ul>
+        </div>
+        <div class="swot-box swot-t">
+            <h4>⚠ Barriere all'Ingresso</h4>
+            <ul>
+                <li>Il Mulino ha un ecosistema completo: Giddens + Bagnasco + Smelser + Van Tubergen + Berger/Luckmann</li>
+                <li>UTET ha legami con la scuola torinese e romana (Gallino, Gammaitoni)</li>
+                <li>Pearson e McGraw-Hill hanno già titoli aggiornati (2022-2025)</li>
+                <li>Il rapporto investimento/ritorno è incerto per un mercato così frammentato</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2 class="section-title">Valutazione Strategica</h2>
+
+    <div class="id-card id-card-blue">
+        <h4>📘 Opzione A — Monitoraggio e Attesa (Raccomandato)</h4>
+        <div class="id-field"><strong>Razionale:</strong> Il mercato è già saturo di offerta, con 5 editori attivi e Il Mulino in posizione dominante. L'investimento necessario per creare o acquisire un titolo competitivo è alto e il ritorno incerto.</div>
+        <div class="id-field"><strong>Azione:</strong> Continuare a monitorare le evoluzioni (nuove edizioni, pensionamenti, cambi di cattedra). Concentrare le risorse sulle materie dove Zanichelli ha già una posizione (Psicologia Clinica, Antropologia Culturale, Psicologia Generale).</div>
+        <div class="id-field"><strong>Orizzonte:</strong> Rivisitare la valutazione tra 2-3 anni, specialmente se emergono segnali di apertura nelle telematiche.</div>
+    </div>
+
+    <div class="id-card id-card-red">
+        <h4>📕 Opzione B — Ingresso con Titolo Internazionale</h4>
+        <div class="id-field"><strong>Concept:</strong> Acquisire i diritti italiani di un manuale internazionale non ancora tradotto (es. un testo americano o britannico di nuova generazione) e posizionarlo come alternativa a Giddens/Manza/Croteau.</div>
+        <div class="id-field"><strong>Target:</strong> Cattedre che usano manuali datati (Smelser 2011 a Catania, Bagnasco 2012 a Benevento/Unicusano, Jedlowski 2009 a Padova)</div>
+        <div class="id-field"><strong>Rischio:</strong> Alto — Il Mulino ha una presa molto forte e il passaggio a un nuovo editore in sociologia richiede un cambio generazionale dei docenti</div>
+        <div class="id-field"><strong>Investimento:</strong> Significativo (traduzione, curatela, lancio commerciale)</div>
+    </div>
+
+    <h2 class="section-title">Cattedre da Monitorare</h2>
+    <table class="target-table">
+        <thead><tr><th>Ateneo</th><th>Docente</th><th>Testo Attuale</th><th>Editore</th><th>Motivo di Interesse</th><th>Priorità</th></tr></thead>
+        <tbody>
+            <tr><td>Bolzano</td><td>Ilaria Riccioni</td><td>N.D.</td><td>N.D.</td><td>Cattedra senza testo indicato</td><td><span class="badge badge-media">MONITOR</span></td></tr>
+            <tr><td>Foggia</td><td>—</td><td>N.D.</td><td>N.D.</td><td>Cattedra senza testo indicato</td><td><span class="badge badge-media">MONITOR</span></td></tr>
+            <tr><td>Milano Cattolica</td><td>Monica Martinelli</td><td>N.D.</td><td>N.D.</td><td>Cattedra senza testo indicato</td><td><span class="badge badge-media">MONITOR</span></td></tr>
+            <tr><td>Modena e RE</td><td>—</td><td>N.D.</td><td>N.D.</td><td>Cattedra senza testo indicato</td><td><span class="badge badge-media">MONITOR</span></td></tr>
+            <tr><td>Catania (×2)</td><td>Gamuzza / Leonora</td><td>Smelser (2011)</td><td>Il Mulino</td><td>Manuale datato — possibile cambio</td><td><span class="badge badge-develop">DEVELOP</span></td></tr>
+            <tr><td>Padova (×2)</td><td>Gusmeroli</td><td>Jedlowski (2009)</td><td>Carocci</td><td>Manuale datato — possibile cambio</td><td><span class="badge badge-develop">DEVELOP</span></td></tr>
+            <tr><td>Benevento</td><td>Elvira Martini</td><td>Bagnasco (2012)</td><td>Il Mulino</td><td>Edizione non recente</td><td><span class="badge badge-develop">DEVELOP</span></td></tr>
+        </tbody>
+    </table>
+
+    <div class="qw-box">
+        <h4>⚡ Azioni Consigliate</h4>
+        <ul>
+            <li><strong>Nessuna azione commerciale immediata</strong> — Zanichelli non ha un titolo da proporre. L'investimento promozionale sarebbe prematuro.</li>
+            <li><strong>Intelligence sulle telematiche:</strong> Mappare le adozioni di Sociologia Generale nelle telematiche L-19 (Pegaso, eCampus, Unicusano, Marconi). Se il mercato è concentrato su pochi titoli, potrebbe giustificare un ingresso mirato.</li>
+            <li><strong>Scouting editoriale:</strong> Valutare se esistono manuali internazionali di nuova generazione non ancora tradotti che potrebbero colmare un gap nel mercato italiano (es. un testo con taglio "sociologia per le professioni educative").</li>
+            <li><strong>Cross-selling:</strong> Nelle visite commerciali per le altre materie (Psicologia, Antropologia), raccogliere informazioni qualitative dai docenti di Sociologia sui loro bisogni insoddisfatti e sulla soddisfazione per i manuali attuali.</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+<div class="footer">
+    Zanichelli Market Intelligence — Sociologia Generale L-19 | Dati aggiornati al 27/02/2026 | Promotore: Sergio — Funzionario Commerciale
+</div>
+
+<script>
+function switchTab(tabId){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(tabId).classList.add('active');event.target.classList.add('active')}
+function toggleCollapsible(el){el.classList.toggle('open')}
+function filterTable(){const ed=document.getElementById('filterEditore').value.toLowerCase();const sr=document.getElementById('filterSearch').value.toLowerCase();document.querySelectorAll('#adozioniTable tbody tr').forEach(r=>{const cells=r.querySelectorAll('td');const rEd=(cells[6]?.textContent||'').toLowerCase();const rTx=r.textContent.toLowerCase();r.style.display=((!ed||rEd.includes(ed))&&(!sr||rTx.includes(sr)))?'':'none'})}
+let sortDir={};function sortTable(col){const tb=document.getElementById('adozioniTable').querySelector('tbody');const rows=Array.from(tb.querySelectorAll('tr'));sortDir[col]=!sortDir[col];rows.sort((a,b)=>{const av=(a.querySelectorAll('td')[col]?.textContent||'').trim();const bv=(b.querySelectorAll('td')[col]?.textContent||'').trim();return sortDir[col]?av.localeCompare(bv,'it'):bv.localeCompare(av,'it')});rows.forEach(r=>tb.appendChild(r))}
+
+const zB='#003C82',zA='#E63946',zG='#2A9D8F',zY='#E9C46A',zO='#F4A261',zP='#6C5CE7',g4='#9CA3AF';
+
+new Chart(document.getElementById('chartDoughnut').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:['Il Mulino (32,3%)','UTET (16,1%)','Pearson (12,9%)','McGraw-Hill (9,7%)','Carocci (9,7%)','Altri (19,4%)'],datasets:[{data:[32.3,16.1,12.9,9.7,9.7,19.4],backgroundColor:[zB,zO,'#6366F1','#10B981',zG,g4],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:10}}},cutout:'55%'}
+});
+
+new Chart(document.getElementById('chartBar').getContext('2d'),{
+    type:'bar',
+    data:{labels:['Giddens/Sutton\n(Il Mulino)','Bagnasco et al.\n(Il Mulino)','Manza et al.\n(Pearson)','Croteau/Hoynes\n(McGraw-Hill)','Gammaitoni\n(UTET)','Smelser\n(Il Mulino)','Jedlowski\n(Carocci)','Gallino/Borgna\n(UTET)','Altri\n(vari)'],datasets:[{label:'Adozioni principali',data:[3,3,3,3,2,2,2,2,11],backgroundColor:[zB,zB,'#6366F1','#10B981',zO,zB,zG,zO,g4],borderRadius:4}]},
+    options:{responsive:true,indexAxis:'y',scales:{x:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false}}}
+});
+
+new Chart(document.getElementById('chartProspettive').getContext('2d'),{
+    type:'bar',
+    data:{labels:['Positivismo','Soc. Comprendente','Interazionismo','Funzionalismo','Conflittualismo','Costruzionismo','Teoria Critica','Network Analysis'],datasets:[{label:'Livello (1=Bassa, 2=Media, 3=Alta)',data:[3,3,3,2,2,2,1,1],backgroundColor:[zA,zB,zG,zO,zP,zY,'#6366F1',g4],borderRadius:6}]},
+    options:{responsive:true,scales:{y:{beginAtZero:true,max:3,ticks:{stepSize:1,callback:v=>['','Bassa','Media','Alta'][v]}},x:{ticks:{font:{size:10}}}},plugins:{legend:{display:false}}}
+});
+</script>
+</body>
+</html>

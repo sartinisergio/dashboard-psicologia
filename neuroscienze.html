@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Neuroscienze · L-24</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root{--zb:#003865;--zl:#0066B3;--za:#E63946;--zg:#2A9D8F;--zy:#E9C46A;--zo:#F4A261;--bg:#F5F7FA;--card:#FFF;--t1:#1A1A2E;--t2:#555B6E;--bd:#E0E4EA;--sh:0 2px 12px rgba(0,0,0,.06);--r:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--zb);color:#fff;z-index:100;overflow-y:auto;display:flex;flex-direction:column}
+.sidebar-header{padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-header h1{font-size:18px;font-weight:700;letter-spacing:.5px}
+.sidebar-header p{font-size:11px;opacity:.6;margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+.sidebar-header .sub2{font-size:10.5px;opacity:.45;margin-top:2px}
+.nav-section{padding:14px 0}
+.nav-section-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;opacity:.4;padding:0 24px;margin-bottom:8px}
+.nav-link{display:flex;align-items:center;padding:10px 24px;font-size:13px;font-weight:400;border-left:3px solid transparent;text-decoration:none;color:#fff;transition:all .2s}
+.nav-link:hover{background:rgba(255,255,255,.08);border-left-color:rgba(255,255,255,.3)}
+.nav-link.active{background:rgba(255,255,255,.12);border-left-color:var(--zy);font-weight:600}
+.nav-link .icon{margin-right:12px;font-size:15px;width:20px;text-align:center}
+.main{margin-left:280px;padding:32px 44px;max-width:1140px}
+.page-header{margin-bottom:28px}
+.page-header h2{font-size:26px;font-weight:700;color:var(--zb)}
+.page-header .subtitle{font-size:14.5px;color:var(--t2);margin-top:6px}
+.breadcrumb{font-size:12px;color:var(--t2);margin-bottom:8px}
+.breadcrumb a{color:var(--zl);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.print-btn{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--bd);padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;color:var(--t2);transition:all .2s;font-family:inherit}
+.print-btn:hover{background:#F0F4FF;border-color:var(--zl);color:var(--zb)}
+.ext-btn{display:inline-flex;align-items:center;gap:6px;background:var(--zb);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;transition:background .2s}
+.ext-btn:hover{background:var(--zl)}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.kpi-card{background:var(--card);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);border:1px solid var(--bd);transition:box-shadow .2s}
+.kpi-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.kpi-card .kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);margin-bottom:6px}
+.kpi-card .kpi-value{font-size:30px;font-weight:700;color:var(--zb)}
+.kpi-card .kpi-sub{font-size:12px;color:var(--t2);margin-top:4px}
+.kpi-card.hl{border-left:4px solid var(--za)}.kpi-card.gr{border-left:4px solid var(--zg)}.kpi-card.yl{border-left:4px solid var(--zy)}.kpi-card.bl{border-left:4px solid var(--zl)}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+.content-grid.full{grid-template-columns:1fr}
+.card{background:var(--card);border-radius:var(--r);padding:24px;box-shadow:var(--sh);border:1px solid var(--bd)}
+.card-title{font-size:15px;font-weight:600;color:var(--zb);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-divider{margin:32px 0 24px;padding:18px 22px;background:linear-gradient(135deg,var(--zb) 0%,var(--zl) 100%);border-radius:var(--r);color:#fff}
+.section-divider h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.section-divider p{font-size:12px;opacity:.85}
+.prose{font-size:13.5px;line-height:1.8;color:var(--t1)}
+.prose h3{color:var(--zb);margin:24px 0 12px;font-size:17px;font-weight:700}
+.prose h4{color:var(--zl);margin:18px 0 8px;font-size:14.5px;font-weight:600}
+.prose p{margin-bottom:12px}
+.note-box{background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:14px 18px;font-size:12.5px;color:#92400E;margin:16px 0;line-height:1.6}
+.chart-container{position:relative;height:340px;margin-bottom:16px}
+.pond-kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.pond-kpi{background:var(--card);border-radius:10px;padding:14px 16px;box-shadow:var(--sh);border:1px solid var(--bd);text-align:center}
+.pond-kpi .pk-val{font-size:22px;font-weight:700;color:var(--zb)}
+.pond-kpi .pk-lab{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);margin-top:2px}
+.pond-kpi.accent{border-bottom:3px solid var(--za)}.pond-kpi.accent .pk-val{color:var(--za)}
+.pond-kpi.green{border-bottom:3px solid var(--zg)}.pond-kpi.green .pk-val{color:var(--zg)}
+.ed-table{width:100%;border-collapse:collapse;font-size:12px;margin:16px 0}
+.ed-table th{background:var(--zb);color:#fff;padding:8px 10px;text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
+.ed-table td{padding:8px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.ed-table tr:nth-child(even){background:#F8FAFC}
+.ed-table tr.zan-row{background:#FFF8E1!important}
+.ed-table tr.zan-row td{font-weight:600}
+.ed-table .delta-pos{color:var(--zg);font-weight:700}
+.ed-table .delta-neg{color:var(--za);font-weight:700}
+.det-toggle{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;border:1px solid var(--za);color:var(--za);background:#FFF;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;margin:8px 0}
+.det-toggle:hover{background:var(--za);color:#fff}
+.det-panel{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.det-panel.open{max-height:5000px}
+.det-table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0}
+.det-table th{background:var(--za);color:#fff;padding:7px 10px;font-size:10.5px;text-transform:uppercase}
+.det-table td{padding:7px 10px;border-bottom:1px solid var(--bd)}
+.det-table tr:nth-child(even){background:#FFF8E1}
+.opp-box{border-left:4px solid var(--za);background:#FFF0F1;border-radius:0 8px 8px 0;padding:16px 20px;margin:16px 0}
+.opp-box .opp-title{font-size:13px;font-weight:700;color:var(--za);margin-bottom:10px}
+.opp-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.opp-table th{background:var(--za);color:#fff;padding:6px 8px;font-size:10px;text-transform:uppercase}
+.opp-table td{padding:6px 8px;border-bottom:1px solid #FECDD3}
+.collapsible{background:var(--card);border-radius:var(--r);border:1px solid var(--bd);margin-bottom:12px;overflow:hidden;box-shadow:var(--sh)}
+.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:14.5px;color:var(--zb);user-select:none;transition:background .2s}
+.collapsible-header:hover{background:#F0F4FF}
+.collapsible-header .arrow{transition:transform .3s;font-size:12px}
+.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}
+.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.collapsible.open .collapsible-body{max-height:12000px}
+.cc{padding:0 22px 20px;font-size:13.5px;line-height:1.75;color:var(--t1)}
+.cc p{margin-bottom:10px}
+.bacino-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+.bacino-card{background:var(--card);border-radius:10px;padding:20px;text-align:center;box-shadow:var(--sh);border:1px solid var(--bd)}
+.bacino-card .bc-val{font-size:28px;font-weight:800;color:var(--zb)}
+.bacino-card .bc-lab{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-top:4px;line-height:1.5}
+@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(2,1fr)}.content-grid{grid-template-columns:1fr}.pond-kpi-strip{grid-template-columns:repeat(3,1fr)}.bacino-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:20px 16px}}
+@media print{.sidebar,.toolbar{display:none!important}.main{margin-left:0!important;padding:20px!important}.card,.collapsible{box-shadow:none!important;break-inside:avoid}.collapsible-body{max-height:none!important}.det-panel{max-height:none!important}}
+</style>
+</head>
+<body>
+
+<!-- === SIDEBAR === -->
+<nav class="sidebar">
+<div class="sidebar-header">
+<h1>ZANICHELLI</h1>
+<p>Analisi Programmi Universitari</p>
+<div class="sub2">L-24 · L-19 · LM-85bis</div>
+</div>
+<div class="nav-section">
+<div class="nav-section-title">Inquadramento</div>
+<a class="nav-link" href="index.html"><span class="icon">🏠</span> Home</a>
+<a class="nav-link" href="index.html?section=premessa"><span class="icon">📋</span> Premessa</a>
+<a class="nav-link" href="index.html?section=mercato"><span class="icon">📊</span> Mercato L-24</a>
+<a class="nav-link" href="index.html?section=mercato19"><span class="icon">📊</span> Mercato L-19 / LM-85bis</a>
+<a class="nav-link" href="index.html?section=trasversale"><span class="icon">🔀</span> Visione Trasversale</a>
+<a class="nav-link" href="index.html?section=ponderata"><span class="icon">⚖️</span> Analisi Ponderata</a>
+</div>
+<div class="nav-section">
+<div class="nav-section-title">L-24 — Per Materia</div>
+<a class="nav-link" href="psicologia_generale.html"><span class="icon">⚙️</span> Psicologia Generale</a>
+<a class="nav-link" href="psicologia_clinica.html"><span class="icon">🧠</span> Psicologia Clinica</a>
+<a class="nav-link" href="psicologia_sviluppo.html"><span class="icon">🌱</span> Psicol. dello Sviluppo</a>
+<a class="nav-link" href="psicologia_sociale.html"><span class="icon">👥</span> Psicologia Sociale</a>
+<a class="nav-link" href="psicometria.html"><span class="icon">📐</span> Psicometria</a>
+<a class="nav-link" href="antropologia_culturale.html"><span class="icon">🌍</span> Antropologia Culturale</a>
+<a class="nav-link" href="sociologia_generale.html"><span class="icon">🏛️</span> Sociologia Generale</a>
+<a class="nav-link active" href="neuroscienze.html"><span class="icon">🔬</span> Neuroscienze</a>
+</div>
+<div class="nav-section">
+<div class="nav-section-title">L-19 + LM-85bis — Per Materia</div>
+<a class="nav-link" href="psicologia_generale_L19_LM85bis.html"><span class="icon">⚙️</span> Psicologia Generale</a>
+<a class="nav-link" href="psicologia_sviluppo_L19_LM85bis.html"><span class="icon">🌱</span> Psicol. dello Sviluppo</a>
+<a class="nav-link" href="psicologia_clinica_L19_LM85bis.html"><span class="icon">🧠</span> Psicologia Clinica</a>
+<a class="nav-link" href="psicologia_sociale_L19_LM85bis.html"><span class="icon">👥</span> Psicologia Sociale</a>
+<a class="nav-link" href="antropologia_culturale_L19_LM85bis.html"><span class="icon">🌍</span> Antropologia Culturale</a>
+<a class="nav-link" href="sociologia_generale_L19_LM85bis.html"><span class="icon">🏛</span> Sociologia Generale</a>
+</div>
+<div class="nav-section">
+<div class="nav-section-title">Sintesi</div>
+<a class="nav-link" href="riepilogo_generale.html"><span class="icon">📋</span> Riepilogo Generale</a>
+<a class="nav-link" href="report_riepilogo.html" target="_blank"><span class="icon">📄</span> Report PDF</a>
+</div>
+<div class="nav-section">
+<div class="nav-section-title">Risorse</div>
+<a class="nav-link" href="https://adozionineuroscienze.netlify.app" target="_blank"><span class="icon">🔬</span> Dashboard Neuroscienze</a>
+<a class="nav-link" href="https://autorineuroscienze.netlify.app" target="_blank"><span class="icon">✍️</span> Autori e Traduttori</a>
+<a class="nav-link" href="https://www.dropbox.com/scl/fo/m02q242gpci6lrmxm3ric/AAk-gwO7k-e0jzDG7ETK4zQ?rlkey=c6w658wx1cpihlyi4m9b57n9x&st=zcqz7vln&dl=0" target="_blank"><span class="icon">📁</span> Indagine Psicologia (Dropbox)</a>
+</div>
+</nav>
+
+<!-- === MAIN === -->
+<div class="main">
+
+<div class="breadcrumb"><a href="index.html">Home</a> / <a href="index.html?section=ponderata">Analisi Ponderata</a> / Neuroscienze</div>
+<div class="page-header">
+<h2>🔬 Neuroscienze — L-24</h2>
+<div class="subtitle">Area neuroscientifica · Psicobiologia · Neuroscienze cognitive · Fondamenti anatomofisiologici</div>
+</div>
+<div class="toolbar">
+<button class="print-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+<a class="ext-btn" href="https://adozionineuroscienze.netlify.app" target="_blank">🔬 Dashboard Interattiva</a>
+<a class="ext-btn" href="https://autorineuroscienze.netlify.app" target="_blank">✍️ Autori e Traduttori</a>
+</div>
+
+<!-- ==================== KPI ==================== -->
+<div class="kpi-row">
+<div class="kpi-card hl"><div class="kpi-label">Studenti Totali</div><div class="kpi-value">27.099</div><div class="kpi-sub">82 insegnamenti · 40 atenei</div></div>
+<div class="kpi-card bl"><div class="kpi-label">Zanichelli/CEA</div><div class="kpi-value">5.323</div><div class="kpi-sub">19,6% del mercato · 8 titoli diversi</div></div>
+<div class="kpi-card gr"><div class="kpi-label">Tradizionali</div><div class="kpi-value">16.672</div><div class="kpi-sub">61,5% del totale</div></div>
+<div class="kpi-card yl"><div class="kpi-label">Telematiche</div><div class="kpi-value">10.427</div><div class="kpi-sub">38,5% del totale</div></div>
+</div>
+
+<!-- ==================== 1. QUADRO GENERALE ==================== -->
+<div class="section-divider">
+<h3>1 — Quadro Generale: Le Neuroscienze in L-24</h3>
+<p>Struttura degli insegnamenti, denominazioni e peso curricolare</p>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<div class="prose">
+<p>L'area neuroscientifica in L-24 comprende un insieme eterogeneo di insegnamenti che coprono le basi biologiche del comportamento e i processi neurali alla base della cognizione. A differenza delle altre materie censite in questo progetto, dove a un nome corrisponde generalmente un insegnamento standard, nelle neuroscienze la stessa area disciplinare si presenta sotto denominazioni molto diverse: psicobiologia, psicologia fisiologica, fondamenti anatomofisiologici dell'attività psichica, neuroscienze cognitive, neurofisiologia, biologia applicata, fondamenti di fisiologia, e molte altre varianti.</p>
+
+<h3>Struttura tipica negli atenei</h3>
+<p>La maggior parte degli atenei prevede almeno un insegnamento di area neuroscientifica al primo anno (fondamenti biologici/anatomofisiologici) e uno al secondo anno (neuroscienze cognitive o psicologia fisiologica). Su 40 atenei tradizionali censiti, il 45% offre un solo insegnamento, il 50% ne offre due e il 5% ne offre tre. Le telematiche seguono lo stesso schema, con alcune varianti (e-Campus ha 3 insegnamenti distinti).</p>
+
+<h3>Le macro-aree disciplinari</h3>
+<p>Gli 82 insegnamenti censiti possono essere raggruppati in tre filoni principali. Il primo è quello dei fondamenti biologici e anatomofisiologici, che fornisce le basi sulla struttura e funzione del sistema nervoso — tipicamente al primo anno, con SSD prevalente BIO/09 o BIO/13. Il secondo è quello della psicobiologia e psicologia fisiologica, che collega i processi biologici al comportamento — posizionato tra primo e secondo anno, con SSD M-PSI/02. Il terzo è quello delle neuroscienze cognitive, che esplora i processi mentali superiori (percezione, attenzione, memoria, linguaggio) e la loro base neurale — tipicamente al secondo anno, sempre M-PSI/02.</p>
+
+<p>Questa tripartizione ha implicazioni dirette sulle adozioni: i manuali più "biologici" (Bear, Kandel Principi, Purves Neuroscienze) coprono il primo filone, i manuali di psicobiologia (Pinel, Carlson, Breedlove) il secondo, e i manuali di neuroscienze cognitive (Gazzaniga, Purves NC) il terzo. Alcuni atenei usano lo stesso manuale per entrambi i livelli, altri ne adottano uno diverso per ciascuno.</p>
+</div>
+</div>
+</div>
+
+<div class="content-grid">
+<div class="card">
+<div class="card-title">📊 Distribuzione insegnamenti per anno</div>
+<div class="chart-container" style="height:260px"><canvas id="chartAnno"></canvas></div>
+</div>
+<div class="card">
+<div class="card-title">📊 Insegnamenti per ateneo</div>
+<div class="chart-container" style="height:260px"><canvas id="chartInsAteneo"></canvas></div>
+</div>
+</div>
+
+<!-- ==================== 2. ANALISI PONDERATA ==================== -->
+<div class="section-divider">
+<h3>2 — Analisi Ponderata per Editore</h3>
+<p>Quote di mercato pesate per studenti effettivi — Bibliografia 1</p>
+</div>
+
+<div class="pond-kpi-strip">
+<div class="pond-kpi"><div class="pk-val">27.099</div><div class="pk-lab">Studenti mercato</div></div>
+<div class="pond-kpi"><div class="pk-val">82</div><div class="pk-lab">Insegnamenti</div></div>
+<div class="pond-kpi"><div class="pk-val">330</div><div class="pk-lab">Media stud./ins.</div></div>
+<div class="pond-kpi accent"><div class="pk-val">19,6%</div><div class="pk-lab">Zanichelli/CEA pond.</div></div>
+<div class="pond-kpi green"><div class="pk-val">3°</div><div class="pk-lab">Posizione editore</div></div>
+</div>
+
+<div class="content-grid">
+<div class="card">
+<div class="card-title">📊 Quote di mercato per editore (% studenti)</div>
+<div class="chart-container"><canvas id="chartEditori"></canvas></div>
+</div>
+<div class="card">
+<div class="card-title">📋 Dettaglio per Editore</div>
+<table class="ed-table">
+<thead><tr><th>Editore</th><th>Titoli principali</th><th>Stud.</th><th>%</th><th>Trad.</th><th>Telem.</th></tr></thead>
+<tbody>
+<tr><td><strong>Edra</strong></td><td style="font-size:10px">Bear, Neuroscienze · Pinel, Psicobiologia</td><td><strong>9.572</strong></td><td><strong>35,3%</strong></td><td>6.511</td><td>3.061</td></tr>
+<tr><td><strong>Piccin</strong></td><td style="font-size:10px">Carlson, Fisiologia del comport. · Mangia, Basi biologiche · Siegel</td><td><strong>7.401</strong></td><td><strong>27,3%</strong></td><td>2.221</td><td>5.180</td></tr>
+<tr class="zan-row"><td><strong>Zanichelli/CEA</strong></td><td style="font-size:10px">Gazzaniga · Breedlove · Kandel ×2 · Purves ×2 · Freberg · Revlin</td><td><strong>5.323</strong></td><td><strong>19,6%</strong></td><td>5.323</td><td>0</td></tr>
+<tr><td>Poletto Editore</td><td style="font-size:10px">Maravita, Fondamenti anatomofisiologici</td><td>1.752</td><td>6,5%</td><td>1.752</td><td>0</td></tr>
+<tr><td>Il Mulino</td><td style="font-size:10px">Presti, Fondamenti di neuroscienze</td><td>1.982</td><td>7,3%</td><td>0</td><td>1.982</td></tr>
+<tr><td style="opacity:.5">Non disponibile/disp.</td><td style="font-size:10px;opacity:.5">—</td><td style="opacity:.5">1.069</td><td style="opacity:.5">3,9%</td><td style="opacity:.5">—</td><td style="opacity:.5">—</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="note-box">
+<strong>Dato rilevante:</strong> Zanichelli/CEA è l'unico editore con presenze esclusivamente in atenei tradizionali (0 studenti da telematiche). Edra e Piccin devono rispettivamente il 32% e il 70% del proprio bacino alle telematiche. Escluse le telematiche, Zanichelli/CEA sale dal 19,6% al 31,9% (5.323 su 16.672).
+</div>
+
+<!-- ==================== 3. DETTAGLIO TITOLI ZANICHELLI ==================== -->
+<div class="section-divider">
+<h3>3 — Dettaglio Titoli Zanichelli/CEA</h3>
+<p>8 titoli diversi · 20 cattedre primarie · 5.323 studenti</p>
+</div>
+
+<div class="content-grid">
+<div class="card">
+<div class="card-title">📊 Studenti per titolo Zanichelli/CEA</div>
+<div class="chart-container"><canvas id="chartTitoliZan"></canvas></div>
+</div>
+<div class="card">
+<div class="card-title">📋 Riepilogo per titolo</div>
+<table class="ed-table">
+<thead><tr><th>Titolo</th><th>Catt.</th><th>Stud.</th><th>%</th></tr></thead>
+<tbody>
+<tr class="zan-row"><td>Gazzaniga, <em>Neuroscienze cognitive</em></td><td>9</td><td>1.965</td><td>7,3%</td></tr>
+<tr class="zan-row"><td>Breedlove, <em>Psicologia biologica</em></td><td>4</td><td>1.987</td><td>7,3%</td></tr>
+<tr class="zan-row"><td>Kandel, <em>Fondamenti di neuroscienze e del comport.</em></td><td>1</td><td>523</td><td>1,9%</td></tr>
+<tr class="zan-row"><td>Purves, <em>Neuroscienze</em></td><td>2</td><td>316</td><td>1,2%</td></tr>
+<tr class="zan-row"><td>Kandel, <em>Principi di neuroscienze</em></td><td>1</td><td>294</td><td>1,1%</td></tr>
+<tr class="zan-row"><td>Purves, <em>Neuroscienze cognitive</em></td><td>2</td><td>226</td><td>0,8%</td></tr>
+<tr class="zan-row"><td>Freberg, <em>Psicologia biologica</em></td><td>1</td><td>202</td><td>0,7%</td></tr>
+<tr class="zan-row"><td>Revlin, <em>Psicologia cognitiva</em></td><td>1</td><td>85</td><td>0,3%</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Dettaglio cattedre -->
+<div class="content-grid full">
+<div class="card">
+<button class="det-toggle" onclick="this.nextElementSibling.classList.toggle('open')">📕 Dettaglio completo adozioni Zanichelli/CEA (20 cattedre · 5.323 studenti) ▾</button>
+<div class="det-panel">
+<table class="det-table">
+<thead><tr><th>Ateneo</th><th>Insegnamento</th><th>Titolo</th><th>Anno</th><th>Iscritti</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Bari Aldo Moro</td><td>Psicologia fisiologica</td><td>Breedlove, Psicol. biologica</td><td>1</td><td>235</td><td>da acquistare</td></tr>
+<tr><td>Bergamo</td><td>Fondamenti di psicobiologia</td><td>Gazzaniga, Neurosc. cognitive</td><td>1</td><td>223</td><td>da acquistare</td></tr>
+<tr><td>Bergamo</td><td>Neuroscienze cognitive</td><td>Gazzaniga, Neurosc. cognitive</td><td>2</td><td>178</td><td>già adottato</td></tr>
+<tr><td>Bologna</td><td>Neuroscienze cognitive e sociali</td><td>Gazzaniga, Neurosc. cognitive</td><td>2</td><td>210</td><td>da acquistare</td></tr>
+<tr><td>Firenze</td><td>Fondamenti anatomofis. dei processi psichici</td><td>Kandel, Fondamenti</td><td>1</td><td>523</td><td>da acquistare</td></tr>
+<tr><td>Firenze</td><td>Psicol. fisiol. e psicobiol. con elem. neurosc. sv.</td><td>Breedlove, Psicol. biologica</td><td>3</td><td>628</td><td>da acquistare</td></tr>
+<tr><td>Genova</td><td>Fondamenti anatomofis. dell'attività psichica</td><td>Purves, Neuroscienze</td><td>1</td><td>166</td><td>da acquistare</td></tr>
+<tr><td>Lecce Salento</td><td>Psicobiologia</td><td>Gazzaniga, Neurosc. cognitive</td><td>1</td><td>241</td><td>da acquistare</td></tr>
+<tr><td>Milano Statale</td><td>Neuroscienze dei processi cognitivi</td><td>Purves, Neurosc. cognitive</td><td>1</td><td>n.a.</td><td>da acquistare</td></tr>
+<tr><td>Modena e RE</td><td>Neuroscienze</td><td>Kandel, Principi di neurosc.</td><td>1</td><td>294</td><td>da acquistare</td></tr>
+<tr><td>Molise</td><td>Psicol. cognitiva con elem. neuroscienze</td><td>Revlin, Psicol. cognitiva</td><td>2</td><td>85</td><td>da acquistare</td></tr>
+<tr><td>Padova (Soc. e Lavoro)</td><td>Psicobiologia</td><td>Freberg, Psicol. biologica</td><td>1</td><td>202</td><td>da acquistare</td></tr>
+<tr><td>Perugia</td><td>Psicologia fisiologica</td><td>Breedlove, Psicol. biologica</td><td>2</td><td>735</td><td>da acquistare</td></tr>
+<tr><td>Roma Sapienza (Salute)</td><td>Neuroscienze cognitive</td><td>Gazzaniga, Neurosc. cognitive</td><td>2</td><td>197</td><td>da acquistare</td></tr>
+<tr><td>Roma Tor Vergata</td><td>Neuroscienze cognitive</td><td>Gazzaniga, Neurosc. cognitive</td><td>1</td><td>239</td><td>da acquistare</td></tr>
+<tr><td>Torino</td><td>Psicologia fisiologica</td><td>Breedlove, Psicol. biologica</td><td>1</td><td>389</td><td>da acquistare</td></tr>
+<tr><td>Trento</td><td>Fondamenti di neurosc. cognitive e comport.</td><td>Gazzaniga, Neurosc. cognitive</td><td>2</td><td>157</td><td>da acquistare</td></tr>
+<tr><td>Trieste</td><td>Neurofisiologia</td><td>Purves, Neuroscienze</td><td>2</td><td>150</td><td>da acquistare</td></tr>
+<tr><td>Trieste</td><td>Introduzione alle neurosc. cognitive</td><td>Purves, Neurosc. cognitive</td><td>3</td><td>226</td><td>da acquistare</td></tr>
+<tr><td>Urbino Carlo Bo</td><td>Neuroscienze cognitive</td><td>Gazzaniga, Neurosc. cognitive</td><td>2</td><td>186</td><td>da acquistare</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- ==================== 4. OPPORTUNITÀ B2/B3 ==================== -->
+<div class="section-divider">
+<h3>4 — Opportunità Secondarie (Bibl. 2/3/4)</h3>
+<p>Cattedre dove titoli Zanichelli/CEA compaiono come testo complementare</p>
+</div>
+
+<div class="content-grid full">
+<div class="opp-box">
+<div class="opp-title">Zanichelli/CEA in Bibliografia 2/3/4 — 14 cattedre · ~4.500 studenti aggiuntivi</div>
+<table class="opp-table">
+<thead><tr><th>Ateneo</th><th>Iscritti</th><th>Titolo Zanichelli/CEA</th><th>Pos.</th><th>Bibl. 1 (editore primario)</th></tr></thead>
+<tbody>
+<tr><td>Benevento G.Fortunato</td><td>82</td><td>Breedlove, Psicol. biologica</td><td>B2</td><td>Pinel (Edra)</td></tr>
+<tr><td>Cagliari (bis)</td><td>186</td><td>Carlson (Piccin) — Pinel (Edra)</td><td>B3</td><td>Bear (Edra)</td></tr>
+<tr><td>Enna Kore (×2)</td><td>229</td><td>Purves Neurosc. + Kandel Principi</td><td>B2+B3</td><td>Carlson (Piccin)</td></tr>
+<tr><td>Genova</td><td>166</td><td>Bear (Edra) + Kandel Principi</td><td>B2+B3</td><td>Purves (Zan/CEA)</td></tr>
+<tr><td>L'Aquila</td><td>202</td><td>Bear (Edra) + Kandel Principi</td><td>B2+B3</td><td>Mangia (Piccin)</td></tr>
+<tr><td>Milano Bicocca</td><td>383</td><td>Gazzaniga, Neurosc. cognitive</td><td>B2</td><td>Bear (Edra)</td></tr>
+<tr><td>Milano San Raffaele (bis)</td><td>59</td><td>Bear (Edra)</td><td>B2</td><td>Gazzaniga (Zan/CEA)</td></tr>
+<tr><td>Perugia</td><td>735</td><td>Pinel (Edra) + Freberg</td><td>B2+B3</td><td>Breedlove (Zan/CEA)</td></tr>
+<tr><td>Roma Tor Vergata</td><td>239</td><td>Breedlove, Psicol. biologica</td><td>B2</td><td>Gazzaniga (Zan/CEA)</td></tr>
+<tr><td>Torino</td><td>389</td><td>Maravita (Poletto)</td><td>B2</td><td>Bear (Edra)</td></tr>
+<tr><td>Trieste</td><td>150</td><td>Kandel, Principi di neuroscienze</td><td>B2</td><td>Purves (Zan/CEA)</td></tr>
+<tr><td>Urbino Carlo Bo</td><td>186</td><td>Bear (Edra)</td><td>B2</td><td>Gazzaniga (Zan/CEA)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 5. MAPPA COMPETITIVA ==================== -->
+<div class="section-divider">
+<h3>5 — Mappa Competitiva per Titolo</h3>
+<p>Tutti i manuali censiti con studenti per testo primario</p>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<div class="card-title">📊 Studenti per manuale (Bibl. 1)</div>
+<div class="chart-container" style="height:420px"><canvas id="chartTitoli"></canvas></div>
+</div>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<div class="card-title">📋 Dettaglio completo per titolo</div>
+<table class="ed-table">
+<thead><tr><th>Titolo</th><th>Editore</th><th>Catt.</th><th>Stud.</th><th>% Tot.</th><th>% No telem.</th><th>Profilo</th></tr></thead>
+<tbody>
+<tr><td>Bear, <em>Neuroscienze</em></td><td>Edra</td><td>18</td><td>6.034</td><td>22,3%</td><td>24,1%</td><td style="font-size:10px">Il manuale più diffuso. Forte nelle tradizionali (4.019) e nelle telematiche (2.015).</td></tr>
+<tr><td>Carlson, <em>Fisiologia del comportamento</em></td><td>Piccin</td><td>7</td><td>3.891</td><td>14,4%</td><td>4,2%</td><td style="font-size:10px">82% del bacino da telematiche (e-Campus, Marconi, Cusano). Solo 693 in tradiz.</td></tr>
+<tr><td>Mangia, <em>Basi biologiche</em></td><td>Piccin</td><td>7</td><td>3.360</td><td>12,4%</td><td>8,3%</td><td style="font-size:10px">59% da e-Campus (1.982). Nelle tradiz. presente a Sapienza, Tor Vergata, Padova, L'Aquila.</td></tr>
+<tr><td>Pinel, <em>Psicobiologia</em></td><td>Edra</td><td>11</td><td>3.263</td><td>12,0%</td><td>13,3%</td><td style="font-size:10px">Diffusione ampia, 2.217 nelle tradizionali. Forte al Sud e Centro.</td></tr>
+<tr class="zan-row"><td>Gazzaniga, <em>Neuroscienze cognitive</em></td><td>Zanichelli/CEA</td><td>9</td><td>1.965</td><td>7,3%</td><td>11,8%</td><td style="font-size:10px">Solo tradizionali. Forte al Nord (Bergamo, Bologna, Trento) e Centro.</td></tr>
+<tr class="zan-row"><td>Breedlove, <em>Psicologia biologica</em></td><td>Zanichelli/CEA</td><td>4</td><td>1.987</td><td>7,3%</td><td>11,9%</td><td style="font-size:10px">Solo tradiz. Perugia (735) e Firenze (628) fanno il 69% del bacino.</td></tr>
+<tr><td>Presti, <em>Fondamenti di neuroscienze</em></td><td>Il Mulino</td><td>1</td><td>1.982</td><td>7,3%</td><td>0%</td><td style="font-size:10px">Solo e-Campus. Zero tradizionali.</td></tr>
+<tr><td>Maravita, <em>Fond. anatomofisiologici</em></td><td>Poletto</td><td>7</td><td>1.752</td><td>6,5%</td><td>10,5%</td><td style="font-size:10px">Solo tradizionali. Forte a Milano Bicocca (479) e Palermo (482).</td></tr>
+<tr class="zan-row"><td>Kandel, <em>Fondamenti</em></td><td>Zanichelli/CEA</td><td>1</td><td>523</td><td>1,9%</td><td>3,1%</td><td style="font-size:10px">Solo Firenze.</td></tr>
+<tr class="zan-row"><td>Purves, <em>Neuroscienze</em></td><td>Zanichelli/CEA</td><td>2</td><td>316</td><td>1,2%</td><td>1,9%</td><td style="font-size:10px">Genova e Trieste.</td></tr>
+<tr class="zan-row"><td>Kandel, <em>Principi</em></td><td>Zanichelli/CEA</td><td>1</td><td>294</td><td>1,1%</td><td>1,8%</td><td style="font-size:10px">Solo Modena e RE.</td></tr>
+<tr class="zan-row"><td>Purves, <em>Neuroscienze cognitive</em></td><td>Zanichelli/CEA</td><td>2</td><td>226</td><td>0,8%</td><td>1,4%</td><td style="font-size:10px">Milano Statale (n.a.) e Trieste.</td></tr>
+<tr class="zan-row"><td>Freberg, <em>Psicologia biologica</em></td><td>Zanichelli/CEA</td><td>1</td><td>202</td><td>0,7%</td><td>1,2%</td><td style="font-size:10px">Solo Padova (Soc. e Lavoro).</td></tr>
+<tr><td>Siegel, <em>Fondamenti di neuroscienze</em></td><td>Piccin</td><td>1</td><td>150</td><td>0,6%</td><td>0,9%</td><td style="font-size:10px">Solo Messina.</td></tr>
+<tr class="zan-row"><td>Revlin, <em>Psicologia cognitiva</em></td><td>Zanichelli/CEA</td><td>1</td><td>85</td><td>0,3%</td><td>0,5%</td><td style="font-size:10px">Solo Molise.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ==================== 6. OSSERVAZIONI ==================== -->
+<div class="section-divider">
+<h3>6 — Osservazioni dai Dati</h3>
+<p>Pattern, forze e opportunità</p>
+</div>
+
+<div class="content-grid full">
+<div class="card">
+<div class="prose">
+
+<h3>Zanichelli/CEA: catalogo ampio, presenza solo tradizionale</h3>
+<p>Con 8 titoli diversi, Zanichelli/CEA ha il catalogo più articolato dell'area neuroscientifica. Tuttavia nessuno di questi titoli è adottato in telematiche, il che limita il bacino complessivo al 19,6%. Escludendo le telematiche dal calcolo, la quota Zanichelli/CEA sale al 31,9% — la più alta tra tutti gli editori nel segmento tradizionale. Questo posizionamento è strutturalmente diverso da quello di Edra e Piccin, che devono rispettivamente il 32% e il 70% del proprio bacino alle telematiche.</p>
+
+<h3>Due titoli trainanti: Gazzaniga e Breedlove</h3>
+<p>Gazzaniga, Neuroscienze cognitive (1.965 studenti, 9 cattedre) e Breedlove, Psicologia biologica (1.987 studenti, 4 cattedre) rappresentano insieme il 74% del bacino Zanichelli/CEA. Gazzaniga ha una distribuzione più ampia (9 sedi da Nord a Sud), Breedlove è concentrato su 4 sedi di grande dimensione (Perugia 735, Firenze 628, Torino 389, Bari 235). I restanti 6 titoli (Kandel ×2, Purves ×2, Freberg, Revlin) contribuiscono per 1.646 studenti, con presenze singole o doppie.</p>
+
+<h3>Edra domina con Bear ma con fragilità</h3>
+<p>Bear, Neuroscienze è il manuale più adottato in assoluto (6.034 studenti, 18 cattedre). Tuttavia 2.015 studenti (33%) provengono da telematiche (Marconi 1.212, Cusano 803). Nelle tradizionali, Bear è presente in 15 cattedre con 4.019 studenti — comunque il titolo singolo più forte. Pinel (Edra) aggiunge 3.263 studenti ma con forte dipendenza da Cusano (964) e Foggia (463). Nel complesso Edra ha una quota del 35,3% ma con concentrazione significativa in poche sedi ad alta numerosità.</p>
+
+<h3>Piccin: forte nelle telematiche, debole nelle tradizionali</h3>
+<p>Il 70% del bacino Piccin (5.180 su 7.401) viene da telematiche, principalmente e-Campus (3.568 tra Carlson e Mangia) e Marconi (970, Carlson). Nelle tradizionali, Piccin raggiunge solo 2.221 studenti — meno di Zanichelli/CEA. Il titolo più diffuso nelle tradizionali è Mangia (1.378 escluse telematiche) seguito da Carlson (693 escluse telematiche).</p>
+
+<h3>Le telematiche pesano il 38,5% e distorcono le quote</h3>
+<p>Su 27.099 studenti totali, 10.427 (38,5%) provengono da telematiche. Le telematiche tendono ad adottare un singolo manuale per insegnamento senza alternative, creando concentrazioni anomale: e-Campus da sola genera 5.550 studenti distribuiti su 3 insegnamenti (Mangia, Presti, Carlson). Roma Marconi ne genera 2.182 (Bear, Carlson). Se si ragiona solo sulle tradizionali, il panorama competitivo cambia significativamente a favore di Zanichelli/CEA.</p>
+
+<h3>La frammentazione dei nomi non è un ostacolo</h3>
+<p>Gli 82 insegnamenti portano oltre 30 denominazioni diverse, ma convergono su un numero ristretto di manuali. Questo significa che la scelta del manuale è guidata più dal profilo disciplinare (biologico vs cognitivo vs psicobiologico) che dal nome dell'insegnamento. Per Zanichelli/CEA questo è un vantaggio: il catalogo copre tutti e tre i profili.</p>
+
+</div>
+</div>
+</div>
+
+</div><!-- fine .main -->
+
+<!-- === GRAFICI === -->
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+  // 1. Distribuzione per anno
+  var ctx1=document.getElementById('chartAnno');
+  if(ctx1){
+    new Chart(ctx1,{type:'doughnut',data:{
+      labels:['1° anno (52 ins.)','2° anno (25 ins.)','3° anno (5 ins.)'],
+      datasets:[{data:[17320,7680,2099],backgroundColor:['#003865','#0066B3','#E9C46A'],borderWidth:2,borderColor:'#fff'}]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11,family:'Inter'},padding:12}}}}});
+  }
+
+  // 2. Insegnamenti per ateneo
+  var ctx2=document.getElementById('chartInsAteneo');
+  if(ctx2){
+    new Chart(ctx2,{type:'doughnut',data:{
+      labels:['1 insegnamento (45%)','2 insegnamenti (50%)','3 insegnamenti (5%)'],
+      datasets:[{data:[18,20,2],backgroundColor:['#2A9D8F','#003865','#E63946'],borderWidth:2,borderColor:'#fff'}]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11,family:'Inter'},padding:12}}}}});
+  }
+
+  // 3. Quote editori
+  var ctx3=document.getElementById('chartEditori');
+  if(ctx3){
+    new Chart(ctx3,{type:'bar',data:{
+      labels:['Edra','Piccin','Zanichelli/\nCEA','Il Mulino','Poletto','N.d.'],
+      datasets:[
+        {label:'Tradizionali',data:[6511,2221,5323,0,1752,865],backgroundColor:'#003865',borderRadius:4},
+        {label:'Telematiche',data:[3061,5180,0,1982,0,204],backgroundColor:'#E9C46A',borderRadius:4}
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:11,family:'Inter'},usePointStyle:true,pointStyle:'rectRounded'}}},
+      scales:{x:{stacked:true,ticks:{font:{size:10,family:'Inter'}},grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString('it-IT')},font:{size:10,family:'Inter'}},grid:{color:'#EEF0F4'}}}}});
+  }
+
+  // 4. Titoli Zanichelli/CEA
+  var ctx4=document.getElementById('chartTitoliZan');
+  if(ctx4){
+    new Chart(ctx4,{type:'bar',data:{
+      labels:['Breedlove','Gazzaniga','Kandel\nFond.','Purves\nNeurosc.','Kandel\nPrincipi','Purves\nNC','Freberg','Revlin'],
+      datasets:[{label:'Studenti',data:[1987,1965,523,316,294,226,202,85],backgroundColor:['#E63946','#E63946','#F4A261','#F4A261','#F4A261','#F4A261','#F4A261','#F4A261'],borderRadius:4,barPercentage:.65}]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:9.5,family:'Inter'},maxRotation:45,minRotation:25},grid:{display:false}},y:{beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString('it-IT')},font:{size:10,family:'Inter'}},grid:{color:'#EEF0F4'}}}}});
+  }
+
+  // 5. Tutti i titoli (horizontal)
+  var ctx5=document.getElementById('chartTitoli');
+  if(ctx5){
+    new Chart(ctx5,{type:'bar',data:{
+      labels:['Bear (Edra)','Carlson (Piccin)','Mangia (Piccin)','Pinel (Edra)','Presti (Il Mulino)','Breedlove (Zan/CEA)','Gazzaniga (Zan/CEA)','Maravita (Poletto)','Kandel Fond. (Zan/CEA)','Purves Neurosc. (Zan/CEA)','Kandel Princ. (Zan/CEA)','Purves NC (Zan/CEA)','Freberg (Zan/CEA)','Siegel (Piccin)','Revlin (Zan/CEA)'],
+      datasets:[{label:'Studenti',data:[6034,3891,3360,3263,1982,1987,1965,1752,523,316,294,226,202,150,85],
+        backgroundColor:['#F97316','#8B5CF6','#8B5CF6','#F97316','#3B82F6','#E63946','#E63946','#059669','#E63946','#E63946','#E63946','#E63946','#E63946','#8B5CF6','#E63946'],
+        borderRadius:4,barPercentage:.55}]
+    },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString('it-IT')},font:{size:10,family:'Inter'}},grid:{color:'#EEF0F4'}},
+        y:{ticks:{font:{size:10,family:'Inter'}},grid:{display:false}}}}});
+  }
+
+});
+</script>
+
+</body>
+</html>

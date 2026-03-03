@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Dashboard Antropologia Culturale L-24</title>
+<style>
+:root {
+    --zanichelli-blue: #003C82;
+    --zanichelli-light: #0068C8;
+    --zanichelli-accent: #E63946;
+    --zanichelli-green: #2A9D8F;
+    --zanichelli-orange: #F4A261;
+    --zanichelli-gold: #E9C46A;
+    --zanichelli-purple: #7B2D8E;
+    --bg-primary: #F0F4F8;
+    --bg-card: #FFFFFF;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A5568;
+    --border-color: #E2E8F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+.top-toolbar{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border-color);padding:10px 2rem;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.toolbar-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border-color);background:#fff;color:var(--text-primary);transition:all .2s;font-family:inherit}
+.toolbar-btn:hover{background:#F0F4FF;border-color:var(--zanichelli-blue);color:var(--zanichelli-blue)}
+.toolbar-btn.primary{background:var(--zanichelli-blue);color:#fff;border-color:var(--zanichelli-blue)}
+.toolbar-btn.primary:hover{background:var(--zanichelli-light)}
+.toolbar-spacer{flex:1}
+.toolbar-title{font-size:13px;color:var(--text-secondary);font-weight:500}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,var(--zanichelli-light) 100%);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.05);border-radius:50%}
+.header-content{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.logo-area{display:flex;align-items:center;gap:1rem}
+.logo-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700}
+.brand{font-size:1.4rem;font-weight:700;letter-spacing:.5px}
+.header-badge{background:rgba(255,255,255,.15);padding:.4rem 1rem;border-radius:20px;font-size:.85rem;backdrop-filter:blur(10px)}
+.header h1{font-size:1.9rem;font-weight:700;margin-bottom:.3rem}
+.header .subtitle{font-size:1rem;opacity:.9}
+.header-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem}
+.header-kpi{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,.15)}
+.header-kpi .kpi-value{font-size:1.8rem;font-weight:800}
+.header-kpi .kpi-label{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.nav-tabs{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;transform:translateY(-1.2rem)}
+.nav-tab{padding:.6rem 1.3rem;background:var(--bg-card);border:none;border-radius:10px 10px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-secondary);box-shadow:var(--shadow-sm);transition:all .3s}
+.nav-tab:hover{color:var(--zanichelli-blue)}
+.nav-tab.active{background:var(--zanichelli-blue);color:#fff}
+.main-content{max-width:1400px;margin:0 auto;padding:.5rem 2rem 3rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section{margin-bottom:2rem}
+.section-title{font-size:1.15rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--zanichelli-light);display:flex;align-items:center;gap:.5rem}
+.section-title .icon{width:28px;height:28px;background:var(--zanichelli-blue);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card{background:var(--bg-card);border-radius:14px;box-shadow:var(--shadow-md);padding:1.5rem;margin-bottom:1.2rem;border:1px solid var(--border-color);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1.2rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.chart-container{position:relative;width:100%;max-width:100%;margin:0 auto}
+.chart-container.chart-sm{height:280px}.chart-container.chart-md{height:360px}.chart-container.chart-lg{height:440px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table th{background:var(--zanichelli-blue);color:#fff;padding:.7rem .8rem;text-align:left;font-weight:600;position:sticky;top:0;white-space:nowrap}
+.data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--border-color);vertical-align:top}
+.data-table tr:hover td{background:#F7FAFC}
+.data-table-wrapper{max-height:520px;overflow-y:auto;border-radius:10px;border:1px solid var(--border-color)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.badge-zan{background:#FEE2E2;color:#991B1B}
+.badge-mul{background:#D1FAE5;color:#065F46}
+.badge-mon{background:#FEF3C7;color:#92400E}
+.badge-utet{background:#E2E8F0;color:#334155}
+.badge-car{background:#CCFBF1;color:#115E59}
+.badge-lat{background:#EDE9FE;color:#5B21B6}
+.badge-hoe{background:#DBEAFE;color:#1E40AF}
+.badge-mgh{background:#FFEDD5;color:#9A3412}
+.badge-alt{background:#F1F5F9;color:#475569}
+.badge-zanichelli{background:#E63946;color:#fff}
+.badge-blue{background:#DBEAFE;color:#1E40AF}
+.badge-green{background:#D1FAE5;color:#065F46}
+.badge-orange{background:#FEF3C7;color:#92400E}
+.badge-red{background:#FEE2E2;color:#991B1B}
+.badge-purple{background:#EDE9FE;color:#5B21B6}
+.metric-card{background:var(--bg-card);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border-color)}
+.metric-card .metric-value{font-size:2rem;font-weight:800;color:var(--zanichelli-blue)}
+.metric-card .metric-label{font-size:.8rem;color:var(--text-secondary);margin-top:.3rem}
+.bar-h{display:flex;align-items:center;margin-bottom:.7rem;gap:.8rem}
+.bar-h .bar-label{flex:0 0 200px;font-size:.82rem;font-weight:600;text-align:right;color:var(--text-primary)}
+.bar-h .bar-track{flex:1;height:26px;background:#EDF2F7;border-radius:6px;overflow:hidden}
+.bar-h .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.75rem;font-weight:700;color:#fff;transition:width 1s ease}
+.highlight-box{background:linear-gradient(135deg,#EBF4FF 0%,#F0F7FF 100%);border-left:4px solid var(--zanichelli-blue);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.highlight-box.zanichelli-highlight{background:linear-gradient(135deg,#FFF5F5 0%,#FFF0F0 100%);border-left-color:var(--zanichelli-accent)}
+.highlight-box h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.highlight-box p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.competitor-card{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;border:1px solid var(--border-color);margin-bottom:.8rem;background:var(--bg-card)}
+.competitor-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.competitor-info{flex:1}
+.competitor-info .comp-title{font-weight:700;font-size:.92rem}
+.competitor-info .comp-publisher{font-size:.8rem;color:var(--text-secondary)}
+.competitor-info .comp-adoptions{font-size:.82rem;font-weight:600;color:var(--zanichelli-blue);margin-top:.2rem}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.swot-box{border-radius:12px;padding:1.2rem}
+.swot-box h4{font-size:.95rem;font-weight:700;margin-bottom:.6rem}
+.swot-box ul{list-style:none;padding:0}
+.swot-box ul li{padding:.3rem 0;font-size:.84rem;padding-left:1.2rem;position:relative}
+.swot-box ul li::before{content:'→';position:absolute;left:0;font-weight:700}
+.swot-strengths{background:#D1FAE5;border:1px solid #6EE7B7}.swot-strengths h4{color:#065F46}
+.swot-weaknesses{background:#FEE2E2;border:1px solid #FCA5A5}.swot-weaknesses h4{color:#991B1B}
+.swot-opportunities{background:#DBEAFE;border:1px solid #93C5FD}.swot-opportunities h4{color:#1E40AF}
+.swot-threats{background:#FEF3C7;border:1px solid #FCD34D}.swot-threats h4{color:#92400E}
+.collapsible{background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;color:var(--zanichelli-blue);user-select:none;transition:background .2s}
+.collapsible-header:hover{background:#F0F4FF}
+.collapsible-header .arrow{transition:transform .3s;font-size:12px}
+.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}
+.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.collapsible.open .collapsible-body{max-height:15000px}
+.cc{padding:0 22px 20px;font-size:.88rem;line-height:1.75;color:var(--text-primary)}
+.cc p{margin-bottom:10px}.cc ul{margin:8px 0 12px 18px}.cc ul li{margin-bottom:5px}
+.cc strong{color:var(--zanichelli-blue)}.cc h4{color:var(--zanichelli-light);margin:16px 0 8px;font-size:.95rem;font-weight:600}
+.spec-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}
+.spec-table th{background:var(--zanichelli-blue);color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}
+.spec-table td{padding:8px 10px;border-bottom:1px solid var(--border-color);vertical-align:top}
+.spec-table tr:hover{background:#F8FAFC}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;margin:1px}
+.tag-a{background:#D1FAE5;color:#065F46}.tag-m{background:#FEF3C7;color:#92400E}.tag-b{background:#FEE2E2;color:#991B1B}
+.pill-list{display:flex;flex-wrap:wrap;gap:.5rem}
+.pill{padding:.35rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.id-card{background:var(--bg-card);border-radius:14px;border:2px solid var(--zanichelli-blue);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-md)}
+.id-card.scenario-b{border-color:var(--zanichelli-accent)}
+.id-card-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:2px dashed var(--border-color)}
+.id-card-header .id-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}
+.id-card-header h3{font-size:1.05rem;font-weight:700}
+.id-card-header p{font-size:.82rem;color:var(--text-secondary)}
+.id-section{margin-bottom:1rem}
+.id-section h5{font-size:.88rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.id-section p,.id-section ul{font-size:.84rem;color:var(--text-secondary);line-height:1.65}
+.id-section ul{margin-left:1.2rem;margin-top:.3rem}.id-section ul li{margin-bottom:.3rem}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{padding:8px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--zanichelli-light)}
+.filter-bar input{width:240px}
+.filter-bar label{font-size:12px;color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.8rem;border-top:1px solid var(--border-color);max-width:1400px;margin:0 auto}
+@media print {
+    .tab-panel{display:block !important}
+    .nav-tabs,.top-toolbar,.filter-bar{display:none !important}
+    .data-table-wrapper{max-height:none !important;overflow:visible !important}
+    .data-table th{position:static !important}
+    body{background:#fff !important}
+    .header{break-after:avoid}
+    .card,.collapsible{box-shadow:none !important;border:1px solid #ccc !important;break-inside:avoid;transform:none !important}
+    .collapsible-body{max-height:none !important;overflow:visible !important}
+    .section,.chart-container,.competitor-card,.swot-grid,.id-card{break-inside:avoid}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr !important}
+    .tab-panel::before{display:block;font-size:1.3rem;font-weight:700;color:var(--zanichelli-blue);border-bottom:3px solid var(--zanichelli-blue);padding-bottom:.5rem;margin-bottom:1.5rem;margin-top:2rem}
+    #panoramica::before{content:'';margin-top:0}
+    #adozioni::before{content:'— MAPPA ADOZIONI —'}
+    #competitor::before{content:'— ANALISI COMPETITOR —'}
+    #contenuti::before{content:'— CONTENUTI & PROGRAMMI —'}
+    #zanichelli::before{content:'— POSIZIONAMENTO ZANICHELLI —'}
+    .badge{border:1px solid #999 !important}
+    .badge-zanichelli{background:#E63946 !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    tr.zan-row{background:#FFF0F0 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .header,.header-kpi,.section-title .icon,.data-table th,.competitor-rank,.swot-box,.highlight-box,.bar-h .bar-fill,.id-card-header .id-icon{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .footer{border-top:2px solid #003C82;margin-top:2rem}
+}
+@media(max-width:768px){
+    .header h1{font-size:1.4rem}
+    .header-kpis{grid-template-columns:repeat(2,1fr)}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .nav-tabs{padding:0 1rem}
+    .main-content{padding:.5rem 1rem 2rem}
+    .swot-grid{grid-template-columns:1fr}
+    .bar-h .bar-label{flex:0 0 120px;font-size:.75rem}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===================== TOOLBAR ===================== -->
+<div class="top-toolbar">
+    <a href="index.html" class="toolbar-btn primary">← Torna alla Dashboard</a>
+    <div class="toolbar-spacer"></div>
+    <span class="toolbar-title">Antropologia Culturale — L-24</span>
+    <button class="toolbar-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+</div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-top">
+            <div class="logo-area">
+                <div class="logo-icon">Z</div>
+                <span class="brand">ZANICHELLI</span>
+            </div>
+            <div class="header-badge">📊 Intelligence Report — Febbraio 2026</div>
+        </div>
+        <h1>Antropologia Culturale — L-24</h1>
+        <p class="subtitle">Analisi adozioni, competitor, contenuti e posizionamento nei corsi di Scienze e Tecniche Psicologiche</p>
+        <div class="header-kpis">
+            <div class="header-kpi"><div class="kpi-value">15</div><div class="kpi-label">Insegnamenti censiti</div></div>
+            <div class="header-kpi"><div class="kpi-value">12</div><div class="kpi-label">Atenei coinvolti</div></div>
+            <div class="header-kpi"><div class="kpi-value">3</div><div class="kpi-label">Adozioni Zanichelli</div></div>
+            <div class="header-kpi"><div class="kpi-value">20,0%</div><div class="kpi-label">Quota Zanichelli</div></div>
+            <div class="header-kpi"><div class="kpi-value">~20,0%</div><div class="kpi-label">Il Mulino (1° competitor)</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== NAV TABS ===================== -->
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('panoramica')">Panoramica</button>
+    <button class="nav-tab" onclick="showTab('adozioni')">Mappa Adozioni</button>
+    <button class="nav-tab" onclick="showTab('competitor')">Competitor</button>
+    <button class="nav-tab" onclick="showTab('contenuti')">Contenuti & Programmi</button>
+    <button class="nav-tab" onclick="showTab('zanichelli')">Posizionamento Zanichelli</button>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="main-content">
+
+<!-- ALERT ANALISI PONDERATA -->
+<div style="background:linear-gradient(135deg,#003865 0%,#0066B3 100%);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <div style="color:#fff;font-size:13.5px;line-height:1.6">
+    <strong style="font-size:14px">⚖️ Analisi Ponderata disponibile</strong><br>
+    <span style="opacity:.85">Le quote di mercato di questa materia pesate per numero di studenti effettivi sono ora consultabili nella dashboard principale.</span>
+  </div>
+  <a href="index.html?section=ponderata&materia=pond-antro" style="display:inline-flex;align-items:center;gap:6px;background:#E63946;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;font-size:12.5px;font-weight:600;white-space:nowrap">Vai all'Analisi Ponderata →</a>
+</div>
+<!-- FINE ALERT -->
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-panel active" id="panoramica">
+    <div class="section">
+        <div class="section-title"><div class="icon">📈</div> Quadro di sintesi del mercato</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli presente con 3 adozioni su 15 insegnamenti (20%) — mercato molto frammentato</h4>
+            <p>L'Antropologia Culturale in L-24 è una materia con un mercato editoriale estremamente polverizzato: nessun editore supera il 20% di quota. <strong>Zanichelli</strong> è presente con il Fabietti (<em>Storia dell'antropologia</em>, 4ª ed. 2020) adottato a Campania Vanvitelli e Unicusano, e con il Tassan (<em>Antropologia per insegnare</em>, 2020) a Foggia e Pavia. <strong>Il Mulino</strong> compete con il Dei (<em>Antropologia culturale</em>, 2ª ed. 2016) adottato a Bologna, Padova (Nardini ×2) e Uninettuno. <strong>Carocci</strong> è terzo con 3 presenze come testo complementare. La frammentazione è amplificata dall'uso diffuso di monografie dei docenti e dispense, che rendono il mercato molto personalistico.</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-accent);">Zanichelli</div><div class="metric-label">20% — Fabietti + Tassan (3 cattedre)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-green);">Il Mulino</div><div class="metric-label">~20% — Dei (3 cattedre)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:#14B8A6;">Carocci</div><div class="metric-label">~20% — complementare (3 cattedre)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-purple);">Altri</div><div class="metric-label">~40% — Hoepli, UTET, Laterza, Einaudi...</div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🏢</div> Market Share Editori</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartMarketShare"></canvas></div></div>
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartEditoreBar"></canvas></div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📅</div> Distribuzione per Semestre e CFU</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-sm"><canvas id="chartSemestre"></canvas></div></div>
+            <div class="card">
+                <div class="highlight-box">
+                    <h4>Note sulla distribuzione</h4>
+                    <p>L'Antropologia Culturale in L-24 è collocata prevalentemente al <strong>I o II anno</strong>. I corsi sono per circa due terzi da <strong>6 CFU</strong> (Bologna, Campania, Foggia, Napoli, Padova, Palermo, Pavia, Torino), mentre i corsi più estesi da <strong>8-9 CFU</strong> si concentrano nell'area romana (Sapienza, Unicusano, Uninettuno) e in Valle d'Aosta. La distribuzione semestrale è equilibrata tra I e II semestre. La frammentazione bibliografica è molto elevata: la media è di 3-4 testi per programma, spesso con monografie del docente.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-panel" id="adozioni">
+    <div class="section">
+        <div class="section-title"><div class="icon">🗺️</div> Adozioni per Ateneo — Dettaglio completo</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="filter-bar">
+                <label>🔍 Cerca:</label>
+                <input type="text" id="searchTable" placeholder="Ateneo, docente, testo..." oninput="filterTable()">
+                <label>Editore:</label>
+                <select id="filterEditore" onchange="filterTable()">
+                    <option value="">Tutti</option>
+                    <option value="Zanichelli">Zanichelli</option>
+                    <option value="Mulino">Il Mulino</option>
+                    <option value="Carocci">Carocci</option>
+                    <option value="Hoepli">Hoepli</option>
+                    <option value="UTET">UTET</option>
+                    <option value="Laterza">Laterza</option>
+                    <option value="Mondadori">Mondadori</option>
+                </select>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="mainTable">
+                    <thead><tr><th onclick="sortTable(0)">Ateneo ↕</th><th>Insegnamento</th><th>Docente</th><th>Sem.</th><th>Testo Principale</th><th>Editore princ.</th></tr></thead>
+                    <tbody>
+<tr><td>Bologna</td><td>Antropologia culturale</td><td>Francesca Crivellaro</td><td>II</td><td>Dei F. — Antropologia culturale, 2ª ed. (Il Mulino 2016)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr class="zan-row"><td><strong>Campania Vanvitelli</strong></td><td>Antropologia culturale</td><td>Fulvia D'Aloisio</td><td>II</td><td>Fabietti — Storia dell'antropologia, 4ª ed. (Zanichelli 2020)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr class="zan-row"><td><strong>Foggia</strong></td><td>Antropologia culturale</td><td>Francesca Scionti</td><td>I</td><td>Engelke — Pensare come un antropologo (Einaudi 2017) + Tassan (Zanichelli 2020)</td><td><span class="badge badge-alt">Einaudi</span> + <span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Napoli Benincasa</td><td>Antropologia culturale</td><td>Elisabetta Moro</td><td>n.d.</td><td>Palumbo, Pizza, Schirripa — Antropologia culturale e sociale (Hoepli 2023)</td><td><span class="badge badge-hoe">Hoepli</span></td></tr>
+<tr><td>Padova (Soc. e Lavoro)</td><td>Antropologia culturale</td><td>Boros Amedeo</td><td>I</td><td>Boros — Addomesticare la morte (TAB 2020) + Marazzi (Carocci 2007)</td><td><span class="badge badge-alt">TAB</span> + <span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Padova (Sc. e Tecn.)</td><td>Antropologia culturale</td><td>Boros Amedeo</td><td>II</td><td>Boros — Addomesticare la morte (TAB 2020) + Marazzi (Carocci 2007)</td><td><span class="badge badge-alt">TAB</span> + <span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Padova (Sviluppo)</td><td>Antropologia culturale</td><td>Nardini Dario</td><td>I</td><td>Dei F. — Antropologia culturale (Il Mulino 2016)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Cognitiva)</td><td>Antropologia culturale</td><td>Nardini Dario</td><td>I</td><td>Dei F. — Antropologia culturale (Il Mulino 2016)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Palermo</td><td>Antropologia culturale</td><td>Bellantonio / Bassi</td><td>II</td><td>Fabietti — Elementi di antrop. culturale, 3ª ed. (Mondadori 2015)</td><td><span class="badge badge-mon">Mondadori</span></td></tr>
+<tr class="zan-row"><td><strong>Pavia</strong></td><td>Antropologia culturale</td><td>Canevari Matteo</td><td>II</td><td>Matera — Antropologia contemporanea (Laterza 2017) + Tassan (Zanichelli 2020)</td><td><span class="badge badge-lat">Laterza</span> + <span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Roma Sapienza</td><td>Antropologia culturale</td><td>Osvaldo Costantini</td><td>II</td><td>Robbins — Antrop. cult. Un approccio per problemi, 2ª ed. (UTET 2015)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Roma Unicusano</td><td>Antropologia culturale</td><td>Emanuele Curcio</td><td>n.d.</td><td>Dispense in piattaforma (9 moduli) + Fabietti (Zanichelli, consigliato)</td><td><span class="badge badge-alt">Dispense</span></td></tr>
+<tr><td>Roma Uninettuno</td><td>Antropologia culturale</td><td>Andrea Santoro</td><td>n.d.</td><td>Dei F. — Antropologia culturale (Il Mulino 2016)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Torino</td><td>Antropologia culturale</td><td>Annamaria Fantauzzi</td><td>I</td><td>Pizza — Antropologia medica (Carocci 2025)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Valle d'Aosta</td><td>Antropologia culturale</td><td>Porcellana Valentina</td><td>I</td><td>Slide e materiali della docente + volume a scelta</td><td><span class="badge badge-alt">Materiale docente</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Cattedre con presenza Zanichelli</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>3 cattedre con presenza Zanichelli — dettaglio</h4>
+            <p><strong>Fabietti, <em>Storia dell'antropologia</em> (4ª ed. 2020) come testo principale:</strong> Campania Vanvitelli (D'Aloisio).<br>
+            <strong>Fabietti come testo consigliato:</strong> Roma Unicusano (Curcio — ed. 1991 indicata; da aggiornare a 4ª ed. 2020).<br>
+            <strong>Tassan, <em>Antropologia per insegnare</em> (2020) come testo complementare:</strong> Foggia (Scionti — solo Parte III, pp. 167-221) e Pavia (Canevari).<br>
+            <strong>Nota:</strong> Palermo adotta il Fabietti <em>Elementi</em> (Mondadori, 2015), non il Fabietti Zanichelli. Il Fabietti Zanichelli e il Fabietti Mondadori sono titoli diversi dello stesso autore per editori diversi — attenzione a non confonderli nella comunicazione commerciale.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-panel" id="competitor">
+    <div class="section">
+        <div class="section-title"><div class="icon">⚔️</div> Ranking Manuali per numero di adozioni</div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-green);">1</div><div class="competitor-info"><div class="comp-title">Dei F. — <em>Antropologia culturale</em> (2ª ed., 2016)</div><div class="comp-publisher">Il Mulino</div><div class="comp-adoptions">4 adozioni — Bologna, Padova (Nardini ×2), Uninettuno</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-accent);">2</div><div class="competitor-info"><div class="comp-title">Fabietti U. — <em>Storia dell'antropologia</em> (4ª ed., 2020)</div><div class="comp-publisher">Zanichelli</div><div class="comp-adoptions">2 adozioni — Campania Vanvitelli (principale), Unicusano (consigliato, ed. 1991)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-accent);">2</div><div class="competitor-info"><div class="comp-title">Tassan M. — <em>Antropologia per insegnare</em> (2020)</div><div class="comp-publisher">Zanichelli</div><div class="comp-adoptions">2 adozioni — Foggia (Parte III), Pavia (complementare)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#14B8A6;">3</div><div class="competitor-info"><div class="comp-title">Marazzi A. — <em>Lo sguardo antropologico</em> (2007)</div><div class="comp-publisher">Carocci</div><div class="comp-adoptions">2 adozioni — Padova (Boros ×2, come complementare)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">4</div><div class="competitor-info"><div class="comp-title">Fabietti U. — <em>Elementi di antropologia culturale</em> (3ª ed., 2015)</div><div class="comp-publisher">Mondadori Università</div><div class="comp-adoptions">1 adozione — Palermo</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#3B82F6;">5</div><div class="competitor-info"><div class="comp-title">Palumbo, Pizza, Schirripa — <em>Antropologia culturale e sociale</em> (2023)</div><div class="comp-publisher">Hoepli</div><div class="comp-adoptions">1 adozione — Napoli Benincasa</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#64748B;">6</div><div class="competitor-info"><div class="comp-title">Robbins R.H. — <em>Antropologia culturale. Un approccio per problemi</em> (2ª ed., 2015)</div><div class="comp-publisher">UTET</div><div class="comp-adoptions">1 adozione — Roma Sapienza</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#8B5CF6;">7</div><div class="competitor-info"><div class="comp-title">Matera V. — <em>Antropologia contemporanea</em> (2017)</div><div class="comp-publisher">Laterza</div><div class="comp-adoptions">1 adozione — Pavia (principale)</div></div></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📚</div> Analisi comparativa dei manuali</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">Dei F. — Antropologia culturale (Il Mulino, 2016)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>È il <strong>manuale più adottato</strong> nel campione, con 4 presenze (Bologna, Padova ×2, Uninettuno). La 2ª edizione del 2016 è il riferimento corrente.</p>
+                <p><strong>Caratteristiche chiave:</strong> Offre un quadro d'insieme equilibrato tra storia della disciplina e approcci tematici. Struttura per concetti (cultura, etnocentrismo, relativismo, metodo etnografico) con attenzione al dibattito contemporaneo.</p>
+                <p><strong>Punti di forza:</strong> Chiarezza espositiva, accessibilità per studenti non specialisti, copertura ampia dei fondamenti. È il testo di riferimento per il "modello istituzionale" della disciplina in Italia.</p>
+                <p><strong>Punti di debolezza:</strong> L'edizione risale al 2016 — potrebbe risultare datata su temi come migrazioni, post-colonialismo e antropologia digitale. Diversi docenti lo adottano "con esclusioni" (Bologna), suggerendo un'estensione eccessiva per corsi da 6 CFU.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Fabietti U. — Storia dell'antropologia (Zanichelli, 4ª ed. 2020)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Testo fondamentale per la ricostruzione storiografica dei paradigmi teorici dell'antropologia, dalla nascita della disciplina al dibattito contemporaneo.</p>
+                <p><strong>Caratteristiche chiave:</strong> Impostazione diacronica centrata sull'evoluzione delle scuole di pensiero. Aggiornato alla 4ª edizione (2020) con nuovi contributi.</p>
+                <p><strong>Punti di forza:</strong> Rigore storico-epistemologico, autorevolezza dell'autore (Ugo Fabietti, figura chiave dell'antropologia italiana). Ideale per corsi che privilegiano la componente storica della disciplina.</p>
+                <p><strong>Punti di debolezza:</strong> È una "Storia" e non un manuale generalista — va necessariamente affiancato a un testo tematico (come succede a Campania Vanvitelli, dove è integrato con Signorelli/McGraw-Hill). Non copre autonomamente la metodologia etnografica o i temi applicativi.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Tassan M. — Antropologia per insegnare (Zanichelli, 2020)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Testo specialistico orientato ai processi educativi e alla formazione docenti, con forte vocazione applicativa.</p>
+                <p><strong>Caratteristiche chiave:</strong> Strutturato intorno al rapporto tra antropologia e scuola, diversità culturale e processi educativi. Rappresenta un unicum nel panorama editoriale italiano.</p>
+                <p><strong>Punti di forza:</strong> Perfetto per L-19 e LM-85bis, dove l'antropologia è orientata alla pratica educativa. Utilizzabile come complemento in L-24 per la parte applicativa (come avviene a Foggia e Pavia).</p>
+                <p><strong>Punti di debolezza:</strong> In L-24 viene adottato solo parzialmente (a Foggia solo la Parte III, pp. 167-221), perché il suo focus educativo non copre le esigenze epistemologiche e metodologiche di un corso di antropologia per psicologi.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+    <div class="collapsible-header" onclick="toggleC(this)">Schultz & Lavenda — Antropologia culturale (Zanichelli, 4ª ed. 2021) — ZERO ADOZIONI<span class="arrow">▼</span></div>
+    <div class="collapsible-body"><div class="cc">
+        <p><strong>Zero adozioni in L-24</strong> nonostante sia il manuale generalista più completo e aggiornato del catalogo Zanichelli. 4ª edizione italiana (2021) condotta sulla 10ª edizione americana, a cura di Mauro Van Aken.</p>
+        <p><strong>Caratteristiche chiave:</strong> 14 capitoli strutturati in 5 parti (Strumenti dell'antropologia, Risorse della cultura, Organizzazione della vita materiale, Sistemi di relazioni, Dal locale al globale). Prospettiva esplicitamente globale, con forte attenzione a potere, disuguaglianze, sofferenza sociale, genere e antropologia medica. Apparato didattico ricco: schede "Con le loro parole", Etnoprofili, domande di ripasso, glossario.</p>
+        <p><strong>Punti di forza:</strong> Copertura tematica vastissima — include linguaggio, gioco/arte/mito, religione, potere, economia, genere/sessualità, parentela, disuguaglianza, globalizzazione, antropologia medica. L'unico manuale Zanichelli che potrebbe competere frontalmente con il Dei (Il Mulino) come manuale istituzionale. Aggiornato (2021) rispetto al Dei (2016).</p>
+        <p><strong>Punti di debolezza potenziali:</strong> Origine americana — i casi etnografici e gli esempi possono risultare distanti dalla sensibilità dei docenti italiani. L'assenza totale di adozioni in L-24 suggerisce un problema di visibilità/promozione piuttosto che di contenuto. Da verificare: il testo potrebbe essere percepito come troppo "americano" o troppo esteso per corsi da 6 CFU.</p>
+    </div></div>
+</div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Palumbo, Pizza, Schirripa — Antropologia culturale e sociale (Hoepli, 2023)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Manuale recente che si articola in tre parti: introduzione ai nodi concettuali, storia delle teorie, prospettive contemporanee.</p>
+                <p><strong>Punti di forza:</strong> È il testo più aggiornato del campione (2023). Struttura tripartita che copre concetti, storia e prospettive. Tre autori con competenze complementari (antropologia medica, politica, delle migrazioni).</p>
+                <p><strong>Punti di debolezza:</strong> Ancora poco diffuso (1 sola adozione — Napoli Benincasa). Hoepli non ha una rete di promozione universitaria consolidata come Il Mulino o Zanichelli.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Fabietti U. — Elementi di antropologia culturale (Mondadori, 3ª ed. 2015)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Manuale istituzionale di Fabietti per Mondadori Università, diverso dalla <em>Storia dell'antropologia</em> (Zanichelli).</p>
+                <p><strong>Punti di forza:</strong> Copertura generalista completa, dalla definizione di cultura ai sistemi di parentela. Brand Fabietti forte nell'accademia italiana.</p>
+                <p><strong>Punti di debolezza:</strong> Edizione del 2015, potenzialmente datata. Va in concorrenza diretta con il Dei (Il Mulino) sullo stesso segmento "manuale istituzionale". Il fatto che Fabietti sia autore sia per Zanichelli sia per Mondadori crea una potenziale confusione commerciale — a Palermo è adottato il Fabietti Mondadori, non il Fabietti Zanichelli.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Robbins R.H. — Antropologia culturale. Un approccio per problemi (UTET, 2015)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Manuale con struttura pedagogica innovativa: parte da interrogativi sull'attualità e li analizza con gli strumenti dell'antropologia.</p>
+                <p><strong>Punti di forza:</strong> Approccio "per problemi" che favorisce il pensiero critico. Particolarmente adatto a corsi orientati alle scienze sociali (Roma Sapienza — Psicologia e processi sociali).</p>
+                <p><strong>Punti di debolezza:</strong> Edizione del 2015, datata. UTET ha un catalogo universitario ridotto. Una sola adozione nel campione.</p>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-panel" id="contenuti">
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Nucleo Minimo di Contenuti (presenza >80%)</div>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid var(--zanichelli-blue);"><h4 style="color:var(--zanichelli-blue);margin-bottom:.5rem;">Concettualizzazione della Cultura</h4><p style="font-size:.85rem;color:var(--text-secondary);">Storia del concetto, dal senso comune alla definizione scientifica. Superamento dei concetti di "razza" e "etnia". Presente in tutti gli atenei.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-green);"><h4 style="color:var(--zanichelli-green);margin-bottom:.5rem;">Metodologia Etnografica</h4><p style="font-size:.85rem;color:var(--text-secondary);">Ricerca sul campo, osservazione partecipante, riflessività del ricercatore. Il cuore metodologico della disciplina.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-orange);"><h4 style="color:var(--zanichelli-orange);margin-bottom:.5rem;">Etnocentrismo e Relativismo</h4><p style="font-size:.85rem;color:var(--text-secondary);">Critica delle proprie categorie conoscitive per la comprensione dell'alterità. Fondamento epistemologico trasversale.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-accent);"><h4 style="color:var(--zanichelli-accent);margin-bottom:.5rem;">Storia del Pensiero Antropologico</h4><p style="font-size:.85rem;color:var(--text-secondary);">Evoluzionismo, Funzionalismo, Strutturalismo. Le scuole classiche come fondamento storico.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-purple);"><h4 style="color:var(--zanichelli-purple);margin-bottom:.5rem;">Identità / Alterità</h4><p style="font-size:.85rem;color:var(--text-secondary);">Processi di costruzione dell'identità etnica e culturale. Presente in modo trasversale in tutti i programmi.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📑</div> Nucleo Esteso (presenza ~50%)</div>
+        <div class="card">
+            <div class="pill-list">
+                <span class="pill" style="background:#DBEAFE;color:#1E40AF;">Parentela e matrimonio</span>
+                <span class="pill" style="background:#D1FAE5;color:#065F46;">Religione e rito</span>
+                <span class="pill" style="background:#FEF3C7;color:#92400E;">Corpo e salute</span>
+                <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Globalizzazione e migrazioni</span>
+                <span class="pill" style="background:#FEE2E2;color:#991B1B;">Antropologia medica</span>
+                <span class="pill" style="background:#E0F2FE;color:#075985;">Antropologia dell'alimentazione</span>
+                <span class="pill" style="background:#FCE7F3;color:#9D174D;">Post-colonialismo</span>
+                <span class="pill" style="background:#F0FDF4;color:#166534;">Antropologia dell'educazione</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🔬</div> Specificità, Variazioni e Approfondimenti</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">1. Specificità e Variazioni tematiche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Antropologia del Gioco e dello Sport:</strong> Caso unico e altamente specialistico focalizzato su mascolinità e pratiche come surf e Calcio Storico Fiorentino (Padova — Nardini). Monografie del docente e testi in inglese (Hamayon, <em>Why we play</em>).</p>
+                <p><strong>Antropologia della Morte e Sistemi Funerari:</strong> Focus specifico sui processi legati al fine vita e al lutto (Padova — Boros, con monografia <em>Addomesticare la morte</em>).</p>
+                <p><strong>Antropologia dell'Alimentazione:</strong> Tematica monografica centrata sul rapporto cibo-sacro (Napoli Benincasa — Moro, con <em>Mangiare come Dio comanda</em>).</p>
+                <p><strong>Antropologia Medica ed Etnopsichiatria:</strong> Fortemente presente nei programmi con focus psicologico, con temi come sofferenza sociale, trauma e sindromi culturali (Torino — Pizza <em>Antropologia medica</em>, Bologna — etnografia dell'accoglienza, Roma Sapienza — rifugiati, Palermo — <em>Mental Disorders and Traditional Healing Systems</em>).</p>
+                <p><strong>Antropologia dell'Educazione (Schooling):</strong> Approfondimento sui processi culturali scolastici e istituzionali (Foggia, Pavia — via Tassan Zanichelli).</p>
+                <p><strong>Antropologia delle Migrazioni:</strong> Tema trasversale molto presente: Bologna (Gallotti-Tarabusi, Bourgois), Roma Sapienza (Sorgoni, Costantini), Uninettuno (articoli da <em>Mondi migranti</em>).</p>
+                <p><strong>Differenze per CFU:</strong> Circa due terzi dei corsi sono da 6 CFU. I corsi da 8-9 CFU (area romana e Valle d'Aosta) includono sistematicamente approfondimenti monografici, articoli in rivista e testi a scelta.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">2. Prospettive / Scuole Teoriche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <table class="spec-table">
+                    <thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Atenei di Riferimento</th><th>Note</th></tr></thead>
+                    <tbody>
+                        <tr><td>Evoluzionismo</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Tutti gli atenei</td><td>Fondamento storico in quasi tutti i programmi</td></tr>
+                        <tr><td>Funzionalismo</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Tutti gli atenei</td><td>Malinowski e Radcliffe-Brown come riferimenti core</td></tr>
+                        <tr><td>Strutturalismo</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Napoli, Campania, Palermo, Roma, Unicusano</td><td>Lévi-Strauss autore cardine</td></tr>
+                        <tr><td>Interpretativismo</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Bologna, Pavia, Roma, Unicusano</td><td>Centralità di Geertz e della "descrizione densa"</td></tr>
+                        <tr><td>Antropologia Medica</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Torino, Bologna, Roma Sapienza</td><td>Molto alta in corsi con focus psicologico</td></tr>
+                        <tr><td>Antropologia Simbolica</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Pavia, Unicusano</td><td>Turner e Douglas in programmi monografici</td></tr>
+                        <tr><td>Post-colonialismo</td><td><span class="tag tag-m">Media</span></td><td>Implicita</td><td>Palermo, Roma Sapienza, Unicusano</td><td>Riferimenti a Fanon e Said</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">3. Modelli di Strutturazione del Corso<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Modello Istituzionale + Monografico (dominante):</strong> Una prima parte di "fondamenti" seguita da un approfondimento su una ricerca etnografica specifica del docente. Esempi: Campania Vanvitelli (Fabietti + D'Aloisio monografia Lamborghini), Bologna (Dei + etnografia dell'accoglienza), Padova-Boros (fondamenti + morte/alimentazione), Pavia (Matera + Canevari monografia).</p>
+                <p><strong>Modello a Moduli Tematici:</strong> Suddivisione per aree (Storia, Istituzioni, Contemporaneità). Tipico delle università telematiche o con programmi estesi. Esempi: Unicusano (9 moduli in piattaforma), Uninettuno (Dei + articoli da rivista per moduli tematici).</p>
+                <p><strong>Modello per Problemi:</strong> Insegnamento strutturato intorno a quesiti critici sulla realtà sociale. Esempio: Roma Sapienza (Robbins + etnografia delle migrazioni + testo a scelta tra autori classici).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">4. Focus tematico per Ateneo — Tabella completa<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <div style="overflow-x:auto">
+                <table class="spec-table">
+                    <thead><tr><th>Ateneo</th><th>Focus Tematico</th><th>Testo Cardine</th><th>Criticità / Nota</th></tr></thead>
+                    <tbody>
+<tr><td>Bologna</td><td>Etnografia dell'accoglienza / Migrazioni</td><td>Dei (Il Mulino) + Biffi + Bourgois</td><td>6 testi in bibliografia: carico molto elevato per 6 CFU</td></tr>
+<tr><td>Campania Vanvitelli</td><td>Storiografico / Industria globale</td><td>Fabietti (Zanichelli) + Signorelli (McGraw-Hill)</td><td>Mix Zanichelli + McGraw-Hill + monografia docente</td></tr>
+<tr><td>Foggia</td><td>Educazione / Pensiero antropologico</td><td>Engelke (Einaudi) + Tassan (Zanichelli)</td><td>Tassan usato solo Parte III (pp. 167-221)</td></tr>
+<tr><td>Napoli Benincasa</td><td>Alimentazione / Genere / Classici</td><td>Palumbo et al. (Hoepli) + Moro + Mead + Mauss + Lévi-Strauss</td><td>5 testi: mix manuale + 4 classici. Carico elevato</td></tr>
+<tr><td>Padova (Boros ×2)</td><td>Morte / Alimentazione / Sguardo antropologico</td><td>Boros (TAB) + Marazzi (Carocci)</td><td>Monografie del docente come testo principale</td></tr>
+<tr><td>Padova (Nardini ×2)</td><td>Sport / Gioco / Mascolinità</td><td>Dei (Il Mulino) + Besnier + Nardini</td><td>Focus molto specialistico, con testi in inglese</td></tr>
+<tr><td>Palermo</td><td>Etnopsichiatria / Post-colonialismo</td><td>Fabietti Elementi (Mondadori) + Cuche + articoli</td><td>Due canali (A-L e M-Z) con bibliografie parzialmente diverse</td></tr>
+<tr><td>Pavia</td><td>Educazione / Antropologia contemporanea</td><td>Matera (Laterza) + Tassan (Zanichelli) + Canevari</td><td>Buon equilibrio teoria-applicazione. Dispense Kiro</td></tr>
+<tr><td>Roma Sapienza</td><td>Migrazioni / Rifugiati / Approccio per problemi</td><td>Robbins (UTET) + Sorgoni (Carocci) + Costantini</td><td>9 CFU: programma esteso con testo a scelta tra classici</td></tr>
+<tr><td>Roma Unicusano</td><td>Modulare / Storico</td><td>Dispense (9 moduli) + Fabietti (Zanichelli, consigliato)</td><td>Il Fabietti indicato è l'ed. 1991 — aggiornare a 2020</td></tr>
+<tr><td>Roma Uninettuno</td><td>Migrazioni / Identità di genere</td><td>Dei (Il Mulino) + Colucci (Carocci) + articoli Mondi migranti</td><td>Forte componente di articoli di rivista</td></tr>
+<tr><td>Torino</td><td>Antropologia medica / Etnopsichiatria / Violenza</td><td>Pizza (Carocci 2025) + Fantauzzi + Beneduce</td><td>Focus molto orientato alla psicologia clinica</td></tr>
+<tr><td>Valle d'Aosta</td><td>Non determinabile</td><td>Materiali della docente</td><td>Nessun testo dichiarato; programma basato su slide</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">5. Limiti dell'Analisi<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>L'analisi è soggetta a limiti derivanti dall'eterogeneità dei dati: non tutti i sillabi esplicitano i CFU o la ripartizione oraria esatta tra le parti. Esiste un grado di incertezza nell'identificazione delle prospettive teoriche quando queste sono solo sottese alla scelta dei testi monografici senza essere dichiarate negli obiettivi (es. post-strutturalismo o approcci ontologici). Le ambiguità terminologiche tra "Antropologia Medica", "Etnopsichiatria" e "Antropologia Psicologica" rendono talvolta difficile distinguere se i contenuti siano identici o divergano per sfumature metodologiche tra un ateneo e l'altro. Infine, Valle d'Aosta non dichiara alcun testo specifico, rendendo impossibile l'analisi bibliografica.</p>
+            </div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📊</div> Prospettive Teoriche — Diffusione nei programmi</div>
+        <div class="card"><div class="chart-container chart-md"><canvas id="chartTeorie"></canvas></div></div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-panel" id="zanichelli">
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Situazione attuale — Fabietti + Tassan</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli presente con 3 cattedre (20%) — posizione competitiva in un mercato frammentato</h4>
+            <p>Zanichelli dispone di <strong>due titoli complementari</strong>: il Fabietti (<em>Storia dell'antropologia</em>, 4ª ed. 2020) focalizzato sulla componente storico-epistemologica, e il Tassan (<em>Antropologia per insegnare</em>, 2020) orientato all'applicazione educativa. Il Fabietti è adottato come testo principale a Campania Vanvitelli e come consigliato a Unicusano (ma con ed. 1991 — da aggiornare). Il Tassan è complementare a Foggia e Pavia. Il mercato è estremamente polverizzato: nessun editore domina, e l'uso diffuso di monografie dei docenti frammenta ulteriormente le quote. La principale minaccia viene dal <strong>Dei (Il Mulino)</strong> che è l'unico manuale istituzionale con una massa critica di adozioni (4 cattedre). Il <strong>Fabietti Mondadori</strong> (<em>Elementi</em>) compete indirettamente generando confusione sul brand "Fabietti".</p>
+        </div>
+        <div class="swot-grid">
+            <div class="swot-box swot-strengths">
+                <h4>✅ Punti di Forza</h4>
+                <ul>
+                    <li>Due titoli complementari che coprono storia (Fabietti) e applicazione educativa (Tassan)</li>
+                    <li>Fabietti 4ª ed. 2020 è il testo storico più aggiornato del campione</li>
+                    <li>Brand "Fabietti" forte nell'accademia antropologica italiana</li>
+                    <li>Tassan è un unicum: nessun competitor offre un testo di antropologia per l'educazione</li>
+                    <li>Presenza in atenei strategici del Sud (Campania, Foggia, Pavia)</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-weaknesses">
+                <h4>⚠️ Punti di Debolezza</h4>
+                <ul>
+                    <li>Manca un manuale istituzionale generalista: il Fabietti è una "Storia", non un manuale introduttivo</li>
+                    <li>Il Tassan è troppo specialistico per L-24 — usato solo parzialmente (Foggia: solo Parte III)</li>
+                    <li>Confusione Fabietti Zanichelli / Fabietti Mondadori: stesso autore, due editori, due titoli diversi</li>
+                    <li>Unicusano indica ancora l'ed. 1991 del Fabietti — mancanza di aggiornamento promozionale</li>
+                    <li>Assenza totale a Padova (4 cattedre), Roma (3 cattedre), Bologna</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-opportunities">
+                <h4>🚀 Opportunità</h4>
+                <ul>
+                    <li>Valle d'Aosta: nessun testo dichiarato — finestra completamente aperta</li>
+                    <li>Unicusano: il Fabietti è già consigliato (ed. 1991) — aggiornamento a 4ª ed. 2020 immediato</li>
+                    <li>Palermo: adotta il Fabietti Mondadori — possibile switch al Fabietti Zanichelli con proposta mirata</li>
+                    <li>Dei (Il Mulino) fermo al 2016 — un'eventuale nuova edizione del manuale Zanichelli potrebbe competere</li>
+                    <li>Forte domanda di antropologia medica/etnopsichiatria (Torino, Bologna, Sapienza) — nicchia scoperta</li>
+                    <li>Crescita del tema migrazioni: il Robbins (UTET, 2015) è datato — spazio per un testo aggiornato</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-threats">
+                <h4>🔶 Minacce</h4>
+                <ul>
+                    <li>Il Mulino forte con il Dei — brand consolidato e rete di promozione accademica capillare</li>
+                    <li>Hoepli entra con il Palumbo-Pizza-Schirripa (2023) — manuale aggiornato e con autori influenti</li>
+                    <li>Carocci forte sui testi complementari e monografici (Marazzi, Sorgoni, Pizza, Beneduce)</li>
+                    <li>Mercato dominato da monografie dei docenti: la personalizzazione frena l'adozione di manuali standard</li>
+                    <li>Il Fabietti Mondadori (Elementi) compete direttamente sullo stesso target "Fabietti"</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📋</div> Carta d'Identità — Doppio Scenario</div>
+
+        <div class="id-card">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-blue);">📘</div>
+                <div>
+                    <h3>Scenario 1 — Rafforzamento dei titoli esistenti</h3>
+                    <p>Come massimizzare il potenziale del Fabietti e del Tassan</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>📌 Azione prioritaria: aggiornamento rete promozionale</h5>
+                <ul>
+                    <li><strong>Unicusano:</strong> Contatto immediato per aggiornamento da ed. 1991 a 4ª ed. 2020. Il Fabietti è già consigliato — basta una copia saggio aggiornata</li>
+                    <li><strong>Palermo:</strong> Proposta di switch da Fabietti Mondadori (<em>Elementi</em>, 2015) a Fabietti Zanichelli (<em>Storia</em>, 4ª ed. 2020) — il testo è più aggiornato e più completo sulla componente storica</li>
+                    <li><strong>Valle d'Aosta:</strong> Nessun testo dichiarato — proposta di pacchetto Fabietti + Tassan come combinazione istituzionale + applicativa</li>
+                    <li><strong>Campania Vanvitelli:</strong> Conferma e consolidamento — la D'Aloisio integra già con Signorelli (McGraw-Hill) e propria monografia</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>🔧 Proposta di "pacchetto Zanichelli per Antropologia"</h5>
+                <p>Proporre ai docenti la combinazione <strong>Fabietti (storia/epistemologia) + Tassan (applicazione educativa)</strong> come "doppio binario" Zanichelli che copre sia la componente teorica sia quella applicativa. Questa combinazione non ha equivalenti presso altri editori e potrebbe essere presentata come soluzione completa per corsi da 8-9 CFU.</p>
+            </div>
+            <div class="id-section">
+                <h5>🎓 Risorse digitali suggerite</h5>
+                <ul>
+                    <li>Schede sulle scuole antropologiche (Evoluzionismo → Post-colonialismo) in formato interattivo</li>
+                    <li>Timeline della storia dell'antropologia navigabile</li>
+                    <li>Glossario ragionato dei concetti chiave (cultura, etnocentrismo, relativismo, etnografia)</li>
+                </ul>
+            </div>
+        </div>
+
+         <div class="id-card scenario-b">
+    <div class="id-card-header">
+        <div class="id-icon" style="background:var(--zanichelli-accent);">📕</div>
+        <div>
+            <h3>Scenario 2 — Lancio dello Schultz-Lavenda in L-24</h3>
+            <p>Come portare da 0 a 5+ adozioni il manuale generalista che Zanichelli già possiede</p>
+        </div>
+    </div>
+    <div class="id-section">
+        <h5>🎯 Il problema: un manuale completo a zero adozioni</h5>
+        <p>Lo <strong>Schultz & Lavenda, <em>Antropologia culturale</em></strong> (4ª ed. italiana 2021, 14 capitoli, ~500 pp.) è il manuale generalista più completo e aggiornato del catalogo Zanichelli — eppure non ha una singola adozione in L-24. Il Dei (Il Mulino, 2016) domina il segmento "manuale istituzionale" con 4 adozioni nonostante sia più datato di 5 anni. Questo suggerisce un problema di <strong>visibilità e promozione</strong>, non di qualità del prodotto.</p>
+    </div>
+    <div class="id-section">
+        <h5>📌 Perché lo Schultz-Lavenda è competitivo</h5>
+        <ul>
+            <li><strong>Più aggiornato del Dei:</strong> 2021 vs 2016 — include temi come globalizzazione post-2016, genere come ottica trasversale, antropologia medica</li>
+            <li><strong>Copertura superiore:</strong> Il Dei non ha capitoli dedicati a linguaggio, economia, potere, antropologia medica — lo Schultz-Lavenda sì</li>
+            <li><strong>Apparato didattico ricco:</strong> Etnoprofili, schede "Con le loro parole", domande di ripasso, glossario — comparabile ai migliori manuali internazionali</li>
+            <li><strong>Prospettiva globale:</strong> Forte attenzione a disuguaglianze, sofferenza sociale, diritti umani — temi molto presenti nei programmi L-24 (Bologna, Roma Sapienza, Uninettuno)</li>
+            <li><strong>Capitolo su Antropologia medica:</strong> Unico manuale generalista con un capitolo dedicato — perfetto per L-24 dove la domanda di antropologia medica/etnopsichiatria è forte (Torino, Bologna, Palermo)</li>
+        </ul>
+    </div>
+    <div class="id-section">
+        <h5>⚠️ Ostacoli da superare</h5>
+        <ul>
+            <li><strong>Origine americana:</strong> Casi etnografici prevalentemente anglosassoni — i docenti italiani potrebbero preferire esempi europei/mediterranei. La curatela di Van Aken mitiga parzialmente questo aspetto</li>
+            <li><strong>Estensione:</strong> ~500 pp. / 14 capitoli possono risultare eccessivi per corsi da 6 CFU — necessario proporre percorsi di lettura modulari</li>
+            <li><strong>Concorrenza interna:</strong> Il Fabietti (Zanichelli) è già presente in 2-3 cattedre — evitare cannibalizzazione, proponendo i due testi come complementari (Fabietti = storia, Schultz-Lavenda = manuale)</li>
+        </ul>
+    </div>
+    <div class="id-section">
+        <h5>🚀 Piano di lancio suggerito</h5>
+        <ul>
+            <li><strong>Target primari (testi datati o assenti):</strong> Valle d'Aosta (nessun testo), Roma Sapienza (Robbins UTET 2015), Padova-Boros (monografie del docente + Marazzi 2007), Bologna (Dei 2016)</li>
+            <li><strong>Argomento chiave per i docenti:</strong> "L'unico manuale generalista con un capitolo su Antropologia medica" — differenziante rispetto a tutti i competitor</li>
+            <li><strong>Proposta di percorsi modulari:</strong> Preparare schede con selezioni da 6, 8 e 10 CFU — risolvere il problema dell'estensione</li>
+            <li><strong>Copia saggio mirata:</strong> Invio a tutti i 15 docenti censiti con lettera di presentazione che evidenzi i punti di forza rispetto al Dei e al Fabietti Mondadori</li>
+            <li><strong>Evento online:</strong> Webinar di presentazione con Mauro Van Aken (curatore) — coinvolgere i docenti target</li>
+        </ul>
+    </div>
+</div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Atenei Target — Priorità di intervento</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Priorità</th><th>Ateneo</th><th>Situazione attuale</th><th>Perché è un target</th><th>Azione suggerita</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Valle d'Aosta</td><td>Nessun testo dichiarato</td><td>Finestra completamente aperta — nessun editore presente</td><td>Contatto docente Porcellana; proposta pacchetto Fabietti + Tassan</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Roma Unicusano</td><td>Fabietti Zanichelli (ed. 1991, consigliato)</td><td>Zanichelli già presente ma con ed. datata di 35 anni</td><td>Copia saggio 4ª ed. 2020; aggiornamento immediato</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Palermo</td><td>Fabietti Elementi (Mondadori, 2015)</td><td>Brand "Fabietti" già presente; switch possibile a Zanichelli</td><td>Proposta Fabietti Zanichelli 2020 come alternativa più aggiornata</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Roma Sapienza</td><td>Robbins (UTET, 2015)</td><td>Testo del 2015 datato; 9 CFU = alto valore</td><td>Monitoraggio; contatto in caso di cambio docente</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Bologna</td><td>Dei (Il Mulino, 2016)</td><td>Grande ateneo; Dei fermo al 2016</td><td>Monitoraggio; target per eventuale nuovo manuale (Scenario 2)</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Padova (Nardini ×2)</td><td>Dei (Il Mulino, 2016)</td><td>2 cattedre; Dei datato; ateneo strategico</td><td>Monitoraggio; target per Scenario 2</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Torino</td><td>Pizza (Carocci 2025) + monografie</td><td>Forte focus etnopsichiatrico — potenziale per Fabietti come storico</td><td>Contatto esplorativo; proposta Fabietti come complemento storico</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Napoli Benincasa</td><td>Palumbo et al. (Hoepli 2023)</td><td>Hoepli debole nella promozione; 5 testi = possibile semplificazione</td><td>Lungo termine; monitoraggio cambio docente</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Roma Uninettuno</td><td>Dei (Il Mulino, 2016)</td><td>Telematica; Dei datato; articoli di rivista come integrazione</td><td>Proposta Fabietti 2020 come alternativa/complemento</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">⚡</div> Quick Win — Azioni immediate</div>
+        <div class="highlight-box">
+            <h4>3 azioni a costo zero per consolidare la posizione Zanichelli</h4>
+            <p><strong>1. Unicusano:</strong> Invio copia saggio 4ª ed. 2020 a Emanuele Curcio — il Fabietti è già consigliato con ed. 1991.<br>
+            <strong>2. Palermo:</strong> Contatto con Bellantonio/Bassi — proposta switch da Fabietti Mondadori (<em>Elementi</em>, 2015) a Fabietti Zanichelli (<em>Storia</em>, 4ª ed. 2020), enfatizzando l'aggiornamento e la completezza storica.<br>
+            <strong>3. Valle d'Aosta:</strong> Contatto con Porcellana — nessun testo dichiarato, finestra aperta per proposta Fabietti + eventuale testo a scelta dal catalogo Zanichelli.</p>
+        </div>
+    </div>
+</div>
+
+</div><!-- /main-content -->
+
+<!-- ===================== FOOTER ===================== -->
+<div class="footer">
+    <p>Zanichelli Editore — Intelligence Report Antropologia Culturale L-24 | Febbraio 2026 | Dati raccolti da syllabi accademici A.A. 2024-2026</p>
+    <p style="margin-top:.3rem;">Dashboard generata per uso interno — Promozione Editoriale Universitaria</p>
+</div>
+
+<!-- ===================== CHARTS ===================== -->
+<script>
+const ZB='#003C82',ZL='#0068C8',ZA='#E63946',ZG='#2A9D8F',ZO='#F4A261',ZGo='#E9C46A',ZP='#7B2D8E';
+
+new Chart(document.getElementById('chartMarketShare'),{
+    type:'doughnut',
+    data:{labels:['Zanichelli (Fabietti+Tassan)','Il Mulino (Dei)','Carocci (complementare)','Mondadori (Fabietti Elementi)','Hoepli (Palumbo et al.)','UTET (Robbins)','Laterza (Matera)','Einaudi (Engelke)','Altro / Dispense / N.D.'],
+        datasets:[{data:[3,4,3,1,1,1,1,1,3],backgroundColor:[ZA,ZG,'#14B8A6','#F97316','#3B82F6','#64748B','#8B5CF6','#EC4899','#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},padding:10}},title:{display:true,text:'Distribuzione adozioni per editore (15 insegnamenti)',font:{size:14,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartEditoreBar'),{
+    type:'bar',
+    data:{labels:['Il Mulino','Zanichelli','Carocci','Mondadori','Hoepli','UTET','Laterza','Einaudi','Altro/Disp.'],
+        datasets:[{label:'N° adozioni',data:[4,3,3,1,1,1,1,1,3],backgroundColor:[ZG,ZA,'#14B8A6','#F97316','#3B82F6','#64748B','#8B5CF6','#EC4899','#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'N° cattedre per editore',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,grid:{color:'#EDF2F7'}},y:{grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('chartSemestre'),{
+    type:'pie',
+    data:{labels:['I Semestre','II Semestre','Non specificato'],
+        datasets:[{data:[6,6,3],backgroundColor:[ZB,ZG,ZO],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},title:{display:true,text:'Distribuzione per Semestre',font:{size:13,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartTeorie'),{
+    type:'bar',
+    data:{labels:['Evoluzionismo','Funzionalismo','Strutturalismo','Interpretativismo','Antropologia Medica','Antropologia Simbolica','Post-colonialismo'],
+        datasets:[{label:'Diffusione nei programmi',data:[90,90,85,75,45,35,35],backgroundColor:[ZB,ZL,ZGo,ZG,ZO,ZP,'#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Diffusione prospettive teoriche nei programmi (%)',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,max:100,grid:{color:'#EDF2F7'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}}}
+});
+
+function showTab(tabId){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+function toggleC(h){h.parentElement.classList.toggle('open')}
+function filterTable(){
+    const s=document.getElementById('searchTable').value.toLowerCase();
+    const e=document.getElementById('filterEditore').value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(r=>{
+        const t=r.textContent.toLowerCase();
+        r.style.display=(!s||t.includes(s))&&(!e||t.includes(e))?'':'none';
+    });
+}
+let sortDir={};
+function sortTable(c){
+    const tb=document.querySelector('#mainTable tbody');
+    const rows=Array.from(tb.querySelectorAll('tr'));
+    sortDir[c]=!sortDir[c];
+    rows.sort((a,b)=>{
+        const at=a.children[c].textContent.trim().toLowerCase();
+        const bt=b.children[c].textContent.trim().toLowerCase();
+        return sortDir[c]?at.localeCompare(bt):bt.localeCompare(at);
+    });
+    rows.forEach(r=>tb.appendChild(r));
+}
+</script>
+</body>
+</html>

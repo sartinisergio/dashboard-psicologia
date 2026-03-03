@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Dashboard Sociologia Generale L-24</title>
+<style>
+:root{--zanichelli-blue:#003C82;--zanichelli-light:#0068C8;--zanichelli-accent:#E63946;--zanichelli-green:#2A9D8F;--zanichelli-orange:#F4A261;--zanichelli-gold:#E9C46A;--zanichelli-purple:#7B2D8E;--bg-primary:#F0F4F8;--bg-card:#FFF;--text-primary:#1A1A2E;--text-secondary:#4A5568;--border-color:#E2E8F0;--shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);--shadow-lg:0 10px 30px rgba(0,0,0,.12)}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+.top-toolbar{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border-color);padding:10px 2rem;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.toolbar-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border-color);background:#fff;color:var(--text-primary);transition:all .2s;font-family:inherit}.toolbar-btn:hover{background:#F0F4FF;border-color:var(--zanichelli-blue);color:var(--zanichelli-blue)}.toolbar-btn.primary{background:var(--zanichelli-blue);color:#fff;border-color:var(--zanichelli-blue)}.toolbar-btn.primary:hover{background:var(--zanichelli-light)}
+.toolbar-spacer{flex:1}.toolbar-title{font-size:13px;color:var(--text-secondary);font-weight:500}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,var(--zanichelli-light) 100%);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}.header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.05);border-radius:50%}.header-content{max-width:1400px;margin:0 auto;position:relative;z-index:1}.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}.logo-area{display:flex;align-items:center;gap:1rem}.logo-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700}.brand{font-size:1.4rem;font-weight:700;letter-spacing:.5px}.header-badge{background:rgba(255,255,255,.15);padding:.4rem 1rem;border-radius:20px;font-size:.85rem;backdrop-filter:blur(10px)}.header h1{font-size:1.9rem;font-weight:700;margin-bottom:.3rem}.header .subtitle{font-size:1rem;opacity:.9}
+.header-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem}.header-kpi{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,.15)}.header-kpi .kpi-value{font-size:1.8rem;font-weight:800}.header-kpi .kpi-label{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.nav-tabs{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;transform:translateY(-1.2rem)}.nav-tab{padding:.6rem 1.3rem;background:var(--bg-card);border:none;border-radius:10px 10px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-secondary);box-shadow:var(--shadow-sm);transition:all .3s}.nav-tab:hover{color:var(--zanichelli-blue)}.nav-tab.active{background:var(--zanichelli-blue);color:#fff}
+.main-content{max-width:1400px;margin:0 auto;padding:.5rem 2rem 3rem}.tab-panel{display:none}.tab-panel.active{display:block}
+.section{margin-bottom:2rem}.section-title{font-size:1.15rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--zanichelli-light);display:flex;align-items:center;gap:.5rem}.section-title .icon{width:28px;height:28px;background:var(--zanichelli-blue);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card{background:var(--bg-card);border-radius:14px;box-shadow:var(--shadow-md);padding:1.5rem;margin-bottom:1.2rem;border:1px solid var(--border-color);transition:transform .2s,box-shadow .2s}.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1.2rem}.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.chart-container{position:relative;width:100%;max-width:100%;margin:0 auto}.chart-container.chart-sm{height:280px}.chart-container.chart-md{height:360px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}.data-table th{background:var(--zanichelli-blue);color:#fff;padding:.7rem .8rem;text-align:left;font-weight:600;position:sticky;top:0;white-space:nowrap}.data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--border-color);vertical-align:top}.data-table tr:hover td{background:#F7FAFC}.data-table-wrapper{max-height:600px;overflow-y:auto;border-radius:10px;border:1px solid var(--border-color)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}.badge-mgh{background:#FFEDD5;color:#9A3412}.badge-pea{background:#DBEAFE;color:#1E40AF}.badge-mul{background:#D1FAE5;color:#065F46}.badge-car{background:#CCFBF1;color:#115E59}.badge-alt{background:#F1F5F9;color:#475569}.badge-zanichelli{background:#E63946;color:#fff}.badge-red{background:#FEE2E2;color:#991B1B}.badge-orange{background:#FEF3C7;color:#92400E}.badge-blue{background:#DBEAFE;color:#1E40AF}.badge-green{background:#D1FAE5;color:#065F46}.badge-purple{background:#EDE9FE;color:#5B21B6}.badge-mon{background:#FEF3C7;color:#92400E}
+.metric-card{background:var(--bg-card);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border-color)}.metric-card .metric-value{font-size:2rem;font-weight:800;color:var(--zanichelli-blue)}.metric-card .metric-label{font-size:.8rem;color:var(--text-secondary);margin-top:.3rem}
+.highlight-box{background:linear-gradient(135deg,#EBF4FF 0%,#F0F7FF 100%);border-left:4px solid var(--zanichelli-blue);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-bottom:1rem}.highlight-box.zanichelli-highlight{background:linear-gradient(135deg,#FFF5F5 0%,#FFF0F0 100%);border-left-color:var(--zanichelli-accent)}.highlight-box h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}.highlight-box p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.competitor-card{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;border:1px solid var(--border-color);margin-bottom:.8rem;background:var(--bg-card)}.competitor-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}.competitor-info{flex:1}.competitor-info .comp-title{font-weight:700;font-size:.92rem}.competitor-info .comp-publisher{font-size:.8rem;color:var(--text-secondary)}.competitor-info .comp-adoptions{font-size:.82rem;font-weight:600;color:var(--zanichelli-blue);margin-top:.2rem}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.swot-box{border-radius:12px;padding:1.2rem}.swot-box h4{font-size:.95rem;font-weight:700;margin-bottom:.6rem}.swot-box ul{list-style:none;padding:0}.swot-box ul li{padding:.3rem 0;font-size:.84rem;padding-left:1.2rem;position:relative}.swot-box ul li::before{content:'→';position:absolute;left:0;font-weight:700}.swot-strengths{background:#D1FAE5;border:1px solid #6EE7B7}.swot-strengths h4{color:#065F46}.swot-weaknesses{background:#FEE2E2;border:1px solid #FCA5A5}.swot-weaknesses h4{color:#991B1B}.swot-opportunities{background:#DBEAFE;border:1px solid #93C5FD}.swot-opportunities h4{color:#1E40AF}.swot-threats{background:#FEF3C7;border:1px solid #FCD34D}.swot-threats h4{color:#92400E}
+.collapsible{background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;color:var(--zanichelli-blue);user-select:none;transition:background .2s}.collapsible-header:hover{background:#F0F4FF}.collapsible-header .arrow{transition:transform .3s;font-size:12px}.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}.collapsible.open .collapsible-body{max-height:15000px}.cc{padding:0 22px 20px;font-size:.88rem;line-height:1.75;color:var(--text-primary)}.cc p{margin-bottom:10px}.cc ul{margin:8px 0 12px 18px}.cc ul li{margin-bottom:5px}.cc strong{color:var(--zanichelli-blue)}.cc h4{color:var(--zanichelli-light);margin:16px 0 8px;font-size:.95rem;font-weight:600}
+.spec-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}.spec-table th{background:var(--zanichelli-blue);color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}.spec-table td{padding:8px 10px;border-bottom:1px solid var(--border-color);vertical-align:top}.spec-table tr:hover{background:#F8FAFC}.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;margin:1px}.tag-a{background:#D1FAE5;color:#065F46}.tag-m{background:#FEF3C7;color:#92400E}.tag-b{background:#FEE2E2;color:#991B1B}
+.pill-list{display:flex;flex-wrap:wrap;gap:.5rem}.pill{padding:.35rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.id-card{background:var(--bg-card);border-radius:14px;border:2px solid var(--zanichelli-blue);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-md)}.id-card.scenario-b{border-color:var(--zanichelli-accent)}.id-card-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:2px dashed var(--border-color)}.id-card-header .id-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}.id-card-header h3{font-size:1.05rem;font-weight:700}.id-card-header p{font-size:.82rem;color:var(--text-secondary)}.id-section{margin-bottom:1rem}.id-section h5{font-size:.88rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:.4rem}.id-section p,.id-section ul{font-size:.84rem;color:var(--text-secondary);line-height:1.65}.id-section ul{margin-left:1.2rem;margin-top:.3rem}.id-section ul li{margin-bottom:.3rem}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}.filter-bar input,.filter-bar select{padding:8px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}.filter-bar input:focus,.filter-bar select:focus{border-color:var(--zanichelli-light)}.filter-bar input{width:240px}.filter-bar label{font-size:12px;color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.8rem;border-top:1px solid var(--border-color);max-width:1400px;margin:0 auto}
+@media print{.tab-panel{display:block!important}.nav-tabs,.top-toolbar,.filter-bar{display:none!important}.data-table-wrapper{max-height:none!important;overflow:visible!important}.data-table th{position:static!important}body{background:#fff!important}.card,.collapsible{box-shadow:none!important;border:1px solid #ccc!important;break-inside:avoid;transform:none!important}.collapsible-body{max-height:none!important;overflow:visible!important}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr!important}.header,.header-kpi,.section-title .icon,.data-table th,.competitor-rank,.swot-box,.highlight-box,.id-card-header .id-icon{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+@media(max-width:768px){.header h1{font-size:1.4rem}.header-kpis{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.swot-grid{grid-template-columns:1fr}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="top-toolbar"><a href="index.html" class="toolbar-btn primary">← Torna alla Dashboard</a><div class="toolbar-spacer"></div><span class="toolbar-title">Sociologia Generale — L-24</span><button class="toolbar-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button></div>
+
+<div class="header"><div class="header-content"><div class="header-top"><div class="logo-area"><div class="logo-icon">Z</div><span class="brand">ZANICHELLI</span></div><div class="header-badge">📊 Intelligence Report — Febbraio 2026</div></div><h1>Sociologia Generale — L-24</h1><p class="subtitle">Analisi adozioni, competitor, contenuti e posizionamento nei corsi di Scienze e Tecniche Psicologiche</p><div class="header-kpis"><div class="header-kpi"><div class="kpi-value">28</div><div class="kpi-label">Insegnamenti censiti</div></div><div class="header-kpi"><div class="kpi-value">21</div><div class="kpi-label">Atenei coinvolti</div></div><div class="header-kpi"><div class="kpi-value">0</div><div class="kpi-label">Adozioni Zanichelli</div></div><div class="header-kpi"><div class="kpi-value">~29%</div><div class="kpi-label">McGraw-Hill (leader)</div></div><div class="header-kpi"><div class="kpi-value">~21%</div><div class="kpi-label">Il Mulino (2° editore)</div></div></div></div></div>
+
+<div class="nav-tabs"><button class="nav-tab active" onclick="showTab('panoramica')">Panoramica</button><button class="nav-tab" onclick="showTab('adozioni')">Mappa Adozioni</button><button class="nav-tab" onclick="showTab('competitor')">Competitor</button><button class="nav-tab" onclick="showTab('contenuti')">Contenuti & Programmi</button><button class="nav-tab" onclick="showTab('zanichelli')">Posizionamento Zanichelli</button></div>
+
+<div class="main-content">
+
+<!-- ALERT ANALISI PONDERATA -->
+<div style="background:linear-gradient(135deg,#003865 0%,#0066B3 100%);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <div style="color:#fff;font-size:13.5px;line-height:1.6">
+    <strong style="font-size:14px">⚖️ Analisi Ponderata disponibile</strong><br>
+    <span style="opacity:.85">Le quote di mercato di questa materia pesate per numero di studenti effettivi sono ora consultabili nella dashboard principale.</span>
+  </div>
+  <a href="index.html?section=ponderata&materia=pond-socio" style="display:inline-flex;align-items:center;gap:6px;background:#E63946;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;font-size:12.5px;font-weight:600;white-space:nowrap">Vai all'Analisi Ponderata →</a>
+</div>
+<!-- FINE ALERT -->
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-panel active" id="panoramica">
+    <div class="section">
+        <div class="section-title"><div class="icon">📈</div> Quadro di sintesi del mercato</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli completamente assente — mercato conteso tra McGraw-Hill e Il Mulino</h4>
+            <p>Zanichelli non ha <strong>alcuna adozione</strong> in Sociologia Generale L-24. Il mercato è dominato da <strong>McGraw-Hill</strong> con il Croteau & Hoynes (<em>Sociologia generale</em>) adottato in ~8 cattedre (~29%), seguito da <strong>Il Mulino</strong> con il Bagnasco, Barbagli & Cavalli (<em>Corso di sociologia</em>) in ~6 cattedre (~21%). <strong>Pearson</strong> è terzo con il Manza et al. (<em>Progetto sociologia</em>) in 3 cattedre (~11%). Il resto del mercato è molto frammentato, con testi di Franco Angeli, Vita & Pensiero, monografie dei docenti e manuali di nicchia. A differenza della Psicometria, il mercato sociologico è meno concentrato e potenzialmente più permeabile.</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card"><div class="metric-value" style="color:#F97316;">McGraw-Hill</div><div class="metric-label">Leader — ~29% (Croteau & Hoynes)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-green);">Il Mulino</div><div class="metric-label">Secondo — ~21% (Bagnasco + Smelser + Cavalli)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:#3B82F6;">Pearson</div><div class="metric-label">Terzo — ~11% (Manza et al.)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-accent);">Zanichelli</div><div class="metric-label">Assente — 0 adozioni su 28</div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🏢</div> Market Share Editori</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartMarketShare"></canvas></div></div>
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartEditoreBar"></canvas></div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📅</div> Distribuzione per Semestre</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-sm"><canvas id="chartSemestre"></canvas></div></div>
+            <div class="card"><div class="highlight-box"><h4>Note sulla distribuzione</h4><p>La Sociologia Generale in L-24 è distribuita tra il <strong>I e il III anno</strong>, con una leggera prevalenza del II semestre. I corsi variano da <strong>6 CFU</strong> (maggioranza: Bologna, Catanzaro, Firenze, Torino) a <strong>9 CFU</strong> (Sapienza, Unicusano, Padova, Napoli Benincasa), con i corsi più estesi che includono metodologia della ricerca e parti monografiche aggiuntive. Il modello dominante è "Teoria + Monografia" con testo istituzionale affiancato da una o più monografie del docente.</p></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-panel" id="adozioni">
+    <div class="section">
+        <div class="section-title"><div class="icon">🗺️</div> Adozioni per Ateneo — Dettaglio completo</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="filter-bar"><label>🔍 Cerca:</label><input type="text" id="searchTable" placeholder="Ateneo, docente, testo..." oninput="filterTable()"><label>Editore:</label><select id="filterEditore" onchange="filterTable()"><option value="">Tutti</option><option value="McGraw">McGraw-Hill</option><option value="Mulino">Il Mulino</option><option value="Pearson">Pearson</option><option value="Franco">Franco Angeli</option><option value="Carocci">Carocci</option></select></div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="mainTable">
+                    <thead><tr><th onclick="sortTable(0)">Ateneo ↕</th><th>Insegnamento</th><th>Docente</th><th>Sem.</th><th>Testo Principale</th><th>Editore princ.</th></tr></thead>
+                    <tbody>
+<tr><td>Benevento G. Fortunato</td><td>Sociologia Generale</td><td>Elvira Martini</td><td>n.d.</td><td>Bagnasco, Barbagli, Cavalli — Corso di Sociologia (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Bologna</td><td>Sociologia</td><td>Francesca Guarino</td><td>II</td><td>Croteau & Hoynes — Sociologia generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Campania Vanvitelli</td><td>Sociologia Generale</td><td>Andrea Millefiorini</td><td>II</td><td>Millefiorini — Lineamenti di Sociologia generale (Apogeo-Maggioli)</td><td><span class="badge badge-alt">Apogeo</span></td></tr>
+<tr><td>Catania (1)</td><td>Sociologia Generale 1</td><td>Liana M. Daher</td><td>II</td><td>Bichi — Sociologia (Vita & Pensiero)</td><td><span class="badge badge-alt">Vita&Pens.</span></td></tr>
+<tr><td>Catania (2)</td><td>Sociologia Generale</td><td>Augusto G. Gamuzza</td><td>II</td><td>Bichi — Sociologia (Vita & Pensiero)</td><td><span class="badge badge-alt">Vita&Pens.</span></td></tr>
+<tr><td>Catanzaro</td><td>Sociologia Generale</td><td>Guido Giarelli</td><td>II</td><td>Giarelli & Venneri — Sociologia della salute (Franco Angeli)</td><td><span class="badge badge-alt">Franco Angeli</span></td></tr>
+<tr><td>Chieti</td><td>Sociologia</td><td>Adele Bianco</td><td>I</td><td>Bianco — La conoscenza del mondo Sociale (Franco Angeli)</td><td><span class="badge badge-alt">Franco Angeli</span></td></tr>
+<tr><td>Enna Kore</td><td>Sociologia generale</td><td>Sergio Severino</td><td>II</td><td>Manza, Arum, Haney — Progetto sociologia (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Firenze (A-K)</td><td>Sociologia Generale</td><td>Angela Perulli</td><td>I</td><td>Croteau & Hoynes — Sociologia generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Firenze (L-Z)</td><td>Sociologia Generale</td><td>Elisabetta Zontini</td><td>I</td><td>Croteau & Hoynes — Sociologia generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Genova</td><td>Sociologia Generale</td><td>Sebastiano Benasso</td><td>II</td><td>Croteau & Hoynes — Sociologia generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Lecce Salento</td><td>Istituzioni di Sociologia</td><td>Emiliano Bevilacqua</td><td>I</td><td>Bagnasco, Barbagli, Cavalli — Sociologia. I concetti di base (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Messina</td><td>Sociologia Generale</td><td>Pietro Saitta</td><td>I</td><td>Giarelli & Venneri — Sociologia della salute (Franco Angeli)</td><td><span class="badge badge-alt">Franco Angeli</span></td></tr>
+<tr><td>Milano Bicocca</td><td>Sociologia</td><td>Roberto Carradore</td><td>I</td><td>Ghisleni — Teoria sociale e modernità (Carocci) + Bagnasco et al. (Il Mulino)</td><td><span class="badge badge-car">Carocci</span> + <span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Milano Cattolica (BS)</td><td>Sociologia generale</td><td>Matteo Moscatelli</td><td>n.d.</td><td>Manza, Arum, Haney — Progetto Sociologia (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Milano Cattolica (MI)</td><td>Sociologia generale</td><td>Lunghi / Moscatelli</td><td>n.d.</td><td>Manza, Arum, Haney — Progetto Sociologia (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Napoli Benincasa</td><td>Sociologia generale</td><td>Antonello Petrillo</td><td>n.d.</td><td>Bourdieu — Sistema, habitus, campo (Mimesis)</td><td><span class="badge badge-alt">Mimesis</span></td></tr>
+<tr><td>Padova (Sc.Tecn.)</td><td>Sociologia</td><td>Angelo Boccato</td><td>I</td><td>Bagnasco, Barbagli, Cavalli — Corso di Sociologia (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Soc.Lav.)</td><td>Sociologia Generale</td><td>Riccardo Girolimetto</td><td>I</td><td>O'Byrne — Sociologia. Lineamenti di storia (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Padova (Sviluppo)</td><td>Sociologia Generale</td><td>Valentina Rettore</td><td>I</td><td>La Mendola — Comunicare interagendo (UTET)</td><td><span class="badge badge-alt">UTET</span></td></tr>
+<tr><td>Pavia</td><td>Sociologia</td><td>Ceravolo / Zuffada</td><td>I</td><td>Croteau & Hoynes — Sociologia generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Roma LUMSA</td><td>Sociologia Generale</td><td>Nocenzi / Donato</td><td>A</td><td>Ambrosini & Sciolla — Sociologia (Mondadori)</td><td><span class="badge badge-mon">Mondadori</span></td></tr>
+<tr><td>Roma Sapienza (Dist.)</td><td>Sociologia</td><td>Silvia Cataldi</td><td>I</td><td>Smelser — Manuale di sociologia (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Sapienza (Proc.Soc.)</td><td>Sociologia</td><td>Silvia Cataldi</td><td>II</td><td>Smelser — Manuale di sociologia (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Unicusano</td><td>Sociologia generale</td><td>Simonetta Carrarini</td><td>n.d.</td><td>Bagnasco, Barbagli, Cavalli — Corso di sociologia (Il Mulino)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Torino (A-H)</td><td>Sociologia</td><td>Anna Rosa Favretto</td><td>I</td><td>Croteau & Hoynes — Sociologia generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Torino (I-Z)</td><td>Sociologia</td><td>Favretto / Fava</td><td>I</td><td>Croteau & Hoynes — Sociologia generale (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Valle d'Aosta</td><td>Sociologia generale</td><td>Massimo A. Zanetti</td><td>II</td><td>Cavalli — Incontro con la sociologia (Il Mulino) + Bagnasco et al.</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-panel" id="competitor">
+    <div class="section">
+        <div class="section-title"><div class="icon">⚔️</div> Ranking Manuali per numero di adozioni</div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">1</div><div class="competitor-info"><div class="comp-title">Croteau D. & Hoynes W. — <em>Sociologia generale. Temi, concetti, strumenti</em></div><div class="comp-publisher">McGraw-Hill Education</div><div class="comp-adoptions">~8 adozioni — Bologna, Firenze ×2, Genova, Pavia, Torino ×2 (+ compl. a Hochschild)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-green);">2</div><div class="competitor-info"><div class="comp-title">Bagnasco A., Barbagli M. & Cavalli A. — <em>Corso di sociologia / I concetti di base</em></div><div class="comp-publisher">Il Mulino</div><div class="comp-adoptions">~6 adozioni — Benevento, Lecce Salento, Milano Bicocca, Padova, Roma Unicusano, Valle d'Aosta</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#3B82F6;">3</div><div class="competitor-info"><div class="comp-title">Manza J., Arum R. & Haney L. — <em>Progetto sociologia</em></div><div class="comp-publisher">Pearson</div><div class="comp-adoptions">3 adozioni — Enna Kore, Milano Cattolica ×2</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#64748B;">4</div><div class="competitor-info"><div class="comp-title">Smelser N.J. — <em>Manuale di sociologia</em></div><div class="comp-publisher">Il Mulino</div><div class="comp-adoptions">2 adozioni — Roma Sapienza ×2</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#14B8A6;">5</div><div class="competitor-info"><div class="comp-title">Giarelli G. & Venneri E. — <em>Sociologia della salute e della medicina</em></div><div class="comp-publisher">Franco Angeli</div><div class="comp-adoptions">2 adozioni — Catanzaro, Messina</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#8B5CF6;">6</div><div class="competitor-info"><div class="comp-title">Bichi R. — <em>Sociologia</em></div><div class="comp-publisher">Vita & Pensiero</div><div class="comp-adoptions">2 adozioni — Catania ×2</div></div></div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📚</div> Analisi comparativa dei manuali</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">Croteau & Hoynes — Sociologia generale (McGraw-Hill)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Il <strong>manuale più adottato</strong> (~8 cattedre), con forte presenza al Centro-Nord (Bologna, Firenze, Genova, Pavia, Torino).</p>
+                <p><strong>Punti di forza:</strong> Approccio "per temi, concetti e strumenti" che favorisce l'apprendimento per problemi. Supporto digitale Connect integrato. Struttura modulare adatta a corsi da 6 CFU (alcuni docenti escludono paragrafi metodologici). Linguaggio accessibile per studenti del I anno.</p>
+                <p><strong>Punti di debolezza:</strong> Origine americana — gli esempi possono risultare distanti. A Firenze vengono esclusi esplicitamente paragrafi sul metodo. L'impianto è meno "autoriale" rispetto al Bagnasco (Il Mulino), che ha una tradizione più forte nella sociologia italiana.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Bagnasco, Barbagli & Cavalli — Corso di sociologia (Il Mulino)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Manuale storico della sociologia italiana, adottato in ~6 cattedre. Esiste anche nella versione ridotta <em>Sociologia. I concetti di base</em>.</p>
+                <p><strong>Punti di forza:</strong> Brand autoriale fortissimo nell'accademia italiana. Copertura sistematica della struttura sociale italiana. Testo di riferimento per la "scuola bolognese" della sociologia. Esistenza di due formati (Corso completo e Concetti di base) per corsi di diversa estensione.</p>
+                <p><strong>Punti di debolezza:</strong> Meno aggiornato sui temi digitali, globalizzazione e consumi rispetto ai competitor internazionali. Struttura tradizionale — meno dinamica del Croteau per studenti del I anno.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Manza, Arum & Haney — Progetto sociologia (Pearson)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Adottato in 3 cattedre (Enna, Cattolica ×2). Enfasi sull'immaginazione sociologica e i temi contemporanei.</p>
+                <p><strong>Punti di forza:</strong> Struttura orientata a stimolare il pensiero critico. Piattaforma MyLab integrata. Capitolo dedicato all'immaginazione sociologica come filo conduttore.</p>
+                <p><strong>Punti di debolezza:</strong> Meno radicato nella tradizione sociologica italiana rispetto al Bagnasco. Diffusione limitata.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Smelser N.J. — Manuale di sociologia (Il Mulino)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Testo classico internazionale, adottato alla Sapienza (2 cattedre).</p>
+                <p><strong>Punti di forza:</strong> Completezza enciclopedica, approccio sistematico ai concetti sociologici, autorevolezza dell'autore.</p>
+                <p><strong>Punti di debolezza:</strong> Datato. Molto esteso — richiede forte selezione per corsi da 6 CFU.</p>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-panel" id="contenuti">
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Nucleo Minimo di Contenuti (presenza >80%)</div>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid var(--zanichelli-blue);"><h4 style="color:var(--zanichelli-blue);margin-bottom:.5rem;">Fondamenti Epistemologici</h4><p style="font-size:.85rem;color:var(--text-secondary);">La sociologia come scienza, immaginazione sociologica, differenza con il senso comune.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-green);"><h4 style="color:var(--zanichelli-green);margin-bottom:.5rem;">Classici del Pensiero</h4><p style="font-size:.85rem;color:var(--text-secondary);">Durkheim, Weber, Marx, Simmel. Teorie dell'ordine, del conflitto e dell'azione sociale.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-orange);"><h4 style="color:var(--zanichelli-orange);margin-bottom:.5rem;">Interazione e Socializzazione</h4><p style="font-size:.85rem;color:var(--text-secondary);">Status, ruolo, norme, piccoli gruppi, agenzie di socializzazione.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-accent);"><h4 style="color:var(--zanichelli-accent);margin-bottom:.5rem;">Cultura e Struttura</h4><p style="font-size:.85rem;color:var(--text-secondary);">Valori, norme, istituzioni, organizzazioni, simboli.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-purple);"><h4 style="color:var(--zanichelli-purple);margin-bottom:.5rem;">Stratificazione e Disuguaglianza</h4><p style="font-size:.85rem;color:var(--text-secondary);">Classi sociali, mobilità, genere, etnia, povertà.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📑</div> Nucleo Esteso (~50%)</div>
+        <div class="card"><div class="pill-list">
+            <span class="pill" style="background:#DBEAFE;color:#1E40AF;">Socializzazione</span>
+            <span class="pill" style="background:#D1FAE5;color:#065F46;">Devianza</span>
+            <span class="pill" style="background:#FEF3C7;color:#92400E;">Modernità / Secolarizzazione</span>
+            <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Globalizzazione</span>
+            <span class="pill" style="background:#FEE2E2;color:#991B1B;">Media e Consumi</span>
+            <span class="pill" style="background:#E0F2FE;color:#075985;">Sociologia della salute</span>
+            <span class="pill" style="background:#FCE7F3;color:#9D174D;">Metodologia ricerca</span>
+            <span class="pill" style="background:#F0FDF4;color:#166534;">Agenda 2030 / SDG</span>
+        </div></div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🔬</div> Specificità, Variazioni e Approfondimenti</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">1. Specificità e Variazioni tematiche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Focus sulla salute:</strong> Catanzaro e Messina adottano Giarelli & Venneri (<em>Sociologia della salute e della medicina</em>), con approfondimenti su medicina narrativa e narrare la complessità. Pertinente al contesto L-24/Psicologia.</p>
+                <p><strong>Temi monografici specialistici:</strong> Sociologia della moda (Catania — Mavica), alcol e stili giovanili (Bologna — Guarino), lavoro emozionale (Firenze — Hochschild), trap e soggettività (Genova — Benasso).</p>
+                <p><strong>Analisi della devianza:</strong> Presente con elevato dettaglio a Messina (Cohen, <em>Demoni popolari e panico morale</em>) e alla Cattolica (contesti carcerari).</p>
+                <p><strong>Metodologia della ricerca:</strong> Fortemente integrata alla Sapienza (testo dedicato + focus group + project work), Unicusano (modulo specifico), Campania Vanvitelli (ricerche sul campo). Esplicitamente esclusa a Firenze.</p>
+                <p><strong>Orientamento applicativo:</strong> Outplacement (Padova — Boccato), welfare e intervento psicosociale (Cattolica), consumi (Padova — Zorino).</p>
+                <p><strong>Agenda 2030:</strong> Dichiarata esplicitamente a Bologna, Catania, Padova e Pavia.</p>
+                <p><strong>Variazioni di CFU:</strong> Da 6 CFU (Bologna, Catanzaro, Firenze, Torino) a 9 CFU (Sapienza, Unicusano, Padova, Napoli). I 9 CFU includono tipicamente metodologia e parti monografiche aggiuntive.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">2. Prospettive / Scuole Teoriche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <table class="spec-table">
+                    <thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Atenei di riferimento</th></tr></thead>
+                    <tbody>
+                        <tr><td>Funzionalismo / Struttural-funzionalismo</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Catania, Campania, Bicocca (Durkheim, Parsons)</td></tr>
+                        <tr><td>Interazionismo Simbolico</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Campania, Catania, Padova, Unicusano (Mead, Goffman)</td></tr>
+                        <tr><td>Teorie del Conflitto</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Campania, Bicocca, Catania (Marx, Dahrendorf)</td></tr>
+                        <tr><td>Fenomenologia</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Campania, Bicocca, Padova (Schütz)</td></tr>
+                        <tr><td>Teoria dell'Agire Pratico / Habitus</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Catania, Napoli Benincasa (Bourdieu)</td></tr>
+                        <tr><td>Costruttivismo</td><td><span class="tag tag-m">Media</span></td><td>Implicita</td><td>Genova, Bicocca</td></tr>
+                        <tr><td>Individualismo Metodologico</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Catania (Boudon)</td></tr>
+                        <tr><td>Prospettiva Connessionista</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Catanzaro (modello multilivello specifico)</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">3. Modelli di Strutturazione del Corso<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Modello Modulare/Sistematico:</strong> Dai fondamenti micro ai sistemi macro (Benevento, Unicusano, Pavia).</p>
+                <p><strong>Modello Storico-Autoriale:</strong> Cronologico attraverso i classici (Catania, Sapienza).</p>
+                <p><strong>Modello Teoria + Monografia:</strong> Parte istituzionale + approfondimento tematico (Catania, Catanzaro, Campania, Messina, LUMSA). Modello dominante.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">4. Studio dei Classici — Approcci a confronto<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <h4>Trattazione analitica per autori</h4>
+                <p>Catania: unità didattiche separate per Marx, Durkheim, Weber, Simmel, poi Parsons, Merton, Goffman, Bourdieu, Bauman. Sapienza: prima parte interamente dedicata ai padri fondatori con studio di fonti primarie (dispense su Durkheim e Weber).</p>
+                <h4>Integrazione per paradigmi</h4>
+                <p>Milano Bicocca: classici inquadrati nel problema della spiegazione dell'ordine sociale. Firenze: studio dei paradigmi come chiave di lettura del rapporto individuo-società.</p>
+                <h4>Specializzazioni e "nuovi classici"</h4>
+                <p>Napoli Benincasa: forte sbilanciamento verso Bourdieu (habitus, campo, capitale). Cattolica Milano: include figure femminili storiche (Anna Julia Cooper, Jane Addams). Padova-Girolimetto: include Basaglia per il rapporto con la salute mentale.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">5. Limiti dell'Analisi<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>L'analisi è limitata dall'eterogeneità del dettaglio nei programmi: alcuni atenei forniscono una scansione analitica per lezione (Catania), mentre altri offrono solo obiettivi generali (Benevento, Torino). La distinzione tra prospettive teoriche "esplicite" e "implicite" risente dell'assenza di elenchi di lezioni in alcuni sillabi. La terminologia varia sensibilmente: concetti come "sistema" o "struttura" possono essere usati con accezioni diverse a seconda del paradigma non sempre dichiarato.</p>
+            </div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📊</div> Prospettive Teoriche — Diffusione</div>
+        <div class="card"><div class="chart-container chart-md"><canvas id="chartTeorie"></canvas></div></div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-panel" id="zanichelli">
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Situazione attuale — Zanichelli assente</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zero adozioni su 28 insegnamenti — assenza di catalogo in Sociologia Generale</h4>
+            <p>Come per la Psicometria, l'assenza è dovuta a una <strong>lacuna di catalogo</strong>: Zanichelli non ha un manuale di Sociologia Generale. Il mercato è meno concentrato rispetto alla Psicometria: il leader (Croteau, McGraw-Hill) ha "solo" il ~29%, e Il Mulino è secondo con ~21%. Il mercato è inoltre caratterizzato da una forte frammentazione monografica (molti docenti integrano con propri testi). L'ingresso richiederebbe la pubblicazione di un nuovo titolo o l'acquisizione di diritti di traduzione, ma le barriere all'ingresso sono inferiori rispetto alla Psicometria grazie alla minore concentrazione editoriale e alla maggiore permeabilità del mercato sociologico.</p>
+        </div>
+        <div class="swot-grid">
+            <div class="swot-box swot-strengths">
+                <h4>✅ Punti di Forza (potenziali)</h4>
+                <ul>
+                    <li>Brand Zanichelli forte e rete promozionale già attiva sugli stessi atenei L-24</li>
+                    <li>Esperienza con manuali tradotti di area anglosassone (modello Schacter, Schultz-Lavenda)</li>
+                    <li>Mercato meno concentrato della Psicometria — più spazio per un nuovo entrante</li>
+                    <li>Forte domanda di testi con ottica "sociologia e salute/psicologia" in L-24</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-weaknesses">
+                <h4>⚠️ Punti di Debolezza</h4>
+                <ul>
+                    <li>Nessun titolo in catalogo per Sociologia Generale</li>
+                    <li>Nessun autore di riferimento nel settore SPS/07</li>
+                    <li>McGraw-Hill consolidato con Croteau + piattaforma Connect</li>
+                    <li>Il Mulino fortissimo con brand autoriale italiano (Bagnasco-Barbagli-Cavalli)</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-opportunities">
+                <h4>🚀 Opportunità</h4>
+                <ul>
+                    <li>Catania (2 cattedre): Bichi (Vita & Pensiero) — editore di nicchia, possibile sostituzione</li>
+                    <li>Chieti: testo del docente (Franco Angeli) — vulnerabile a un manuale istituzionale</li>
+                    <li>Campania Vanvitelli: Millefiorini usa il proprio testo (Apogeo-Maggioli) — editore debole</li>
+                    <li>Napoli Benincasa: programma atipico (solo Bourdieu) — possibile apertura su corso più standard</li>
+                    <li>Nicchia "sociologia della salute" scoperta dai manuali generalisti — match con L-24</li>
+                    <li>Padova (3 cattedre) frammentato: Il Mulino, Pearson, UTET — nessun editore dominante</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-threats">
+                <h4>🔶 Minacce</h4>
+                <ul>
+                    <li>Croteau (McGraw-Hill) consolidato in 8 cattedre con piattaforma Connect</li>
+                    <li>Bagnasco-Barbagli-Cavalli (Il Mulino) ha status di "classico" nella sociologia italiana</li>
+                    <li>Pearson in crescita con Manza (Cattolica ×2, Enna) e O'Byrne (Padova)</li>
+                    <li>Forte personalismo: molti docenti usano propri testi o monografie (Franco Angeli, Mimesis)</li>
+                    <li>Inerzia accademica — i sociologi cambiano manuale raramente</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📋</div> Carta d'Identità — Scenari di ingresso</div>
+        <div class="id-card">
+            <div class="id-card-header"><div class="id-icon" style="background:var(--zanichelli-blue);">📘</div><div><h3>Scenario 1 — Monitoraggio strategico (breve termine)</h3><p>In assenza di un titolo in catalogo, posizionarsi per il futuro</p></div></div>
+            <div class="id-section">
+                <h5>📌 Atenei da monitorare per vulnerabilità editoriale</h5>
+                <ul>
+                    <li><strong>Catania (2 cattedre):</strong> Bichi (Vita & Pensiero) — editore di nicchia, debole nella promozione universitaria generalista</li>
+                    <li><strong>Campania Vanvitelli:</strong> Millefiorini proprio testo (Apogeo-Maggioli) — editore non specializzato in università</li>
+                    <li><strong>Chieti:</strong> Bianco proprio testo (Franco Angeli) — cambio docente aprirebbe finestra</li>
+                    <li><strong>Padova (3 cattedre):</strong> Frammentato — nessun editore domina, finestra aperta per testo unificante</li>
+                    <li><strong>Napoli Benincasa:</strong> Solo Bourdieu (Mimesis) — programma molto atipico, possibile cambio di orientamento</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>🔧 Azione: identificare potenziali autori o titoli da tradurre</h5>
+                <p>Avviare contatti esplorativi con docenti SPS/07 non legati a Il Mulino, McGraw-Hill o Pearson. Target: ricercatori attivi in atenei dove il testo è atipico o del docente (Catania, Campania, Chieti). In alternativa, valutare l'acquisizione di diritti per un manuale anglosassone competitivo con il Croteau (es. Giddens, Macionis) da posizionare come traduzione italiana di riferimento.</p>
+            </div>
+        </div>
+
+        <div class="id-card scenario-b">
+            <div class="id-card-header"><div class="id-icon" style="background:var(--zanichelli-accent);">📕</div><div><h3>Scenario 2 — Nuovo manuale di Sociologia per L-24</h3><p>Un testo pensato per il contesto psicologico, non per i sociologi</p></div></div>
+            <div class="id-section">
+                <h5>🎯 Posizionamento differenziante: "Sociologia per psicologi"</h5>
+                <p>Anziché competere frontalmente con il Croteau (generalista) o il Bagnasco (istituzionale italiano), un manuale Zanichelli potrebbe posizionarsi sulla nicchia specifica della <strong>sociologia per corsi di laurea in Psicologia</strong> — un testo che integri fin dall'inizio i ponti tra sociologia e psicologia (salute mentale, socializzazione, devianza, emozioni). Nessun manuale attuale offre questa prospettiva integrata.</p>
+            </div>
+            <div class="id-section">
+                <h5>📌 Contenuti chiave differenzianti</h5>
+                <ul>
+                    <li><strong>Core sociologico standard:</strong> Classici, cultura, stratificazione, interazione — allineato al nucleo minimo dei programmi</li>
+                    <li><strong>Sociologia della salute mentale:</strong> Sezione dedicata al rapporto tra struttura sociale e disagio psichico — tema forte a Catanzaro, Messina, Bologna, Padova-Girolimetto (Basaglia)</li>
+                    <li><strong>Sociologia delle emozioni:</strong> Tema emergente (Lecce Salento adotta Cerulo, <em>Sociologia delle emozioni</em>; Firenze — Hochschild, <em>Lavoro emozionale</em>)</li>
+                    <li><strong>Devianza e controllo sociale:</strong> Con prospettiva psicosociale (Messina — panico morale; Cattolica — carcere)</li>
+                    <li><strong>Metodologia di base:</strong> Capitolo introduttivo sulla ricerca sociale — richiesto dalla Sapienza, Unicusano, Campania</li>
+                    <li><strong>Agenda 2030 e sostenibilità:</strong> Sezione trasversale — dichiarata a Bologna, Catania, Padova, Pavia</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>👥 Profilo autori ideale</h5>
+                <p>Team di <strong>2-3 autori italiani</strong> con competenze in sociologia generale e in almeno una delle nicchie identificate (salute, emozioni, devianza). Ideale: un autore che insegni in un corso L-24 e che conosca le esigenze specifiche degli studenti di psicologia. Il coinvolgimento di un autore attivo a Catania, Padova o Messina (atenei frammentati) darebbe accesso alla rete accademica.</p>
+            </div>
+            <div class="id-section">
+                <h5>📐 Formato suggerito</h5>
+                <p>Testo compatto (~300-350 pp.) per corsi da 6-8 CFU, con struttura modulare. Forte apparato didattico: box "Sociologia e Psicologia" in ogni capitolo, glossario, domande di riflessione, casi di studio italiani. Risorse digitali integrate. Differenziazione: dove il Croteau è generalista-americano e il Bagnasco è istituzionale-italiano, il nuovo testo sarebbe specializzato per il target L-24 con ponte sociologia-psicologia.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Atenei Target — Priorità di monitoraggio</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Priorità</th><th>Ateneo</th><th>Situazione attuale</th><th>Perché è un target</th><th>Azione suggerita</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Catania (×2)</td><td>Bichi (Vita & Pensiero)</td><td>2 cattedre; editore di nicchia; alta permeabilità</td><td>Monitoraggio; contatto esplorativo con Daher/Gamuzza</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Campania Vanvitelli</td><td>Millefiorini (Apogeo-Maggioli)</td><td>Testo proprio; editore non specializzato in università</td><td>Monitoraggio cambio docente; proposta eventuale manuale</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Padova (×3)</td><td>Il Mulino + Pearson + UTET (frammentato)</td><td>3 cattedre; nessun editore dominante; alto valore</td><td>Target per eventuale nuovo manuale (Scenario 2)</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Chieti</td><td>Bianco (Franco Angeli, testo proprio)</td><td>Testo del docente — cambio docente aprirebbe finestra</td><td>Monitoraggio lungo termine</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Napoli Benincasa</td><td>Bourdieu (Mimesis) — programma atipico</td><td>Solo monografie; nessun manuale istituzionale</td><td>Monitoraggio; possibile cambio orientamento</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Messina</td><td>Giarelli (Franco Angeli) — sociologia salute</td><td>Testo specialistico; target per manuale con sezione salute</td><td>Contatto esplorativo; target per Scenario 2</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Roma Sapienza (×2)</td><td>Smelser (Il Mulino) — classico datato</td><td>2 cattedre; Il Mulino forte ma Smelser potenzialmente obsoleto</td><td>Lungo termine; monitoraggio cambio generazionale</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Lecce Salento</td><td>Bagnasco (Il Mulino) + Cerulo emozioni</td><td>Sociologia delle emozioni — nicchia per Scenario 2</td><td>Monitoraggio; target per manuale con sezione emozioni</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="footer">
+    <p>Zanichelli Editore — Intelligence Report Sociologia Generale L-24 | Febbraio 2026 | Dati raccolti da syllabi accademici A.A. 2024-2026</p>
+    <p style="margin-top:.3rem;">Dashboard generata per uso interno — Promozione Editoriale Universitaria</p>
+</div>
+
+<script>
+const ZB='#003C82',ZL='#0068C8',ZA='#E63946',ZG='#2A9D8F',ZO='#F4A261',ZGo='#E9C46A',ZP='#7B2D8E';
+
+new Chart(document.getElementById('chartMarketShare'),{
+    type:'doughnut',
+    data:{labels:['McGraw-Hill (Croteau & Hoynes)','Il Mulino (Bagnasco+Smelser+Cavalli)','Pearson (Manza+O\'Byrne)','Franco Angeli (Giarelli+Bianco)','Vita & Pensiero (Bichi)','Carocci (Ghisleni)','Mondadori (Ambrosini)','Altro (Apogeo, UTET, Mimesis...)'],
+        datasets:[{data:[8,8,4,3,2,1,1,4],backgroundColor:['#F97316',ZG,'#3B82F6','#14B8A6','#8B5CF6','#EC4899',ZGo,'#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},padding:8}},title:{display:true,text:'Distribuzione adozioni per editore (28 insegnamenti)',font:{size:14,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartEditoreBar'),{
+    type:'bar',
+    data:{labels:['McGraw-Hill','Il Mulino','Pearson','Franco Angeli','Vita & Pensiero','Carocci','Mondadori','Altro'],
+        datasets:[{label:'N° adozioni',data:[8,8,4,3,2,1,1,4],backgroundColor:['#F97316',ZG,'#3B82F6','#14B8A6','#8B5CF6','#EC4899',ZGo,'#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'N° cattedre per editore',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,grid:{color:'#EDF2F7'}},y:{grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('chartSemestre'),{
+    type:'pie',
+    data:{labels:['I Semestre','II Semestre','Annuale','Non specificato'],
+        datasets:[{data:[10,10,1,7],backgroundColor:[ZB,ZG,ZO,'#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},title:{display:true,text:'Distribuzione per Semestre',font:{size:13,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartTeorie'),{
+    type:'bar',
+    data:{labels:['Funzionalismo','Interazionismo Simbolico','Teorie del Conflitto','Fenomenologia','Habitus / Bourdieu','Costruttivismo','Individualismo Metod.','Connessionismo'],
+        datasets:[{label:'Diffusione nei programmi',data:[80,75,55,45,40,35,25,10],backgroundColor:[ZB,ZL,ZGo,ZG,ZO,ZP,'#CBD5E0','#EC4899'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Diffusione prospettive teoriche nei programmi (%)',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,max:100,grid:{color:'#EDF2F7'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}}}
+});
+
+function showTab(tabId){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));document.getElementById(tabId).classList.add('active');event.target.classList.add('active')}
+function toggleC(h){h.parentElement.classList.toggle('open')}
+function filterTable(){const s=document.getElementById('searchTable').value.toLowerCase();const e=document.getElementById('filterEditore').value.toLowerCase();document.querySelectorAll('#mainTable tbody tr').forEach(r=>{const t=r.textContent.toLowerCase();r.style.display=(!s||t.includes(s))&&(!e||t.includes(e))?'':'none'})}
+let sortDir={};function sortTable(c){const tb=document.querySelector('#mainTable tbody');const rows=Array.from(tb.querySelectorAll('tr'));sortDir[c]=!sortDir[c];rows.sort((a,b)=>{const at=a.children[c].textContent.trim().toLowerCase();const bt=b.children[c].textContent.trim().toLowerCase();return sortDir[c]?at.localeCompare(bt):bt.localeCompare(at)});rows.forEach(r=>tb.appendChild(r))}
+</script>
+</body>
+</html>

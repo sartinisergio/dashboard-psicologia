@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Dashboard Psicometria L-24</title>
+<style>
+:root {
+    --zanichelli-blue: #003C82;
+    --zanichelli-light: #0068C8;
+    --zanichelli-accent: #E63946;
+    --zanichelli-green: #2A9D8F;
+    --zanichelli-orange: #F4A261;
+    --zanichelli-gold: #E9C46A;
+    --zanichelli-purple: #7B2D8E;
+    --bg-primary: #F0F4F8;
+    --bg-card: #FFFFFF;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A5568;
+    --border-color: #E2E8F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+.top-toolbar{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border-color);padding:10px 2rem;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.toolbar-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border-color);background:#fff;color:var(--text-primary);transition:all .2s;font-family:inherit}
+.toolbar-btn:hover{background:#F0F4FF;border-color:var(--zanichelli-blue);color:var(--zanichelli-blue)}
+.toolbar-btn.primary{background:var(--zanichelli-blue);color:#fff;border-color:var(--zanichelli-blue)}
+.toolbar-btn.primary:hover{background:var(--zanichelli-light)}
+.toolbar-spacer{flex:1}
+.toolbar-title{font-size:13px;color:var(--text-secondary);font-weight:500}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,var(--zanichelli-light) 100%);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.05);border-radius:50%}
+.header-content{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.logo-area{display:flex;align-items:center;gap:1rem}
+.logo-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700}
+.brand{font-size:1.4rem;font-weight:700;letter-spacing:.5px}
+.header-badge{background:rgba(255,255,255,.15);padding:.4rem 1rem;border-radius:20px;font-size:.85rem;backdrop-filter:blur(10px)}
+.header h1{font-size:1.9rem;font-weight:700;margin-bottom:.3rem}
+.header .subtitle{font-size:1rem;opacity:.9}
+.header-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem}
+.header-kpi{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,.15)}
+.header-kpi .kpi-value{font-size:1.8rem;font-weight:800}
+.header-kpi .kpi-label{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.nav-tabs{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;transform:translateY(-1.2rem)}
+.nav-tab{padding:.6rem 1.3rem;background:var(--bg-card);border:none;border-radius:10px 10px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-secondary);box-shadow:var(--shadow-sm);transition:all .3s}
+.nav-tab:hover{color:var(--zanichelli-blue)}
+.nav-tab.active{background:var(--zanichelli-blue);color:#fff}
+.main-content{max-width:1400px;margin:0 auto;padding:.5rem 2rem 3rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section{margin-bottom:2rem}
+.section-title{font-size:1.15rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--zanichelli-light);display:flex;align-items:center;gap:.5rem}
+.section-title .icon{width:28px;height:28px;background:var(--zanichelli-blue);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card{background:var(--bg-card);border-radius:14px;box-shadow:var(--shadow-md);padding:1.5rem;margin-bottom:1.2rem;border:1px solid var(--border-color);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1.2rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.chart-container{position:relative;width:100%;max-width:100%;margin:0 auto}
+.chart-container.chart-sm{height:280px}.chart-container.chart-md{height:360px}.chart-container.chart-lg{height:440px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table th{background:var(--zanichelli-blue);color:#fff;padding:.7rem .8rem;text-align:left;font-weight:600;position:sticky;top:0;white-space:nowrap}
+.data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--border-color);vertical-align:top}
+.data-table tr:hover td{background:#F7FAFC}
+.data-table-wrapper{max-height:600px;overflow-y:auto;border-radius:10px;border:1px solid var(--border-color)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.badge-mgh{background:#FFEDD5;color:#9A3412}
+.badge-pea{background:#DBEAFE;color:#1E40AF}
+.badge-mul{background:#D1FAE5;color:#065F46}
+.badge-car{background:#CCFBF1;color:#115E59}
+.badge-lat{background:#EDE9FE;color:#5B21B6}
+.badge-alt{background:#F1F5F9;color:#475569}
+.badge-zanichelli{background:#E63946;color:#fff}
+.badge-blue{background:#DBEAFE;color:#1E40AF}
+.badge-green{background:#D1FAE5;color:#065F46}
+.badge-orange{background:#FEF3C7;color:#92400E}
+.badge-red{background:#FEE2E2;color:#991B1B}
+.badge-purple{background:#EDE9FE;color:#5B21B6}
+.metric-card{background:var(--bg-card);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border-color)}
+.metric-card .metric-value{font-size:2rem;font-weight:800;color:var(--zanichelli-blue)}
+.metric-card .metric-label{font-size:.8rem;color:var(--text-secondary);margin-top:.3rem}
+.highlight-box{background:linear-gradient(135deg,#EBF4FF 0%,#F0F7FF 100%);border-left:4px solid var(--zanichelli-blue);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.highlight-box.zanichelli-highlight{background:linear-gradient(135deg,#FFF5F5 0%,#FFF0F0 100%);border-left-color:var(--zanichelli-accent)}
+.highlight-box h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.highlight-box p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.competitor-card{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;border:1px solid var(--border-color);margin-bottom:.8rem;background:var(--bg-card)}
+.competitor-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.competitor-info{flex:1}
+.competitor-info .comp-title{font-weight:700;font-size:.92rem}
+.competitor-info .comp-publisher{font-size:.8rem;color:var(--text-secondary)}
+.competitor-info .comp-adoptions{font-size:.82rem;font-weight:600;color:var(--zanichelli-blue);margin-top:.2rem}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.swot-box{border-radius:12px;padding:1.2rem}
+.swot-box h4{font-size:.95rem;font-weight:700;margin-bottom:.6rem}
+.swot-box ul{list-style:none;padding:0}
+.swot-box ul li{padding:.3rem 0;font-size:.84rem;padding-left:1.2rem;position:relative}
+.swot-box ul li::before{content:'→';position:absolute;left:0;font-weight:700}
+.swot-strengths{background:#D1FAE5;border:1px solid #6EE7B7}.swot-strengths h4{color:#065F46}
+.swot-weaknesses{background:#FEE2E2;border:1px solid #FCA5A5}.swot-weaknesses h4{color:#991B1B}
+.swot-opportunities{background:#DBEAFE;border:1px solid #93C5FD}.swot-opportunities h4{color:#1E40AF}
+.swot-threats{background:#FEF3C7;border:1px solid #FCD34D}.swot-threats h4{color:#92400E}
+.collapsible{background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;color:var(--zanichelli-blue);user-select:none;transition:background .2s}
+.collapsible-header:hover{background:#F0F4FF}
+.collapsible-header .arrow{transition:transform .3s;font-size:12px}
+.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}
+.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.collapsible.open .collapsible-body{max-height:15000px}
+.cc{padding:0 22px 20px;font-size:.88rem;line-height:1.75;color:var(--text-primary)}
+.cc p{margin-bottom:10px}.cc ul{margin:8px 0 12px 18px}.cc ul li{margin-bottom:5px}
+.cc strong{color:var(--zanichelli-blue)}.cc h4{color:var(--zanichelli-light);margin:16px 0 8px;font-size:.95rem;font-weight:600}
+.spec-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}
+.spec-table th{background:var(--zanichelli-blue);color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}
+.spec-table td{padding:8px 10px;border-bottom:1px solid var(--border-color);vertical-align:top}
+.spec-table tr:hover{background:#F8FAFC}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;margin:1px}
+.tag-a{background:#D1FAE5;color:#065F46}.tag-m{background:#FEF3C7;color:#92400E}.tag-b{background:#FEE2E2;color:#991B1B}
+.pill-list{display:flex;flex-wrap:wrap;gap:.5rem}
+.pill{padding:.35rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.id-card{background:var(--bg-card);border-radius:14px;border:2px solid var(--zanichelli-blue);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-md)}
+.id-card.scenario-b{border-color:var(--zanichelli-accent)}
+.id-card-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:2px dashed var(--border-color)}
+.id-card-header .id-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}
+.id-card-header h3{font-size:1.05rem;font-weight:700}
+.id-card-header p{font-size:.82rem;color:var(--text-secondary)}
+.id-section{margin-bottom:1rem}
+.id-section h5{font-size:.88rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.id-section p,.id-section ul{font-size:.84rem;color:var(--text-secondary);line-height:1.65}
+.id-section ul{margin-left:1.2rem;margin-top:.3rem}.id-section ul li{margin-bottom:.3rem}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{padding:8px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--zanichelli-light)}
+.filter-bar input{width:240px}
+.filter-bar label{font-size:12px;color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.8rem;border-top:1px solid var(--border-color);max-width:1400px;margin:0 auto}
+@media print{.tab-panel{display:block!important}.nav-tabs,.top-toolbar,.filter-bar{display:none!important}.data-table-wrapper{max-height:none!important;overflow:visible!important}.data-table th{position:static!important}body{background:#fff!important}.header{break-after:avoid}.card,.collapsible{box-shadow:none!important;border:1px solid #ccc!important;break-inside:avoid;transform:none!important}.collapsible-body{max-height:none!important;overflow:visible!important}.section,.chart-container,.competitor-card,.swot-grid,.id-card{break-inside:avoid}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr!important}.tab-panel::before{display:block;font-size:1.3rem;font-weight:700;color:var(--zanichelli-blue);border-bottom:3px solid var(--zanichelli-blue);padding-bottom:.5rem;margin-bottom:1.5rem;margin-top:2rem}#panoramica::before{content:'';margin-top:0}#adozioni::before{content:'— MAPPA ADOZIONI —'}#competitor::before{content:'— ANALISI COMPETITOR —'}#contenuti::before{content:'— CONTENUTI & PROGRAMMI —'}#zanichelli::before{content:'— POSIZIONAMENTO ZANICHELLI —'}.badge{border:1px solid #999!important}.header,.header-kpi,.section-title .icon,.data-table th,.competitor-rank,.swot-box,.highlight-box,.id-card-header .id-icon{-webkit-print-color-adjust:exact;print-color-adjust:exact}.footer{border-top:2px solid #003C82;margin-top:2rem}}
+@media(max-width:768px){.header h1{font-size:1.4rem}.header-kpis{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.nav-tabs{padding:0 1rem}.main-content{padding:.5rem 1rem 2rem}.swot-grid{grid-template-columns:1fr}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===================== TOOLBAR ===================== -->
+<div class="top-toolbar">
+    <a href="index.html" class="toolbar-btn primary">← Torna alla Dashboard</a>
+    <div class="toolbar-spacer"></div>
+    <span class="toolbar-title">Psicometria — L-24</span>
+    <button class="toolbar-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+</div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-top">
+            <div class="logo-area">
+                <div class="logo-icon">Z</div>
+                <span class="brand">ZANICHELLI</span>
+            </div>
+            <div class="header-badge">📊 Intelligence Report — Febbraio 2026</div>
+        </div>
+        <h1>Psicometria — L-24</h1>
+        <p class="subtitle">Analisi adozioni, competitor, contenuti e posizionamento nei corsi di Scienze e Tecniche Psicologiche</p>
+        <div class="header-kpis">
+            <div class="header-kpi"><div class="kpi-value">53</div><div class="kpi-label">Insegnamenti censiti</div></div>
+            <div class="header-kpi"><div class="kpi-value">33</div><div class="kpi-label">Atenei coinvolti</div></div>
+            <div class="header-kpi"><div class="kpi-value">0</div><div class="kpi-label">Adozioni Zanichelli</div></div>
+            <div class="header-kpi"><div class="kpi-value">~36%</div><div class="kpi-label">McGraw-Hill (leader)</div></div>
+            <div class="header-kpi"><div class="kpi-value">~21%</div><div class="kpi-label">Pearson (2° editore)</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== NAV TABS ===================== -->
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('panoramica')">Panoramica</button>
+    <button class="nav-tab" onclick="showTab('adozioni')">Mappa Adozioni</button>
+    <button class="nav-tab" onclick="showTab('competitor')">Competitor</button>
+    <button class="nav-tab" onclick="showTab('contenuti')">Contenuti & Programmi</button>
+    <button class="nav-tab" onclick="showTab('zanichelli')">Posizionamento Zanichelli</button>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="main-content">
+
+<!-- ALERT ANALISI PONDERATA -->
+<div style="background:linear-gradient(135deg,#003865 0%,#0066B3 100%);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <div style="color:#fff;font-size:13.5px;line-height:1.6">
+    <strong style="font-size:14px">⚖️ Analisi Ponderata disponibile</strong><br>
+    <span style="opacity:.85">Le quote di mercato di questa materia pesate per numero di studenti effettivi sono ora consultabili nella dashboard principale.</span>
+  </div>
+  <a href="index.html?section=ponderata&materia=pond-psimet" style="display:inline-flex;align-items:center;gap:6px;background:#E63946;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;font-size:12.5px;font-weight:600;white-space:nowrap">Vai all'Analisi Ponderata →</a>
+</div>
+<!-- FINE ALERT -->
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-panel active" id="panoramica">
+    <div class="section">
+        <div class="section-title"><div class="icon">📈</div> Quadro di sintesi del mercato</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli completamente assente — mercato dominato da McGraw-Hill e Pearson</h4>
+            <p>La Psicometria è l'unica tra le 7 materie analizzate in cui <strong>Zanichelli non ha alcuna adozione</strong>. Il mercato è un duopolio: <strong>McGraw-Hill</strong> domina con ~36% delle cattedre grazie al Chiorri (<em>Fondamenti di psicometria</em>, 4ª ed. 2025) e al Balsamo (<em>Elementi di Psicometria</em>). <strong>Pearson</strong> è secondo con ~21% grazie all'Aron (<em>Fondamenti di Psicometria per la ricerca</em>, 7ª ed. 2024). <strong>Il Mulino</strong> è terzo con ~15% (Ercolani/Areni/Leone + Pastore + Mannarini). <strong>Carocci</strong> e <strong>Laterza</strong> si dividono le nicchie residue. La disciplina è altamente tecnica e il mercato è caratterizzato da forte fedeltà editoriale: i docenti tendono a mantenere il manuale in uso per anni.</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card"><div class="metric-value" style="color:#F97316;">McGraw-Hill</div><div class="metric-label">Leader — ~36% (Chiorri + Balsamo + Shaughnessy)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-blue);">Pearson</div><div class="metric-label">Secondo — ~21% (Aron + Cicchitelli)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-green);">Il Mulino</div><div class="metric-label">Terzo — ~15% (Ercolani + Pastore + Mannarini)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-accent);">Zanichelli</div><div class="metric-label">Assente — 0 adozioni su 53</div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🏢</div> Market Share Editori</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartMarketShare"></canvas></div></div>
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartEditoreBar"></canvas></div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📅</div> Distribuzione per Semestre</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-sm"><canvas id="chartSemestre"></canvas></div></div>
+            <div class="card">
+                <div class="highlight-box">
+                    <h4>Note sulla distribuzione</h4>
+                    <p>La Psicometria è collocata prevalentemente tra il <strong>I e il II anno</strong>, con una preferenza per il <strong>II semestre</strong>. I corsi variano da 6 a 12 CFU: i corsi da 12 CFU (Padova, Roma Marconi, Foggia) coprono sia la statistica di base sia la teoria dei test estesa, mentre quelli da 6-8 CFU si concentrano sulla statistica descrittiva e inferenziale. A Padova la materia è frammentata in 6 cattedre con programmi e testi molto diversi tra loro. La tendenza emergente è l'integrazione di laboratori software (Jamovi, R, JASP) come componente obbligatoria del corso.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">💻</div> Software Statistici nei Laboratori</div>
+        <div class="card"><div class="chart-container chart-sm"><canvas id="chartSoftware"></canvas></div></div>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-panel" id="adozioni">
+    <div class="section">
+        <div class="section-title"><div class="icon">🗺️</div> Adozioni per Ateneo — Dettaglio completo</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="filter-bar">
+                <label>🔍 Cerca:</label>
+                <input type="text" id="searchTable" placeholder="Ateneo, docente, testo..." oninput="filterTable()">
+                <label>Editore:</label>
+                <select id="filterEditore" onchange="filterTable()">
+                    <option value="">Tutti</option>
+                    <option value="McGraw">McGraw-Hill</option>
+                    <option value="Pearson">Pearson</option>
+                    <option value="Mulino">Il Mulino</option>
+                    <option value="Carocci">Carocci</option>
+                    <option value="Laterza">Laterza</option>
+                </select>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="mainTable">
+                    <thead><tr><th onclick="sortTable(0)">Ateneo ↕</th><th>Insegnamento</th><th>Docente</th><th>Sem.</th><th>Testo Principale</th><th>Editore princ.</th></tr></thead>
+                    <tbody>
+<tr><td>Bari</td><td>Psicometria</td><td>Alessandro O. Caffò</td><td>I</td><td>Primi & Chiesi — Introduzione alla psicometria (Laterza 2008)</td><td><span class="badge badge-lat">Laterza</span></td></tr>
+<tr><td>Benevento G. Fortunato</td><td>Psicometria</td><td>Elisabetta Ricciardi</td><td>I</td><td>Chiorri — Fondamenti di psicometria, 3ª ed. (McGraw-Hill 2020)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Bergamo (Mod. 1)</td><td>Elementi di Psicometria</td><td>Maura Crepaldi</td><td>II</td><td>Gallucci et al. — Modelli statistici (2ª ed.) + Aron (Pearson 7ª ed.)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Bergamo (Mod. 2)</td><td>Psicometria e Analisi Dati</td><td>Maura Crepaldi</td><td>II</td><td>Gallucci et al. — Modelli statistici (2ª ed.) + Aron (Pearson 7ª ed.)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Cagliari</td><td>Psicometria</td><td>Mirian Agus</td><td>II</td><td>Aron et al. — Fond. di Psicometria per la ricerca, 7ª ed. (Pearson 2024)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Campania Vanvitelli</td><td>Psicometria</td><td>Augusto Gnisci</td><td>I</td><td>Gnisci & Pedon — Metodologia della ricerca (Il Mulino 2016)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Catania (1)</td><td>Psicometria e Metodi 1</td><td>Giuseppe A. Platania</td><td>n.d.</td><td>Aron et al. (Pearson 2024) + Shaughnessy (McGraw-Hill 2024)</td><td><span class="badge badge-pea">Pearson</span> + <span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Catania (2)</td><td>Psicometria e Metodi 2</td><td>Silvia M.R. Platania</td><td>n.d.</td><td>Aron et al. (Pearson 2024) + Shaughnessy (McGraw-Hill 2024)</td><td><span class="badge badge-pea">Pearson</span> + <span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Catanzaro</td><td>Teorie e Tecniche dei Test</td><td>Vaccaro / Suriano</td><td>I</td><td>Barbaranelli & Natali — I test psicologici (Carocci 2005)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Chieti (A-L)</td><td>Psicometria I</td><td>Michela Balsamo</td><td>II</td><td>Balsamo — Elementi di Psicometria (McGraw-Hill 2017)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Chieti (M-Z)</td><td>Psicometria I</td><td>Sjoerd J.H. Ebisch</td><td>II</td><td>Balsamo — Elementi di Psicometria (McGraw-Hill 2017)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Enna Kore</td><td>Fondamenti di Psicometria</td><td>Palmira Faraci</td><td>I</td><td>Primi & Chiesi (Laterza) + Faraci & Ricci (Franco Angeli ×2)</td><td><span class="badge badge-lat">Laterza</span></td></tr>
+<tr><td>Firenze</td><td>Psicometria</td><td>Corrado Caudek</td><td>II</td><td>Materiali didattici del docente</td><td><span class="badge badge-alt">Mat. docente</span></td></tr>
+<tr><td>Foggia</td><td>Psicometria</td><td>Leonardo Carlucci</td><td>II</td><td>Balsamo — Elementi di Psicometria (McGraw-Hill 2017)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Genova</td><td>Psicometria e Teoria dei Test</td><td>Carlo Chiorri</td><td>I</td><td>Chiorri — Fond. di psicometria 4ª ed. (McGraw-Hill 2025) + Teoria e tecnica (2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>L'Aquila</td><td>Metodi Quant. e Psicometria</td><td>Attanasio / Valenti</td><td>I</td><td>Chiorri — Fond. 3ª ed. (2020) + Teoria e tecnica 2ª ed. (2023) McGraw-Hill</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Messina (1)</td><td>Psicometria e Tecniche Indagine Cerebrale</td><td>Luigi F. Cuturi</td><td>I</td><td>Chiorri — Fond. 3ª ed. (McGraw-Hill 2020) + Sacco Neuroimaging</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Messina (2)</td><td>Statistica Psicometrica</td><td>Luigi F. Cuturi</td><td>II</td><td>Chiorri — Fond. 3ª ed. (McGraw-Hill 2020)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano Bicocca (1)</td><td>Elem. Psicometria + Lab. 1</td><td>Federica Conte</td><td>n.d.</td><td>Aron et al. — Fond. Psicometria 7ª ed. (Pearson 2024)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Milano Bicocca (2)</td><td>Elem. Psicometria + Lab. 1-2</td><td>Francesco De Benedetto</td><td>n.d.</td><td>Aron et al. — Fond. Psicometria 7ª ed. (Pearson 2024)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Milano Cattolica (BS)</td><td>Statistica psicometrica</td><td>Cisotto / Palamenghi</td><td>n.d.</td><td>Ercolani et al. (Il Mulino 2008) + Chiorri (McGraw-Hill 2020)</td><td><span class="badge badge-mul">Il Mulino</span> + <span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano Cattolica (MI)</td><td>Statistica psicometrica</td><td>Bonanomi / Cisotto</td><td>n.d.</td><td>Ercolani et al. (Il Mulino 2008) + Chiorri (McGraw-Hill 2020)</td><td><span class="badge badge-mul">Il Mulino</span> + <span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano Statale</td><td>Psicometria e metod. ricerca</td><td>Giacomo Spinelli</td><td>I</td><td>Aron et al. — Fond. Psicometria 7ª ed. (Pearson 2024)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Molise</td><td>Statistica psicometrica</td><td>Antonella Lopez</td><td>II</td><td>Shaughnessy (McGraw-Hill 2024) + Chiorri (McGraw-Hill 2020)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Napoli Benincasa</td><td>Psicometria</td><td>Vincenzo P. Senese</td><td>n.d.</td><td>Chiorri — Fond. 3ª ed. (McGraw-Hill 2020)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Napoli Federico II (1)</td><td>Statistica Psicometrica</td><td>Carmela Cappelli</td><td>II</td><td>Cicchitelli et al. (Pearson 2022) + Chiorri (McGraw-Hill) + Aron (Pearson)</td><td><span class="badge badge-pea">Pearson</span> + <span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Napoli Federico II (2)</td><td>Statistica Psicometrica</td><td>Domenico Vistocco</td><td>II</td><td>Aron et al. — Fond. di Statistica, 7ª ed. (Pearson 2024)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Padova (Sviluppo-Altoè)</td><td>Psicometria</td><td>Gianmarco Altoè</td><td>I</td><td>Pastore — Analisi dei dati in psicologia con R (Il Mulino 2015)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Soc.Lav.)</td><td>Psicometria</td><td>Debora De Chiusole</td><td>A</td><td>Mannarini — Psicometria (Il Mulino) + Cristante et al.</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Cognitiva)</td><td>Psicometria</td><td>Massimo Nucci</td><td>I</td><td>Slide e Dispense Moodle del docente</td><td><span class="badge badge-alt">Mat. docente</span></td></tr>
+<tr><td>Padova (Sc.Tecn. Mod.B)</td><td>Psicometria Mod. B</td><td>Egidio Robusto</td><td>II</td><td>Robusto et al. — Dispense + Cristante et al. (Giunti 2001)</td><td><span class="badge badge-alt">Dispense</span></td></tr>
+<tr><td>Padova (Sc.Tecn. Mod.A)</td><td>Psicometria Mod. A</td><td>Robusto / Pastore</td><td>II</td><td>Piccolo — Statistica per le decisioni (Il Mulino 2020)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Sviluppo-Stef.)</td><td>Psicometria</td><td>Luca Stefanutti</td><td>I</td><td>Mannarini — Psicometria (Il Mulino 2008)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Palermo (Lab.)</td><td>Teoria e Tecn. dei Test + Lab.</td><td>n.d.</td><td>I</td><td>Barbaranelli & Natali (Carocci) + Chiorri Teoria (McGraw-Hill) + Picone (Carocci)</td><td><span class="badge badge-car">Carocci</span> + <span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Palermo</td><td>Teoria e Tecniche dei Test</td><td>Como / Battaglia / Ingoglia</td><td>I</td><td>Lang — I test che lo psicologo deve conoscere (Cortina 2020)</td><td><span class="badge badge-alt">Cortina</span></td></tr>
+<tr><td>Parma</td><td>Psicometria</td><td>Annalisa Pelosi</td><td>II</td><td>Shaughnessy et al. — Metodologia ricerca (McGraw-Hill 2024)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Pavia</td><td>Psicometria</td><td>Riccardo Russo</td><td>II</td><td>Russo — Statistica per le scienze comportamentali</td><td><span class="badge badge-alt">Testo proprio</span></td></tr>
+<tr><td>Perugia</td><td>Psicometria e Teorie Test</td><td>Aurora Castellani</td><td>II</td><td>Non disponibile</td><td><span class="badge badge-alt">N.D.</span></td></tr>
+<tr><td>Pisa</td><td>Metodi Ricerca Psicometr. e IA</td><td>Orrù / Comparini / Sartori</td><td>I</td><td>Primi & Chiesi — Introduzione alla psicometria (Laterza)</td><td><span class="badge badge-lat">Laterza</span></td></tr>
+<tr><td>Roma LUMSA</td><td>Psicometria</td><td>Callea / Meloni</td><td>A</td><td>Aron et al. — Fond. Psicometria 7ª ed. (Pearson 2024)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Roma Marconi</td><td>Psicometria</td><td>Erica Berretta</td><td>n.d.</td><td>Ercolani et al. (Il Mulino 2008) + Areni et al. eserciziario (Edra)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Sapienza (Salute)</td><td>Psicometria</td><td>Gabriella Antonucci</td><td>I</td><td>Ercolani et al. — Statistica per la psicologia I e II (Il Mulino 2001-02)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Sapienza (Sc.Tecn.)</td><td>Psicometria</td><td>Michele Vecchione</td><td>II</td><td>Ercolani et al. — Statistica per la psicologia I e II (Il Mulino 2001-02)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Sapienza (Proc.Soc.)</td><td>Psicometria</td><td>Michele Vecchione</td><td>I</td><td>Ercolani et al. — Statistica per la psicologia I e II (Il Mulino 2001-02)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Tor Vergata</td><td>Psicometria</td><td>Cavicchiolo / Casula</td><td>n.d.</td><td>Aron et al. — Fond. di statistica (Pearson)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Roma Unicusano</td><td>Psicometria</td><td>Maria S. De Simone</td><td>n.d.</td><td>Chiorri (McGraw-Hill 2020) + Gnisci & Pedon (Il Mulino 2016)</td><td><span class="badge badge-mgh">McGraw-Hill</span> + <span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma Uninettuno</td><td>Psicometria e analisi dati</td><td>Claudio Barbaranelli</td><td>n.d.</td><td>Chiorri (McGraw-Hill 2020) + Barbaranelli (LED 2007)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Sassari</td><td>Psicometria</td><td>Pierpaolo Sorrentino</td><td>II</td><td>Non disponibile</td><td><span class="badge badge-alt">N.D.</span></td></tr>
+<tr><td>Torino (A)</td><td>Psicometria di base A</td><td>Rosalba Rosato</td><td>II</td><td>Albano & Testa — Statistica per la ricerca sociale (Carocci 2002)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Torino (B)</td><td>Psicometria di base B</td><td>Pietro Cipresso</td><td>II</td><td>Albano & Testa — Statistica per la ricerca sociale (Carocci 2002)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Torino (C)</td><td>Psicometria di base C</td><td>Davide Marengo</td><td>II</td><td>Albano & Testa — Introd. alla statistica (Carocci 2022)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Trento</td><td>Psicometria</td><td>Luisa Canal</td><td>I</td><td>Chiorri — Fond. 3ª ed. (McGraw-Hill 2020)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Trieste</td><td>Basi Statistiche per la Psicol.</td><td>Michele Grassi</td><td>I</td><td>Agresti et al. — Statistica: l'arte di imparare dai dati (2025)</td><td><span class="badge badge-alt">Pearson int.</span></td></tr>
+<tr><td>Urbino</td><td>Psicometria</td><td>Manuela Berlingeri</td><td>I</td><td>Gallucci et al. — Modelli statistici (2ª ed.) + Chiorri Teoria (McGraw-Hill)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Valle d'Aosta</td><td>Psicometria</td><td>Gianluca Bo</td><td>I</td><td>Non disponibile</td><td><span class="badge badge-alt">N.D.</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-panel" id="competitor">
+    <div class="section">
+        <div class="section-title"><div class="icon">⚔️</div> Ranking Manuali per numero di adozioni</div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">1</div><div class="competitor-info"><div class="comp-title">Chiorri C. — <em>Fondamenti di psicometria</em> (3ª ed. 2020 / 4ª ed. 2025)</div><div class="comp-publisher">McGraw-Hill Education</div><div class="comp-adoptions">~15 adozioni — Benevento, Genova, L'Aquila, Messina ×2, Milano Cattolica ×2, Molise, Napoli Benincasa, Napoli Fed.II, Palermo, Roma Unicusano, Roma Uninettuno, Trento, Urbino</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#3B82F6;">2</div><div class="competitor-info"><div class="comp-title">Aron, Coups, Aron & Cooley — <em>Fondamenti di Psicometria per la ricerca</em> (7ª ed. 2024)</div><div class="comp-publisher">Pearson</div><div class="comp-adoptions">~11 adozioni — Bergamo ×2, Cagliari, Catania ×2, Milano Bicocca ×2, Milano Statale, Napoli Fed.II, Roma LUMSA, Roma Tor Vergata</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-green);">3</div><div class="competitor-info"><div class="comp-title">Ercolani, Areni & Leone — <em>Elementi di statistica per la psicologia</em> (Il Mulino, 2008)</div><div class="comp-publisher">Il Mulino</div><div class="comp-adoptions">~6 adozioni — Milano Cattolica ×2, Roma Marconi, Roma Sapienza ×3</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#14B8A6;">4</div><div class="competitor-info"><div class="comp-title">Albano & Testa — <em>Statistica per la ricerca sociale</em> (Carocci, 2002/2022)</div><div class="comp-publisher">Carocci</div><div class="comp-adoptions">3 adozioni — Torino ×3 (tutti i canali)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#8B5CF6;">5</div><div class="competitor-info"><div class="comp-title">Balsamo M. — <em>Elementi di Psicometria</em> (McGraw-Hill, 2017)</div><div class="comp-publisher">McGraw-Hill Education</div><div class="comp-adoptions">3 adozioni — Chieti ×2, Foggia</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#64748B;">6</div><div class="competitor-info"><div class="comp-title">Primi & Chiesi — <em>Introduzione alla psicometria</em> (Laterza, 2005/2008)</div><div class="comp-publisher">Laterza</div><div class="comp-adoptions">3 adozioni — Bari, Enna, Pisa</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#EC4899;">7</div><div class="competitor-info"><div class="comp-title">Shaughnessy, Zechmeister et al. — <em>Metodologia della ricerca in psicologia</em> (3ª ed. 2024)</div><div class="comp-publisher">McGraw-Hill Education</div><div class="comp-adoptions">~4 adozioni (complementare) — Catania ×2, Molise, Parma</div></div></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📚</div> Analisi comparativa dei manuali</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">Chiorri — Fondamenti di psicometria (McGraw-Hill, 4ª ed. 2025)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>È il <strong>manuale più adottato</strong> in Italia per la Psicometria, con ~15 presenze. L'autore (Carlo Chiorri, Università di Genova) insegna direttamente la materia e adotta il proprio testo — caso unico nel campione.</p>
+                <p><strong>Punti di forza:</strong> Completezza sulla parte statistica; chiarezza nei passaggi di calcolo; struttura che copre descrittiva, inferenziale e teoria dei test. La 4ª edizione (gennaio 2025) è aggiornata con Open Science e nuove tecniche. Integrato con piattaforma Connect di McGraw-Hill.</p>
+                <p><strong>Punti di debolezza:</strong> Diversi atenei usano ancora la 3ª ed. (2020) — l'aggiornamento alla 4ª è in corso. Il testo è principalmente statistico e meno orientato alla metodologia della ricerca.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Aron, Coups, Aron & Cooley — Fondamenti di Psicometria per la ricerca (Pearson, 7ª ed. 2024)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Secondo manuale per diffusione (~11 adozioni). Edizione italiana a cura di Antonucci e Girardi.</p>
+                <p><strong>Punti di forza:</strong> Forte orientamento alla ricerca psicologica; linguaggio accessibile per studenti del I anno; piattaforma digitale MyLab integrata. Buon equilibrio tra rigore e accessibilità.</p>
+                <p><strong>Punti di debolezza:</strong> Meno approfondito sulla teoria dei test rispetto al Chiorri. Origine americana — alcuni esempi possono risultare distanti dal contesto italiano.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Ercolani, Areni & Leone — Elementi/Statistica per la psicologia (Il Mulino, 2001-2008)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Testo classico della scuola romana (Sapienza), adottato in 6 cattedre concentrate a Roma e Milano Cattolica.</p>
+                <p><strong>Punti di forza:</strong> Riferimento storico della psicometria italiana. Forte radicamento alla Sapienza (3 cattedre). Testo italiano con esempi e riferimenti nazionali.</p>
+                <p><strong>Punti di debolezza:</strong> Le edizioni risalgono al 2001-2008 — gravemente datato. Nessuna integrazione digitale. Rischio elevato di sostituzione nel medio termine.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Albano & Testa — Statistica per la ricerca sociale (Carocci, 2002/2022)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Adottato solo a Torino (3 canali). È un testo di statistica per le scienze sociali, non specifico per la psicologia.</p>
+                <p><strong>Punti di forza:</strong> Visione sociologica della statistica — coerente con l'orientamento torinese. Edizione 2022 aggiornata per il canale C.</p>
+                <p><strong>Punti di debolezza:</strong> Non specifico per psicometria. Nessuna copertura sulla teoria dei test. Diffusione limitata a un solo ateneo.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Primi & Chiesi — Introduzione alla psicometria (Laterza, 2005/2008)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Testo introduttivo adottato a Bari, Enna e Pisa.</p>
+                <p><strong>Punti di forza:</strong> Accessibilità e sintesi — ideale per corsi da 6 CFU. Autori italiani con approccio diretto.</p>
+                <p><strong>Punti di debolezza:</strong> Edizione datata (2005/2008). Laterza non ha una rete di promozione universitaria forte in psicologia. Copertura limitata ai fondamenti.</p>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-panel" id="contenuti">
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Nucleo Minimo di Contenuti (presenza >90%)</div>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid var(--zanichelli-blue);"><h4 style="color:var(--zanichelli-blue);margin-bottom:.5rem;">Scale di Misura</h4><p style="font-size:.85rem;color:var(--text-secondary);">Classificazione delle variabili secondo Stevens (nominale, ordinale, a intervalli, a rapporti). Fondamento della misurazione psicologica.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-green);"><h4 style="color:var(--zanichelli-green);margin-bottom:.5rem;">Statistica Descrittiva</h4><p style="font-size:.85rem;color:var(--text-secondary);">Media, moda, mediana, varianza, deviazione standard, rappresentazioni grafiche. Presente in tutti i programmi.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-orange);"><h4 style="color:var(--zanichelli-orange);margin-bottom:.5rem;">Probabilità e Distribuzione Normale</h4><p style="font-size:.85rem;color:var(--text-secondary);">Concetti base di probabilità, distribuzione gaussiana, punteggi z.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-accent);"><h4 style="color:var(--zanichelli-accent);margin-bottom:.5rem;">Inferenza e Verifica Ipotesi</h4><p style="font-size:.85rem;color:var(--text-secondary);">Logica NHST, errori di I e II tipo, p-value, significatività statistica.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-purple);"><h4 style="color:var(--zanichelli-purple);margin-bottom:.5rem;">Test t di Student</h4><p style="font-size:.85rem;color:var(--text-secondary);">Confronto tra medie per campioni indipendenti e appaiati.</p></div>
+            <div class="card" style="border-left:4px solid #264653;"><h4 style="color:#264653;margin-bottom:.5rem;">Correlazione di Pearson</h4><p style="font-size:.85rem;color:var(--text-secondary);">Coefficiente r, relazione lineare bivariata, regressione semplice.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📑</div> Nucleo Esteso (presenza 50-70%)</div>
+        <div class="card">
+            <div class="pill-list">
+                <span class="pill" style="background:#DBEAFE;color:#1E40AF;">ANOVA a una via</span>
+                <span class="pill" style="background:#D1FAE5;color:#065F46;">Regressione multipla</span>
+                <span class="pill" style="background:#FEF3C7;color:#92400E;">Alfa di Cronbach</span>
+                <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Validità e attendibilità</span>
+                <span class="pill" style="background:#FEE2E2;color:#991B1B;">Analisi fattoriale esplorativa</span>
+                <span class="pill" style="background:#E0F2FE;color:#075985;">Software (Jamovi/SPSS/R)</span>
+                <span class="pill" style="background:#FCE7F3;color:#9D174D;">d di Cohen / Potenza</span>
+                <span class="pill" style="background:#F0FDF4;color:#166534;">Chi-quadrato</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🔬</div> Specificità, Variazioni e Approfondimenti</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">1. Specificità e Variazioni tematiche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Approccio Metodologico-Epistemologico:</strong> Alcuni corsi integrano pesantemente la metodologia della ricerca, includendo disegni sperimentali e validità (Campania Vanvitelli, Catania, Milano Statale, Roma Unicusano, Pisa).</p>
+                <p><strong>Teoria dei Test Specialistica:</strong> Costruzione del test, IRT e analisi fattoriale sono centrali in moduli avanzati (Genova, Catanzaro, Palermo, Roma Uninettuno).</p>
+                <p><strong>Focus Neuropsicologia/Neuroimaging:</strong> Applicazioni statistiche per le neuroscienze (Messina — con Sacco, <em>Neuroimaging</em>; Urbino).</p>
+                <p><strong>Inferenza Bayesiana:</strong> Confronto frequentista/bayesiano introdotto esplicitamente a Firenze, Parma e Padova.</p>
+                <p><strong>Open Science e Crisi della Replicabilità:</strong> Temi emergenti a Firenze, Padova, Milano Statale e Palermo.</p>
+                <p><strong>Intelligenza Artificiale e Data Literacy:</strong> Focus innovativo a Pisa (titolo dell'insegnamento: "Metodi di Ricerca Psicometrica e Intelligenza Artificiale") e Parma.</p>
+                <p><strong>Test Clinici e Diagnostici:</strong> MMPI, Rorschach, Big Five studiati a Palermo nel corso "Teoria e Tecniche dei Test".</p>
+                <p><strong>Differenze per CFU:</strong> I corsi da 12 CFU (Padova, Roma Marconi, Foggia) coprono sia statistica di base sia teoria dei test estesa; quelli da 6-8 CFU si concentrano sulla statistica descrittiva e inferenziale.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">2. Prospettive / Scuole Teoriche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <table class="spec-table">
+                    <thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Note</th></tr></thead>
+                    <tbody>
+                        <tr><td>Statistica Frequentista (NHST)</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Ossatura di quasi tutti i corsi (p-value, test t, ANOVA)</td></tr>
+                        <tr><td>Teoria Classica dei Test (CTT)</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Base per attendibilità e validità dei test</td></tr>
+                        <tr><td>Teoria della Misurazione Rappresentazionale</td><td><span class="tag tag-m">Media</span></td><td>Implicita/Esplicita</td><td>Esplicitata a Padova; spesso nei prerequisiti su scale di misura</td></tr>
+                        <tr><td>Teoria della Risposta all'Item (IRT)</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Approfondimento in corsi sul testing (Genova, Palermo, Catanzaro)</td></tr>
+                        <tr><td>Approccio Bayesiano</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Alternativa critica in pochi atenei (Firenze, Parma, Padova)</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">3. Modelli di Strutturazione del Corso<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Modello Metodologico-Statistico:</strong> Corso diviso in Metodologia della ricerca + Statistica (Campania Vanvitelli, Catania, Genova, Roma Unicusano).</p>
+                <p><strong>Modello Integrato con Laboratorio:</strong> Lezioni teoriche affiancate da esercitazioni software (Jamovi, R, SPSS, JASP). Modello in forte crescita (Milano-Bicocca, Padova, Urbino, Pavia).</p>
+                <p><strong>Modello Modulare/Sequenziale:</strong> Psicometria divisa in Base e Avanzato o in Modulo A e B, separando descrittiva/inferenziale da teoria dei test (Bergamo, Foggia, Catanzaro, Padova).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">4. Software Statistici e Didattica Laboratoriale<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <h4>Software più utilizzati</h4>
+                <p><strong>Jamovi</strong> (open source, gratuito): Bari, Milano-Bicocca, Molise, Milano Statale, Parma. Scelto per accessibilità e continuità d'uso fuori dal laboratorio.</p>
+                <p><strong>SPSS</strong>: Roma Sapienza, Roma Uninettuno, Pisa. Software di riferimento per output complessi, ma richiede licenza.</p>
+                <p><strong>R / RStudio</strong>: Padova, Trieste, Parma. Forte accento sulla programmazione statistica e ricerca avanzata.</p>
+                <p><strong>JASP</strong>: Pavia, Pisa. Alternativa open source con interfaccia intuitiva.</p>
+                <p><strong>G*Power</strong>: Milano Statale. Per calcolo della potenza statistica.</p>
+                <h4>Tendenza emergente</h4>
+                <p>Si osserva una forte migrazione verso software <strong>open source</strong> (Jamovi, JASP, R) per favorire l'autonomia degli studenti. SPSS resiste negli atenei con tradizione consolidata (Sapienza) ma è in diminuzione.</p>
+                <h4>Verifica in sede d'esame</h4>
+                <p>Milano-Bicocca: esecuzione analisi su file dati assegnato al momento. Milano Statale: esercizi con G*Power e Jamovi. Roma Sapienza e Urbino: interpretazione di output predefiniti. Genova: valutazione del procedimento logico, penalizzazione per risultati "inammissibili".</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">5. Limiti dell'Analisi<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>L'analisi è limitata dall'eterogeneità dei syllabus: in alcuni casi sono presenti solo informazioni amministrative (Valle d'Aosta, Perugia, Sassari), mentre in altri il dettaglio è molto granulare (Campania Vanvitelli). Sussistono ambiguità terminologiche: "Psicometria" può indicare la sola teoria dei test o l'intera statistica applicata alla psicologia. Mancano dati uniformi sul numero di ore di laboratorio effettive. Le prospettive teoriche sono spesso dedotte dai manuali adottati piuttosto che dichiarate esplicitamente.</p>
+            </div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📊</div> Prospettive Teoriche — Diffusione nei programmi</div>
+        <div class="card"><div class="chart-container chart-md"><canvas id="chartTeorie"></canvas></div></div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-panel" id="zanichelli">
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Situazione attuale — Zanichelli assente</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zero adozioni su 53 insegnamenti — la Psicometria è un "deserto Zanichelli"</h4>
+            <p>Zanichelli <strong>non ha alcun titolo in catalogo</strong> per la Psicometria/Statistica per la psicologia. Il mercato è un duopolio McGraw-Hill (~36%, Chiorri + Balsamo + Shaughnessy) / Pearson (~21%, Aron + Cicchitelli), seguito da Il Mulino (~15%, Ercolani). L'assenza non è dovuta a un problema di promozione ma a una <strong>lacuna di catalogo</strong>: non esiste un prodotto Zanichelli competitivo in questo segmento. Entrare nel mercato richiederebbe la pubblicazione di un nuovo titolo o l'acquisizione di diritti di traduzione.</p>
+        </div>
+        <div class="swot-grid">
+            <div class="swot-box swot-strengths">
+                <h4>✅ Punti di Forza (potenziali)</h4>
+                <ul>
+                    <li>Brand Zanichelli forte nel settore universitario psicologico (leader in Psicologia Generale)</li>
+                    <li>Rete di promozione già attiva su tutti gli atenei target</li>
+                    <li>Competenza editoriale in manuali scientifici con forte componente quantitativa</li>
+                    <li>Catalogo di statistica generale (non psicologica) già presente</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-weaknesses">
+                <h4>⚠️ Punti di Debolezza</h4>
+                <ul>
+                    <li>Nessun titolo in catalogo per Psicometria — lacuna strutturale</li>
+                    <li>Nessun autore di riferimento nel settore M-PSI/03</li>
+                    <li>Ingresso in un mercato dominato da due editori con piattaforme digitali consolidate (Connect, MyLab)</li>
+                    <li>Disciplina altamente tecnica con forte inerzia nelle adozioni</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-opportunities">
+                <h4>🚀 Opportunità</h4>
+                <ul>
+                    <li>Ercolani/Areni/Leone (Il Mulino, 2001-2008): 6 cattedre con testi di 17-25 anni — alto rischio sostituzione</li>
+                    <li>Primi & Chiesi (Laterza, 2005-2008): 3 cattedre con testi datati e editore debole in psicologia</li>
+                    <li>Albano & Testa (Carocci, 2002): 3 cattedre Torino — testo non specifico per psicologia</li>
+                    <li>3 atenei senza testo dichiarato (Firenze, Perugia, Sassari, Valle d'Aosta, Padova-Nucci)</li>
+                    <li>Tendenza verso open source (Jamovi, R): un manuale con integrazione nativa di Jamovi/R sarebbe differenziante</li>
+                    <li>Nicchia emergente: AI e Data Literacy (Pisa, Parma) — nessun manuale attuale la copre</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-threats">
+                <h4>🔶 Minacce</h4>
+                <ul>
+                    <li>Chiorri (McGraw-Hill) con 4ª edizione appena uscita (2025) e piattaforma Connect</li>
+                    <li>Aron (Pearson) con 7ª ed. 2024 e piattaforma MyLab — ciclo aggiornamento appena completato</li>
+                    <li>Fortissima inerzia accademica: i docenti di statistica cambiano testo molto raramente</li>
+                    <li>Il Chiorri è anche autore del Shaughnessy (McGraw-Hill) — doppia linea dello stesso editore</li>
+                    <li>Padova (6 cattedre) usa testi molto eterogenei: difficile trovare un singolo prodotto adatto</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📋</div> Carta d'Identità — Scenari di ingresso</div>
+
+        <div class="id-card">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-blue);">📘</div>
+                <div>
+                    <h3>Scenario 1 — Monitoraggio strategico (breve termine)</h3>
+                    <p>In assenza di un titolo in catalogo, come posizionarsi per il futuro</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>📌 Atenei da monitorare per obsolescenza dei testi</h5>
+                <ul>
+                    <li><strong>Roma Sapienza (3 cattedre):</strong> Ercolani et al. ed. 2001-2002 — testi di 24 anni. Cambio docente o generazionale potrebbe aprire finestre</li>
+                    <li><strong>Torino (3 canali):</strong> Albano & Testa non è specifico per psicologia — un testo psicometrico mirato potrebbe competere</li>
+                    <li><strong>Bari, Enna, Pisa:</strong> Primi & Chiesi (Laterza 2005-2008) — editore debole, testo datato</li>
+                    <li><strong>Firenze, Padova-Nucci, Sassari, Perugia, Valle d'Aosta:</strong> Nessun testo dichiarato — finestre aperte</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>🔧 Azione: identificare potenziali autori</h5>
+                <p>Avviare contatti esplorativi con docenti M-PSI/03 non "legati" a McGraw-Hill o Pearson: ricercatori attivi a Padova (scuola forte in psicometria), Firenze (Caudek — usa materiali propri, approccio bayesiano), Torino (Cipresso — focus su tecnologie), Pisa (Orrù/Sartori — AI). L'obiettivo non è un'adozione immediata ma la costruzione di una relazione editoriale per un eventuale progetto futuro.</p>
+            </div>
+        </div>
+
+        <div class="id-card scenario-b">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-accent);">📕</div>
+                <div>
+                    <h3>Scenario 2 — Nuovo manuale di Psicometria (medio termine)</h3>
+                    <p>Che tipo di testo pubblicare per entrare in un mercato dominato dal duopolio McGraw-Hill/Pearson</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>🎯 Posizionamento differenziante: "Psicometria per l'era Open Science"</h5>
+                <p>Anziché competere frontalmente con Chiorri (aggiornato al 2025) e Aron (aggiornato al 2024), un nuovo manuale Zanichelli dovrebbe posizionarsi su una <strong>nicchia emergente non coperta</strong>: la psicometria nell'era dell'Open Science, con integrazione nativa di software open source (Jamovi/R), approccio bayesiano, e attenzione a crisi della replicabilità, pre-registrazione e data literacy.</p>
+            </div>
+            <div class="id-section">
+                <h5>📌 Contenuti chiave differenzianti</h5>
+                <ul>
+                    <li><strong>Core statistico standard:</strong> Descrittiva, inferenziale, correlazione, regressione — allineato al nucleo minimo dei programmi</li>
+                    <li><strong>Approccio bayesiano integrato:</strong> Non come appendice ma come paradigma alternativo presentato fin dall'inizio — risponde alla domanda emergente (Firenze, Parma, Padova)</li>
+                    <li><strong>Open Science:</strong> Pre-registrazione, replicabilità, open data — temi presenti a Firenze, Padova, Milano Statale, Palermo</li>
+                    <li><strong>Software open source nativo:</strong> Ogni capitolo con esercitazioni in Jamovi E R (non SPSS) — risponde alla tendenza dominante</li>
+                    <li><strong>Data Literacy e AI:</strong> Sezione su algoritmi, machine learning, bias algoritmico — nicchia Pisa e Parma, destinata a crescere</li>
+                    <li><strong>Dimensione dell'effetto e potenza:</strong> Trattati non come argomenti avanzati ma come parte integrante dell'inferenza</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>👥 Profilo autori ideale</h5>
+                <p>Team di <strong>2-3 autori italiani</strong> con competenze complementari: uno statistico/metodologico (scuola padovana o fiorentina), uno esperto di software open source e didattica computazionale, uno esperto di teoria dei test e applicazioni cliniche. Ideale: un autore che usi già materiali propri (come Caudek a Firenze o Nucci a Padova) e che potrebbe trasformarli in un manuale strutturato.</p>
+            </div>
+            <div class="id-section">
+                <h5>📐 Formato suggerito</h5>
+                <p>Testo compatto (~350-400 pp.) per corsi da 8-10 CFU, con forte componente digitale nativa: dataset scaricabili, tutorial video per Jamovi e R, simulazioni interattive. Struttura modulare con percorsi da 6, 8 e 12 CFU. Differenziazione rispetto a Chiorri: dove il Chiorri è enciclopedico e tradizionale, il nuovo testo sarebbe agile, computazionale e orientato all'Open Science.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Atenei Target — Priorità di monitoraggio</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Priorità</th><th>Ateneo</th><th>Situazione attuale</th><th>Perché è un target</th><th>Azione suggerita</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Roma Sapienza (×3)</td><td>Ercolani et al. (Il Mulino, 2001-2002)</td><td>3 cattedre con testi di 24 anni — il più alto rischio di sostituzione nel campione</td><td>Monitoraggio cambio generazionale; contatto esplorativo con giovani ricercatori</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Firenze</td><td>Materiali del docente (Caudek)</td><td>Nessun manuale adottato; approccio bayesiano e Open Science — match perfetto per Scenario 2</td><td>Contatto con Caudek: proposta editoriale per trasformare i materiali in manuale</td></tr>
+<tr><td><span class="badge badge-red">ALTA</span></td><td>Torino (×3)</td><td>Albano & Testa (Carocci, 2002)</td><td>3 canali con testo non specifico per psicologia; testo del 2002</td><td>Monitoraggio; target per eventuale nuovo manuale</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Bari</td><td>Primi & Chiesi (Laterza, 2008)</td><td>Testo datato; editore debole in psicologia</td><td>Monitoraggio; contatto in caso di cambio docente</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Enna Kore</td><td>Primi & Chiesi (Laterza) + Faraci (Franco Angeli)</td><td>Testi datati; 3 volumi per un corso — possibile semplificazione</td><td>Proposta di manuale unico se disponibile</td></tr>
+<tr><td><span class="badge badge-orange">MEDIA</span></td><td>Pisa</td><td>Primi & Chiesi (Laterza) + focus IA</td><td>Insegnamento innovativo (Psicometria e IA); testo base datato</td><td>Target per Scenario 2 (sezione AI/Data Literacy)</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Padova (6 cattedre)</td><td>Molto eterogeneo (Il Mulino, dispense, Giunti)</td><td>Centro d'eccellenza psicometrica; 6 cattedre ad alto valore simbolico</td><td>Lungo termine; identificare autori padovani per Scenario 2</td></tr>
+<tr><td><span class="badge badge-blue">DEVELOP</span></td><td>Perugia / Sassari / Valle d'Aosta</td><td>Non disponibile</td><td>Nessun dato — finestre potenzialmente aperte</td><td>Raccolta informazioni; contatto esplorativo</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- /main-content -->
+
+<!-- ===================== FOOTER ===================== -->
+<div class="footer">
+    <p>Zanichelli Editore — Intelligence Report Psicometria L-24 | Febbraio 2026 | Dati raccolti da syllabi accademici A.A. 2024-2026</p>
+    <p style="margin-top:.3rem;">Dashboard generata per uso interno — Promozione Editoriale Universitaria</p>
+</div>
+
+<!-- ===================== CHARTS ===================== -->
+<script>
+const ZB='#003C82',ZL='#0068C8',ZA='#E63946',ZG='#2A9D8F',ZO='#F4A261',ZGo='#E9C46A',ZP='#7B2D8E';
+
+new Chart(document.getElementById('chartMarketShare'),{
+    type:'doughnut',
+    data:{labels:['McGraw-Hill (Chiorri+Balsamo+Shaughnessy)','Pearson (Aron+Cicchitelli+Agresti)','Il Mulino (Ercolani+Pastore+Mannarini+Gnisci)','Carocci (Albano+Barbaranelli+Picone)','Laterza (Primi & Chiesi)','Cortina / Franco Angeli','Altro / Dispense / N.D.'],
+        datasets:[{data:[19,11,8,6,3,2,4],backgroundColor:['#F97316','#3B82F6',ZG,'#14B8A6','#8B5CF6','#EC4899','#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},padding:8}},title:{display:true,text:'Distribuzione adozioni per editore (53 insegnamenti)',font:{size:14,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartEditoreBar'),{
+    type:'bar',
+    data:{labels:['McGraw-Hill','Pearson','Il Mulino','Carocci','Laterza','Cortina/F.Angeli','Altro/N.D.'],
+        datasets:[{label:'N° adozioni',data:[19,11,8,6,3,2,4],backgroundColor:['#F97316','#3B82F6',ZG,'#14B8A6','#8B5CF6','#EC4899','#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'N° cattedre per editore',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,grid:{color:'#EDF2F7'}},y:{grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('chartSemestre'),{
+    type:'pie',
+    data:{labels:['I Semestre','II Semestre','Annuale','Non specificato'],
+        datasets:[{data:[16,19,2,16],backgroundColor:[ZB,ZG,ZO,'#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},title:{display:true,text:'Distribuzione per Semestre',font:{size:13,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartSoftware'),{
+    type:'bar',
+    data:{labels:['Jamovi','SPSS','R / RStudio','JASP','Excel','G*Power'],
+        datasets:[{label:'N° atenei che lo utilizzano',data:[5,3,3,2,4,1],backgroundColor:[ZL,'#F97316',ZG,ZP,ZO,ZA],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Software statistici nei laboratori (N° atenei)',font:{size:13,weight:'bold'},color:ZB}},scales:{y:{beginAtZero:true,grid:{color:'#EDF2F7'}},x:{grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('chartTeorie'),{
+    type:'bar',
+    data:{labels:['Frequentista (NHST)','Teoria Classica Test (CTT)','Misurazione Rappresentazionale','Teoria Risposta Item (IRT)','Approccio Bayesiano'],
+        datasets:[{label:'Diffusione nei programmi',data:[95,75,40,20,12],backgroundColor:[ZB,ZL,ZGo,ZP,'#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Diffusione prospettive teoriche nei programmi (%)',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,max:100,grid:{color:'#EDF2F7'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}}}
+});
+
+function showTab(tabId){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+function toggleC(h){h.parentElement.classList.toggle('open')}
+function filterTable(){
+    const s=document.getElementById('searchTable').value.toLowerCase();
+    const e=document.getElementById('filterEditore').value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(r=>{
+        const t=r.textContent.toLowerCase();
+        r.style.display=(!s||t.includes(s))&&(!e||t.includes(e))?'':'none';
+    });
+}
+let sortDir={};
+function sortTable(c){
+    const tb=document.querySelector('#mainTable tbody');
+    const rows=Array.from(tb.querySelectorAll('tr'));
+    sortDir[c]=!sortDir[c];
+    rows.sort((a,b)=>{
+        const at=a.children[c].textContent.trim().toLowerCase();
+        const bt=b.children[c].textContent.trim().toLowerCase();
+        return sortDir[c]?at.localeCompare(bt):bt.localeCompare(at);
+    });
+    rows.forEach(r=>tb.appendChild(r));
+}
+</script>
+</body>
+</html>

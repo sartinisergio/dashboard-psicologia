@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zanichelli — Dashboard Psicologia dello Sviluppo L-24</title>
+<style>
+:root {
+    --zanichelli-blue: #003C82;
+    --zanichelli-light: #0068C8;
+    --zanichelli-accent: #E63946;
+    --zanichelli-green: #2A9D8F;
+    --zanichelli-orange: #F4A261;
+    --zanichelli-gold: #E9C46A;
+    --zanichelli-purple: #7B2D8E;
+    --bg-primary: #F0F4F8;
+    --bg-card: #FFFFFF;
+    --text-primary: #1A1A2E;
+    --text-secondary: #4A5568;
+    --border-color: #E2E8F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+.top-toolbar{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border-color);padding:10px 2rem;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.toolbar-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;border:1px solid var(--border-color);background:#fff;color:var(--text-primary);transition:all .2s;font-family:inherit}
+.toolbar-btn:hover{background:#F0F4FF;border-color:var(--zanichelli-blue);color:var(--zanichelli-blue)}
+.toolbar-btn.primary{background:var(--zanichelli-blue);color:#fff;border-color:var(--zanichelli-blue)}
+.toolbar-btn.primary:hover{background:var(--zanichelli-light)}
+.toolbar-spacer{flex:1}
+.toolbar-title{font-size:13px;color:var(--text-secondary);font-weight:500}
+.header{background:linear-gradient(135deg,var(--zanichelli-blue) 0%,var(--zanichelli-light) 100%);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.05);border-radius:50%}
+.header-content{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.logo-area{display:flex;align-items:center;gap:1rem}
+.logo-icon{width:48px;height:48px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700}
+.brand{font-size:1.4rem;font-weight:700;letter-spacing:.5px}
+.header-badge{background:rgba(255,255,255,.15);padding:.4rem 1rem;border-radius:20px;font-size:.85rem;backdrop-filter:blur(10px)}
+.header h1{font-size:1.9rem;font-weight:700;margin-bottom:.3rem}
+.header .subtitle{font-size:1rem;opacity:.9}
+.header-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-top:1.5rem}
+.header-kpi{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,.15)}
+.header-kpi .kpi-value{font-size:1.8rem;font-weight:800}
+.header-kpi .kpi-label{font-size:.78rem;opacity:.85;margin-top:.2rem}
+.nav-tabs{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:.5rem;flex-wrap:wrap;transform:translateY(-1.2rem)}
+.nav-tab{padding:.6rem 1.3rem;background:var(--bg-card);border:none;border-radius:10px 10px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-secondary);box-shadow:var(--shadow-sm);transition:all .3s}
+.nav-tab:hover{color:var(--zanichelli-blue)}
+.nav-tab.active{background:var(--zanichelli-blue);color:#fff}
+.main-content{max-width:1400px;margin:0 auto;padding:.5rem 2rem 3rem}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.section{margin-bottom:2rem}
+.section-title{font-size:1.15rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--zanichelli-light);display:flex;align-items:center;gap:.5rem}
+.section-title .icon{width:28px;height:28px;background:var(--zanichelli-blue);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.card{background:var(--bg-card);border-radius:14px;box-shadow:var(--shadow-md);padding:1.5rem;margin-bottom:1.2rem;border:1px solid var(--border-color);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:1.2rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.2rem}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.chart-container{position:relative;width:100%;max-width:100%;margin:0 auto}
+.chart-container.chart-sm{height:280px}.chart-container.chart-md{height:360px}.chart-container.chart-lg{height:440px}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table th{background:var(--zanichelli-blue);color:#fff;padding:.7rem .8rem;text-align:left;font-weight:600;position:sticky;top:0;white-space:nowrap}
+.data-table td{padding:.6rem .8rem;border-bottom:1px solid var(--border-color);vertical-align:top}
+.data-table tr:hover td{background:#F7FAFC}
+.data-table-wrapper{max-height:520px;overflow-y:auto;border-radius:10px;border:1px solid var(--border-color)}
+.badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.badge-zan{background:#FEE2E2;color:#991B1B}
+.badge-mgh{background:#FFEDD5;color:#9A3412}
+.badge-pic{background:#EDE9FE;color:#5B21B6}
+.badge-pea{background:#DBEAFE;color:#1E40AF}
+.badge-mul{background:#D1FAE5;color:#065F46}
+.badge-cor{background:#FCE7F3;color:#9D174D}
+.badge-car{background:#CCFBF1;color:#115E59}
+.badge-utet{background:#E2E8F0;color:#334155}
+.badge-alt{background:#F1F5F9;color:#475569}
+.badge-zanichelli{background:#E63946;color:#fff}
+.metric-card{background:var(--bg-card);border-radius:12px;padding:1.2rem;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border-color)}
+.metric-card .metric-value{font-size:1.8rem;font-weight:800;color:var(--zanichelli-blue)}
+.metric-card .metric-label{font-size:.8rem;color:var(--text-secondary);margin-top:.3rem}
+.highlight-box{background:linear-gradient(135deg,#EBF4FF 0%,#F0F7FF 100%);border-left:4px solid var(--zanichelli-blue);border-radius:0 10px 10px 0;padding:1.2rem 1.5rem;margin-bottom:1rem}
+.highlight-box.zanichelli-highlight{background:linear-gradient(135deg,#FFF5F5 0%,#FFF0F0 100%);border-left-color:var(--zanichelli-accent)}
+.highlight-box.alert-box{background:linear-gradient(135deg,#FEF3C7 0%,#FFFBEB 100%);border-left-color:#D97706}
+.highlight-box h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+.highlight-box p{font-size:.85rem;color:var(--text-secondary);line-height:1.6}
+.competitor-card{display:flex;align-items:center;gap:1rem;padding:1rem;border-radius:10px;border:1px solid var(--border-color);margin-bottom:.8rem;background:var(--bg-card)}
+.competitor-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:#fff;flex-shrink:0}
+.competitor-info{flex:1}
+.competitor-info .comp-title{font-weight:700;font-size:.92rem}
+.competitor-info .comp-publisher{font-size:.8rem;color:var(--text-secondary)}
+.competitor-info .comp-adoptions{font-size:.82rem;font-weight:600;color:var(--zanichelli-blue);margin-top:.2rem}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.swot-box{border-radius:12px;padding:1.2rem}
+.swot-box h4{font-size:.95rem;font-weight:700;margin-bottom:.6rem}
+.swot-box ul{list-style:none;padding:0}
+.swot-box ul li{padding:.3rem 0;font-size:.84rem;padding-left:1.2rem;position:relative}
+.swot-box ul li::before{content:'→';position:absolute;left:0;font-weight:700}
+.swot-strengths{background:#D1FAE5;border:1px solid #6EE7B7}.swot-strengths h4{color:#065F46}
+.swot-weaknesses{background:#FEE2E2;border:1px solid #FCA5A5}.swot-weaknesses h4{color:#991B1B}
+.swot-opportunities{background:#DBEAFE;border:1px solid #93C5FD}.swot-opportunities h4{color:#1E40AF}
+.swot-threats{background:#FEF3C7;border:1px solid #FCD34D}.swot-threats h4{color:#92400E}
+.collapsible{background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.collapsible-header{padding:16px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:.95rem;color:var(--zanichelli-blue);user-select:none;transition:background .2s}
+.collapsible-header:hover{background:#F0F4FF}
+.collapsible-header .arrow{transition:transform .3s;font-size:12px}
+.collapsible.open .collapsible-header .arrow{transform:rotate(180deg)}
+.collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.collapsible.open .collapsible-body{max-height:15000px}
+.cc{padding:0 22px 20px;font-size:.88rem;line-height:1.75;color:var(--text-primary)}
+.cc p{margin-bottom:10px}.cc ul{margin:8px 0 12px 18px}.cc ul li{margin-bottom:5px}
+.cc strong{color:var(--zanichelli-blue)}.cc h4{color:var(--zanichelli-light);margin:16px 0 8px;font-size:.95rem;font-weight:600}
+.spec-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:14px 0}
+.spec-table th{background:var(--zanichelli-blue);color:#fff;padding:8px 10px;text-align:left;font-size:.78rem}
+.spec-table td{padding:8px 10px;border-bottom:1px solid var(--border-color);vertical-align:top}
+.spec-table tr:hover{background:#F8FAFC}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:600;margin:1px}
+.tag-a{background:#D1FAE5;color:#065F46}.tag-m{background:#FEF3C7;color:#92400E}.tag-b{background:#FEE2E2;color:#991B1B}
+.pill-list{display:flex;flex-wrap:wrap;gap:.5rem}
+.pill{padding:.35rem .85rem;border-radius:20px;font-size:.78rem;font-weight:600}
+.id-card{background:var(--bg-card);border-radius:14px;border:2px solid var(--zanichelli-blue);padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow-md)}
+.id-card.scenario-b{border-color:var(--zanichelli-accent)}
+.id-card-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:2px dashed var(--border-color)}
+.id-card-header .id-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}
+.id-card-header h3{font-size:1.05rem;font-weight:700}
+.id-card-header p{font-size:.82rem;color:var(--text-secondary)}
+.id-section{margin-bottom:1rem}
+.id-section h5{font-size:.88rem;font-weight:700;color:var(--zanichelli-blue);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.id-section p,.id-section ul{font-size:.84rem;color:var(--text-secondary);line-height:1.65}
+.id-section ul{margin-left:1.2rem;margin-top:.3rem}.id-section ul li{margin-bottom:.3rem}
+.filter-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{padding:8px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--zanichelli-light)}
+.filter-bar input{width:240px}
+.filter-bar label{font-size:12px;color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.8rem;border-top:1px solid var(--border-color);max-width:1400px;margin:0 auto}
+@media print{.tab-panel{display:block!important}.nav-tabs,.top-toolbar,.filter-bar{display:none!important}.data-table-wrapper{max-height:none!important;overflow:visible!important}.data-table th{position:static!important}body{background:#fff!important}.header{break-after:avoid}.card,.collapsible{box-shadow:none!important;border:1px solid #ccc!important;break-inside:avoid;transform:none!important}.collapsible-body{max-height:none!important;overflow:visible!important}.section,.chart-container,.competitor-card,.swot-grid,.id-card{break-inside:avoid}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr!important}.tab-panel::before{display:block;font-size:1.3rem;font-weight:700;color:var(--zanichelli-blue);border-bottom:3px solid var(--zanichelli-blue);padding-bottom:.5rem;margin-bottom:1.5rem;margin-top:2rem}#panoramica::before{content:'';margin-top:0}#adozioni::before{content:'— MAPPA ADOZIONI —'}#competitor::before{content:'— ANALISI COMPETITOR —'}#contenuti::before{content:'— CONTENUTI & PROGRAMMI —'}#zanichelli::before{content:'— POSIZIONAMENTO ZANICHELLI —'}.badge-zanichelli{background:#E63946!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}tr.zan-row{background:#FFF0F0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.header,.header-kpi,.section-title .icon,.data-table th,.competitor-rank,.swot-box,.highlight-box,.id-card-header .id-icon{-webkit-print-color-adjust:exact;print-color-adjust:exact}.footer{border-top:2px solid #003C82;margin-top:2rem}}
+@media(max-width:768px){.header h1{font-size:1.4rem}.header-kpis{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.nav-tabs{padding:0 1rem}.main-content{padding:.5rem 1rem 2rem}.swot-grid{grid-template-columns:1fr}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ===================== TOOLBAR ===================== -->
+<div class="top-toolbar">
+    <a href="index.html" class="toolbar-btn primary">← Torna alla Dashboard</a>
+    <div class="toolbar-spacer"></div>
+    <span class="toolbar-title">Psicologia dello Sviluppo — L-24</span>
+    <button class="toolbar-btn" onclick="window.print()">🖨️ Stampa / Salva PDF</button>
+</div>
+
+<!-- ===================== HEADER ===================== -->
+<div class="header">
+    <div class="header-content">
+        <div class="header-top">
+            <div class="logo-area">
+                <div class="logo-icon">Z</div>
+                <span class="brand">ZANICHELLI</span>
+            </div>
+            <div class="header-badge">📊 Intelligence Report — Febbraio 2026</div>
+        </div>
+        <h1>Psicologia dello Sviluppo — L-24</h1>
+        <p class="subtitle">Analisi adozioni, competitor, contenuti e posizionamento nei corsi di Scienze e Tecniche Psicologiche</p>
+        <div class="header-kpis">
+            <div class="header-kpi"><div class="kpi-value">51</div><div class="kpi-label">Insegnamenti censiti</div></div>
+            <div class="header-kpi"><div class="kpi-value">~38</div><div class="kpi-label">Atenei coinvolti</div></div>
+            <div class="header-kpi"><div class="kpi-value">2</div><div class="kpi-label">Adozioni Zanichelli</div></div>
+            <div class="header-kpi"><div class="kpi-value">3,9%</div><div class="kpi-label">Quota Zanichelli (Belsky)</div></div>
+            <div class="header-kpi"><div class="kpi-value">~55%</div><div class="kpi-label">McGraw-Hill — Leader dominante</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== NAV TABS ===================== -->
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('panoramica')">Panoramica</button>
+    <button class="nav-tab" onclick="showTab('adozioni')">Mappa Adozioni</button>
+    <button class="nav-tab" onclick="showTab('competitor')">Competitor</button>
+    <button class="nav-tab" onclick="showTab('contenuti')">Contenuti & Programmi</button>
+    <button class="nav-tab" onclick="showTab('zanichelli')">Posizionamento Zanichelli</button>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div class="main-content">
+
+<!-- ALERT ANALISI PONDERATA -->
+<div style="background:linear-gradient(135deg,#003865 0%,#0066B3 100%);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <div style="color:#fff;font-size:13.5px;line-height:1.6">
+    <strong style="font-size:14px">⚖️ Analisi Ponderata disponibile</strong><br>
+    <span style="opacity:.85">Le quote di mercato di questa materia pesate per numero di studenti effettivi sono ora consultabili nella dashboard principale.</span>
+  </div>
+  <a href="index.html?section=ponderata&materia=pond-psisvi" style="display:inline-flex;align-items:center;gap:6px;background:#E63946;color:#fff;padding:9px 18px;border-radius:8px;text-decoration:none;font-size:12.5px;font-weight:600;white-space:nowrap">Vai all'Analisi Ponderata →</a>
+</div>
+<!-- FINE ALERT -->
+
+<!-- ==================== TAB 1: PANORAMICA ==================== -->
+<div class="tab-panel active" id="panoramica">
+    <div class="section">
+        <div class="section-title"><div class="icon">📈</div> Quadro di sintesi del mercato</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>McGraw-Hill domina il mercato con ~55% delle cattedre — Zanichelli marginale al 3,9%</h4>
+            <p>Il manuale <strong>Santrock, Deater-Deckard, Lansford & Rollo (McGraw-Hill)</strong> è il testo dominante assoluto con <strong>~22 cattedre</strong> come testo principale, a cui si aggiungono ~4 cattedre con il <strong>Leman, Bremner et al. (McGraw-Hill)</strong> e altre presenze minori, per un totale McGraw-Hill di <strong>~28 cattedre su 51 (~55%)</strong>. Zanichelli è presente con il solo <strong>Belsky, "Psicologia dello sviluppo" (2ª ed. 2020)</strong> in <strong>2 sole cattedre</strong> (Molise e Uninettuno), pari al <strong>3,9%</strong>.</p>
+        </div>
+        <div class="highlight-box alert-box">
+            <h4>⚠️ ALERT STRATEGICO — Doppia mossa McGraw-Hill (Gennaio 2026)</h4>
+            <p>McGraw-Hill ha lanciato simultaneamente due prodotti: la <strong>5ª ed. del Santrock classico</strong> (curatura Rollo) e una <strong>novità assoluta: "Psicologia del ciclo di vita. Un approccio topico"</strong> (1ª ed., Santrock & Baroncelli). Quest'ultimo è la prima traduzione italiana del "A Topical Approach to Life-Span Development" e occupa <strong>esattamente la nicchia del Belsky</strong>: approccio topico + copertura life-span completa + curatura italiana (Baroncelli, Perugia) + capitolo originale italiano su rilevanza professionale + piattaforma Connect. Baroncelli lo ha già adottato a Perugia per LM-85bis. Questa mossa <strong>annulla il principale vantaggio differenziante del Belsky</strong> (l'unico manuale con copertura life-span) e rappresenta la minaccia competitiva più grave per Zanichelli in questo segmento.</p>
+        </div>
+        <div class="grid-4">
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-orange);">McGraw-Hill</div><div class="metric-label">Leader dominante — ~55% (Santrock + Leman + ora anche "Ciclo di vita")</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-green);">Il Mulino</div><div class="metric-label">Secondo — ~16% (Camaioni, Caravita, Macchi Cassia, Berti)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-blue);">Pearson</div><div class="metric-label">Terzo — ~10% (Gillibrand 3ª ed. 2025 + Tambelli)</div></div>
+            <div class="metric-card"><div class="metric-value" style="color:var(--zanichelli-accent);">Zanichelli</div><div class="metric-label">Marginale — 3,9% (Belsky 2ª ed. 2020: 2 cattedre)</div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🏢</div> Market Share Editori</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartMarketShare"></canvas></div></div>
+            <div class="card"><div class="chart-container chart-md"><canvas id="chartEditoreBar"></canvas></div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📅</div> Distribuzione per Semestre</div>
+        <div class="grid-2">
+            <div class="card"><div class="chart-container chart-sm"><canvas id="chartSemestre"></canvas></div></div>
+            <div class="card">
+                <div class="highlight-box">
+                    <h4>Note sulla distribuzione</h4>
+                    <p>Psicologia dello Sviluppo è prevalentemente collocata al <strong>I anno</strong> del percorso L-24, con distribuzione tra I e II semestre abbastanza equilibrata. Una quota significativa di programmi ha semestre non specificato (telematiche con erogazione continua). La maggior parte degli atenei adotta ancora la 4ª ed. Santrock (2021); la 5ª ed. (gen. 2026) e il nuovo "Ciclo di vita" sono appena usciti e il loro impatto sulle adozioni 2026/27 sarà da monitorare.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: MAPPA ADOZIONI ==================== -->
+<div class="tab-panel" id="adozioni">
+    <div class="section">
+        <div class="section-title"><div class="icon">🗺️</div> Adozioni per Ateneo — Dettaglio completo</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="filter-bar">
+                <label>🔍 Cerca:</label>
+                <input type="text" id="searchTable" placeholder="Ateneo, docente, testo..." oninput="filterTable()">
+                <label>Editore:</label>
+                <select id="filterEditore" onchange="filterTable()">
+                    <option value="">Tutti</option>
+                    <option value="Zanichelli">Zanichelli</option>
+                    <option value="McGraw">McGraw-Hill</option>
+                    <option value="Mulino">Il Mulino</option>
+                    <option value="Pearson">Pearson</option>
+                    <option value="UTET">UTET</option>
+                    <option value="Piccin">Piccin</option>
+                    <option value="Carocci">Carocci</option>
+                </select>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="mainTable">
+                    <thead><tr><th onclick="sortTable(0)">Ateneo ↕</th><th>Insegnamento</th><th>Docente</th><th>Sem.</th><th>Testo Principale</th><th>Editore</th></tr></thead>
+                    <tbody>
+<tr><td>Bari</td><td>Psicologia dello sviluppo</td><td>Rosalinda Cassibba</td><td>I</td><td>Vianello, Gini, Lanfranchi — Psicologia dello sviluppo 3ª ed. (2019/2023)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Benevento G. Fortunato</td><td>Fondamenti della psicologia</td><td>Fabrizio Stasolla</td><td>I</td><td>Ligorio, Cacciamani — Psicologia dell'Educazione (Carocci 2013)</td><td><span class="badge badge-car">Carocci</span></td></tr>
+<tr><td>Bergamo</td><td>Psicol. dello sviluppo tipico e atipico</td><td>Elisabetta Conte</td><td>I</td><td>Testi su piattaforma Leganto</td><td><span class="badge badge-alt">Leganto / N.D.</span></td></tr>
+<tr><td>Bergamo</td><td>Psicologia dello sviluppo</td><td>Eleonora Florio</td><td>II</td><td>Testi su piattaforma Leganto</td><td><span class="badge badge-alt">Leganto / N.D.</span></td></tr>
+<tr><td>Bologna</td><td>Psicologia dello sviluppo</td><td>Carlo Tomasetto</td><td>I</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Cagliari</td><td>Psicologia dello sviluppo</td><td>Rachele Fanari</td><td>II</td><td>Vianello, Gini, Lanfranchi — Psicologia dello sviluppo (UTET 2019)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Campania Vanvitelli</td><td>Psicologia dello Sviluppo</td><td>Sebastiano Costa</td><td>II</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Catania</td><td>Psicol. dello sviluppo e dell'educazione 1</td><td>Elena Commodari</td><td>—</td><td>Santrock et al. — Psicologia dello sviluppo (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Catania</td><td>Psicol. dello sviluppo e dell'educazione 2</td><td>Elisabetta Sagone</td><td>—</td><td>Berti, Surian — Fondamenti di psicol. dello sviluppo (Il Mulino 2022)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Catanzaro Magna Graecia</td><td>Fondamenti di psicol. dello sviluppo</td><td>Valeria Verrastro</td><td>I</td><td>Tambelli (a cura di) — Psicologia dello sviluppo (Pearson 2019)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Chieti-Pescara (A-H)</td><td>Psicologia dello sviluppo I</td><td>Mirco Fasolo</td><td>I</td><td>Santrock — Psicologia dello sviluppo (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Chieti-Pescara (I-Z)</td><td>Psicologia dello sviluppo I</td><td>Mariagrazia Zuccarini</td><td>I</td><td>Santrock — Psicologia dello sviluppo (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Enna Kore</td><td>Psicologia dello Sviluppo</td><td>Ugo Pace</td><td>II</td><td>Camaioni, Di Blasio — Psicologia dello Sviluppo (Il Mulino 2007)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Roma LUMSA</td><td>Psicol. dello sviluppo e dell'educazione</td><td>Fiorilli, Angelini</td><td>A</td><td>Leman, Bremner, Gauvain — Psicol. dello sviluppo 2ª ed. (McGraw-Hill 2019)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Firenze (L-Z)</td><td>Psicologia dello sviluppo</td><td>Annalaura Nocentini</td><td>I</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Firenze (A-K)</td><td>Psicologia dello sviluppo</td><td>Benedetta E. Palladino</td><td>I</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Foggia</td><td>Psicologia dello sviluppo</td><td>Francesco Sulla</td><td>I</td><td>Leman, Bremner, Parke, Gauvain — Psicol. dello sviluppo (McGraw-Hill 2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Genova</td><td>Psicologia dello sviluppo</td><td>Paola Viterbori</td><td>I</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>L'Aquila</td><td>Psicol. dello sviluppo e dell'educazione</td><td>Marco Giancola</td><td>I</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Lecce Salento</td><td>Psicol. dello sviluppo e dell'educazione</td><td>Flavia Lecciso</td><td>I</td><td>Camaioni, Di Blasio — Psicologia dello Sviluppo (Il Mulino 2007)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Messina</td><td>Psicologia dello sviluppo</td><td>Cristina Carrozza</td><td>II</td><td>Santrock — Psicologia dello sviluppo (McGraw-Hill, ultima ed.)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Milano Cattolica (Brescia)</td><td>Psicologia dello sviluppo</td><td>Giordano, Zanchi</td><td>—</td><td>Caravita, Milani, Traficante — Psicol. dello sviluppo (Il Mulino 2018)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Milano Cattolica (Milano)</td><td>Psicologia dello sviluppo</td><td>Miragoli, Traficante</td><td>—</td><td>Caravita, Milani, Traficante — Psicol. dello sviluppo (Il Mulino 2018)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Milano San Raffaele</td><td>Fondamenti di psicol. dello sviluppo</td><td>Valentina A. Tobia</td><td>II</td><td>Testi su piattaforma Leganto</td><td><span class="badge badge-alt">Leganto / N.D.</span></td></tr>
+<tr><td>Milano Statale</td><td>Psicologia dello sviluppo</td><td>Emanuele Stochino</td><td>I</td><td>Gillibrand, Lam, O'Donnell — Psicol. dello sviluppo 2ª ed. (Pearson 2019)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Milano-Bicocca</td><td>Psicologia dello Sviluppo</td><td>Claudia Caprin</td><td>—</td><td>Macchi Cassia et al. — Lo sviluppo della mente umana (Il Mulino 2012)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Milano-Bicocca</td><td>Psicologia dello Sviluppo - 1</td><td>Viola Macchi</td><td>—</td><td>Macchi Cassia et al. — Lo sviluppo della mente umana (Il Mulino 2012)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Modena e Reggio Emilia</td><td>Psicologia dello sviluppo</td><td>Elisa Bisagno</td><td>II</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr class="zan-row"><td><strong>Molise</strong></td><td>Psicologia dello sviluppo</td><td>Francesca Baralla</td><td>II</td><td>Belsky, Janet — Psicologia dello sviluppo 2ª ed. (Zanichelli 2020)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Molise</td><td>Psicologia dello sviluppo cognitivo</td><td>Angela Di Burra</td><td>I</td><td>Macchi Cassia et al. — Lo sviluppo della mente umana (Il Mulino 2012)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Napoli Federico II (1)</td><td>Psicol. dello sviluppo: teorie e metodi</td><td>Dario Bacchini</td><td>II</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Napoli Federico II (2)</td><td>Psicol. dello sviluppo: teorie e metodi</td><td>Concetta Esposito</td><td>II</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Padova (Sc. Tecn.)</td><td>Psicologia dello sviluppo</td><td>Silvia Lanfranchi</td><td>II</td><td>Vianello et al. — Psicologia dello sviluppo 3ª ed. (UTET 2019)</td><td><span class="badge badge-utet">UTET</span></td></tr>
+<tr><td>Padova (Sviluppo-Pers.)</td><td>Psicologia dello sviluppo</td><td>Irene Leo</td><td>I</td><td>O'Donnell — Psicologia dello sviluppo 2ª ed. (Pearson 2019)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Padova (Cogn.-Psicobiol.)</td><td>Psicologia dello sviluppo</td><td>Marco Lunghi</td><td>II</td><td>Macchi Cassia et al. — Lo sviluppo della mente umana (Il Mulino 2012)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Padova (Sviluppo-Pers. 2)</td><td>Psicologia dello sviluppo</td><td>Ughetta Moscardino</td><td>I</td><td>Santrock — Psicologia dello sviluppo 4ª ed. (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Padova (Soc. e Lavoro)</td><td>Psicologia dello sviluppo</td><td>Sara Santilli</td><td>I</td><td>Leman et al. — Psicologia dello sviluppo 2ª ed. (McGraw-Hill/Connect 2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Palermo (1)</td><td>Psicologia dello sviluppo</td><td>Ambra Gentile</td><td>I</td><td>Santrock et al. — Psicologia dello sviluppo (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Palermo (2)</td><td>Psicol. dello Sviluppo — Modelli e Tecniche</td><td>Inguglia, Gentile</td><td>II</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Parma</td><td>Psicologia dello sviluppo</td><td>Ada Cigala</td><td>II</td><td>Santrock et al. — Psicologia dello sviluppo (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Pavia</td><td>Psicologia dello sviluppo</td><td>Serena Maria Stagnitto</td><td>I</td><td>Gillibrand, Lam, O'Donnell — Psicol. dello sviluppo (Pearson 2019)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Perugia (Mod. II)</td><td>Psicologia dell'educazione</td><td>Aurora Vecchini</td><td>—</td><td>Santrock, Roehring — Psicologia dell'educazione (McGraw-Hill 2025)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Perugia (Mod. I)</td><td>Psicologia dello sviluppo</td><td>Aurora Vecchini</td><td>—</td><td>Santrock et al. — Psicologia dello sviluppo (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Pisa</td><td>Psicologia dello sviluppo</td><td>Martina Smorti</td><td>I</td><td>Casalini — Psicol. dello sviluppo nel ciclo di vita (Hogrefe 2023)</td><td><span class="badge badge-alt">Hogrefe</span></td></tr>
+<tr><td>Roma Marconi</td><td>Psicologia dello sviluppo</td><td>Chiara Riccioni</td><td>—</td><td>Santrock — Psicologia dello sviluppo (McGraw-Hill 2017)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Roma Sapienza (Sc. Tecn.)</td><td>Psicol. dello sviluppo: teorie e metodi</td><td>Bianchi, Lonigro</td><td>II</td><td>Leman et al. — Psicologia dello sviluppo (McGraw-Hill 2023)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Roma Sapienza (Proc. Soc.)</td><td>Psicol. dello sviluppo: teorie e metodi</td><td>Morelli, Di Norcia</td><td>I</td><td>Santrock et al. — Psicologia dello sviluppo 4ª ed. (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Roma Sapienza (Salute)</td><td>Psicol. dello sviluppo: teorie e metodi</td><td>Giampaolo Nicolais</td><td>II</td><td>Shaffer, Kipp — Psicologia dello sviluppo (Piccin 2015)</td><td><span class="badge badge-pic">Piccin</span></td></tr>
+<tr><td>Roma Tor Vergata</td><td>Psicol. dello sviluppo e psicol. dell'educazione</td><td>Nappa, Biuso</td><td>—</td><td>Gillibrand et al. — Psicol. dello sviluppo 2ª ed. (Pearson 2019)</td><td><span class="badge badge-pea">Pearson</span></td></tr>
+<tr><td>Roma Unicusano</td><td>Psicologia dello sviluppo</td><td>Micaela Capobianco</td><td>—</td><td>Materiali didattici a cura del docente</td><td><span class="badge badge-alt">Materiale proprio</span></td></tr>
+<tr class="zan-row"><td><strong>Roma Uninettuno</strong></td><td>Psicologia dello sviluppo</td><td>Anna Silvia Bombi</td><td>—</td><td>Belsky, Janet — Psicologia dello sviluppo (Zanichelli 2020)</td><td><span class="badge badge-zanichelli">Zanichelli</span></td></tr>
+<tr><td>Trento</td><td>Psicologia dello sviluppo</td><td>Luca Surian</td><td>I</td><td>Berti, Bombi — Corso di psicologia dello sviluppo (Il Mulino 2018)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+<tr><td>Trieste</td><td>Psicologia dello sviluppo</td><td>Passolunghi, Pellizzoni</td><td>A</td><td>Non disponibile</td><td><span class="badge badge-alt">N.D.</span></td></tr>
+<tr><td>Urbino</td><td>Psicologia dello sviluppo</td><td>Lucia Ponti</td><td>II</td><td>Santrock — Psicologia dello sviluppo (McGraw-Hill 2021)</td><td><span class="badge badge-mgh">McGraw-Hill</span></td></tr>
+<tr><td>Valle d'Aosta</td><td>Psicologia dello sviluppo</td><td>Elena Cattelino</td><td>I</td><td>Kloep et al. — Lo sviluppo nel ciclo di vita (Il Mulino 2021)</td><td><span class="badge badge-mul">Il Mulino</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Cattedre con presenza Zanichelli</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Solo 2 cattedre con Zanichelli — posizione critica</h4>
+            <p><strong>Molise</strong> (Prof.ssa Baralla): Belsky 2ª ed. (2020) come testo unico.<br>
+            <strong>Roma Uninettuno</strong> (Prof.ssa Bombi): Belsky (2020) come testo principale + Capobianco (Franco Angeli) complementare.<br>
+            <strong>Totale Zanichelli: 2 cattedre su 51 (3,9%).</strong></p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: COMPETITOR ==================== -->
+<div class="tab-panel" id="competitor">
+    <div class="section">
+        <div class="section-title"><div class="icon">⚔️</div> Ranking Manuali per numero di adozioni</div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">1</div><div class="competitor-info"><div class="comp-title">Santrock, Deater-Deckard, Lansford & Rollo — <em>Psicologia dello sviluppo</em></div><div class="comp-publisher">McGraw-Hill — 4ª ed. 2021 → 5ª ed. gennaio 2026</div><div class="comp-adoptions">~22 cattedre — Bologna, Campania, Catania, Chieti ×2, Firenze ×2, Genova, L'Aquila, Messina, Modena, Napoli ×2, Padova, Palermo ×2, Parma, Perugia, Roma Marconi, Roma Sapienza, Urbino, Valle d'Aosta</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-green);">2</div><div class="competitor-info"><div class="comp-title">Il Mulino — Vari titoli (Camaioni, Caravita, Macchi Cassia, Berti-Bombi, Kloep)</div><div class="comp-publisher">Il Mulino — edizioni 2007-2022</div><div class="comp-adoptions">~9 cattedre — Catania 2, Enna, Lecce, Milano Cattolica ×2, Milano-Bicocca ×2, Molise (cogn.), Padova (cogn.), Trento, Valle d'Aosta</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#F97316;">3</div><div class="competitor-info"><div class="comp-title">Leman, Bremner, Parke & Gauvain — <em>Psicologia dello sviluppo</em></div><div class="comp-publisher">McGraw-Hill — 2ª ed. 2023</div><div class="comp-adoptions">~4 cattedre — Foggia, Roma LUMSA, Roma Sapienza (Sc.Tecn.), Padova (Soc.Lavoro)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#3B82F6;">4</div><div class="competitor-info"><div class="comp-title">Gillibrand, Lam, O'Donnell — <em>Psicologia dello sviluppo</em></div><div class="comp-publisher">Pearson — 2ª ed. 2019 → 3ª ed. novembre 2025</div><div class="comp-adoptions">~4 cattedre — Milano Statale, Pavia, Padova (Svil.-Pers.), Roma Tor Vergata</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:#64748B;">5</div><div class="competitor-info"><div class="comp-title">Vianello, Gini, Lanfranchi — <em>Psicologia dello sviluppo</em></div><div class="comp-publisher">UTET — 3ª ed. 2019</div><div class="comp-adoptions">~3 cattedre — Bari, Cagliari, Padova (Sc.Tecn.)</div></div></div>
+        <div class="competitor-card"><div class="competitor-rank" style="background:var(--zanichelli-accent);">6</div><div class="competitor-info"><div class="comp-title">Belsky, Janet — <em>Psicologia dello sviluppo</em></div><div class="comp-publisher">Zanichelli — 2ª ed. 2020</div><div class="comp-adoptions">2 cattedre — Molise, Roma Uninettuno</div></div></div>
+        <div class="competitor-card" style="border:2px solid #D97706;background:#FFFBEB;"><div class="competitor-rank" style="background:#D97706;">⚡</div><div class="competitor-info"><div class="comp-title">NOVITÀ — Santrock & Baroncelli — <em>Psicologia del ciclo di vita. Un approccio topico</em></div><div class="comp-publisher">McGraw-Hill — 1ª ed. gennaio 2026</div><div class="comp-adoptions">Appena uscito. Già adottato da Baroncelli a Perugia (LM-85bis). Target: corsi life-span e classi L-19/LM-85bis. Minaccia diretta al Belsky (Zanichelli).</div></div></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📚</div> Analisi comparativa dei manuali</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">Santrock et al. — Psicologia dello sviluppo 5ª ed. (McGraw-Hill 2026) — LEADER<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Manuale <strong>dominante assoluto</strong> (~43% come testo unico, ~55% con Leman). La 5ª edizione (gennaio 2026) è appena uscita con aggiornamenti su sfide contemporanee, dispositivi digitali, inclusione scolastica e un capitolo sulla scuola reintrodotto.</p>
+                <h4>Punti di forza</h4>
+                <p><strong>Organizzazione topica</strong> perfettamente allineata al modello dominante nei corsi L-24. <strong>Curatura italiana</strong> di Dolores Rollo (Parma). <strong>Piattaforma Connect</strong> con risorse digitali. 5 edizioni = fidelizzazione decennale. La 5ª ed. include nuovi contenuti su dispositivi digitali e inclusione.</p>
+                <h4>Punti di debolezza</h4>
+                <p>Concentrato su infanzia-adolescenza; debole sulla prospettiva life-span (adulti, invecchiamento). Estensione (15 cap., ~600 pp.) eccessiva per 6-8 CFU. Prospettiva prevalentemente americana nonostante la curatura.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">⚡ NOVITÀ — Santrock & Baroncelli — Psicologia del ciclo di vita (McGraw-Hill 2026)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>È la <strong>mossa strategica più rilevante</strong> nel mercato della Psicologia dello Sviluppo per il 2026. Prima traduzione italiana del "A Topical Approach to Life-Span Development" di Santrock. 14 capitoli, struttura topica, copertura dell'intero ciclo di vita.</p>
+                <h4>Perché è un prodotto diverso dal Santrock 5ª ed.</h4>
+                <p>Il Santrock classico (5ª ed.) è organizzato per domini con focus infanzia-adolescenza. Il "Ciclo di vita" mantiene l'approccio topico ma estende la copertura a <strong>tutto l'arco dell'esistenza</strong> — esattamente come fa il Belsky (Zanichelli). Include un capitolo 14 originale ("A chi e a cosa serve lo studio dello sviluppo nel ciclo di vita?") con riflessione sulle implicazioni cliniche, educative e sociali — un contenuto assente sia nel Santrock classico che nel Belsky.</p>
+                <h4>Il curatore: Andrea Baroncelli (Perugia)</h4>
+                <p>Professore associato M-PSI/04 a Perugia, dove tiene corsi in L-24, LM e LM-85bis. Ha <strong>già adottato il testo</strong> per il suo corso di Psicologia dello Sviluppo in Scienze della Formazione Primaria 2025/26. Il suo profilo (sviluppo tipico/atipico, fattori di rischio/protezione, BES) è perfettamente allineato ai temi emergenti nei programmi.</p>
+                <h4>Impatto competitivo per Zanichelli</h4>
+                <p>Questo prodotto <strong>neutralizza il principale vantaggio del Belsky</strong>: essere l'unico manuale con copertura life-span e approccio topico. Ora McGraw-Hill offre la stessa cosa con il brand Santrock, un curatore italiano, la piattaforma Connect e un prezzo competitivo. Il target naturale del "Ciclo di vita" sono proprio i docenti che finora sceglievano il Belsky (o il Kloep) per la prospettiva life-span, e le classi L-19/LM-85bis dove la copertura dell'intero arco di vita è più richiesta. <strong>Rischio concreto: perdita delle 2 cattedre Zanichelli</strong> se Baralla (Molise) e Bombi (Uninettuno) valutano la migrazione.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Leman, Bremner, Parke & Gauvain — Psicologia dello sviluppo (McGraw-Hill)<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Secondo manuale McGraw-Hill, adottato a Foggia, LUMSA, Sapienza (Sc.Tecn.) e Padova. La 2ª ed. (2023) è più recente della 4ª Santrock.</p>
+                <h4>Punti di forza</h4>
+                <p>Aggiornamento recente. Struttura per domini con sezione life-span. Buona integrazione ricerche italiane/internazionali.</p>
+                <h4>Punti di debolezza</h4>
+                <p>Minor riconoscibilità rispetto al Santrock. Convive nella stessa scuderia, creando cannibalizzazione interna.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Titoli Il Mulino — Camaioni, Caravita, Macchi Cassia, Berti-Bombi, Kloep<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Secondo editore per quota complessiva (~16%) ma con <strong>portafoglio frammentato</strong> di almeno 5 titoli diversi.</p>
+                <h4>Punti di forza</h4>
+                <p><strong>Autori italiani riconosciuti.</strong> Macchi Cassia per l'approccio neurocostruttivista (Bicocca, Padova). Diversificazione per nicchie (Caravita per l'educazione, Kloep per il ciclo di vita, Berti-Bombi per i fondamenti).</p>
+                <h4>Punti di debolezza</h4>
+                <p>Frammentazione. Camaioni-Di Blasio (2007) gravemente datato. Macchi Cassia (2012) necessita aggiornamento. Nessuna piattaforma digitale competitiva.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Gillibrand, Lam, O'Donnell — Psicologia dello sviluppo (Pearson) — 3ª ed. 2025<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Adottato a Milano Statale, Pavia, Padova e Roma Tor Vergata. La <strong>3ª edizione è uscita a novembre 2025</strong>.</p>
+                <h4>Punti di forza</h4>
+                <p>Approccio europeo. Piattaforma MyLab. Aggiornamento recentissimo (nov. 2025). Curatura Tallandini.</p>
+                <h4>Punti di debolezza</h4>
+                <p>Quota ancora bassa (~8%). Minor riconoscibilità rispetto al Santrock.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">Belsky, Janet — Psicologia dello sviluppo (Zanichelli) — 2ª ed. 2020<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>Solo 2 cattedre (Molise, Uninettuno). Posizione critica.</p>
+                <h4>Punti di forza</h4>
+                <p>Approccio narrativo centrato sulla persona — unico. Copertura life-span completa. Sensibilità interculturale. Visione ecologica dei sistemi evolutivi. Brand Zanichelli.</p>
+                <h4>Punti di debolezza</h4>
+                <p>Solo 2 cattedre. Nessun autore/curatore italiano. 2ª ed. 2020 già datata. Struttura cronologica poco allineata al modello topico dominante. Risorse digitali limitate. Nessuna sezione su sviluppo atipico/BES. <strong>Il vantaggio life-span è ora neutralizzato dal Santrock & Baroncelli "Ciclo di vita" (McGraw-Hill 2026).</strong></p>
+            </div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: CONTENUTI & PROGRAMMI ==================== -->
+<div class="tab-panel" id="contenuti">
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Nucleo Minimo di Contenuti (presenza >90%)</div>
+        <div class="grid-3">
+            <div class="card" style="border-left:4px solid var(--zanichelli-blue);"><h4 style="color:var(--zanichelli-blue);margin-bottom:.5rem;">Epistemologia & Metodologia</h4><p style="font-size:.85rem;color:var(--text-secondary);">Definizione della disciplina, dibattiti classici (natura vs cultura, continuità vs discontinuità), metodi di ricerca longitudinali e trasversali, osservazione scientifica.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-green);"><h4 style="color:var(--zanichelli-green);margin-bottom:.5rem;">Teorie Classiche dello Sviluppo</h4><p style="font-size:.85rem;color:var(--text-secondary);">Piaget, Vygotskij, Bruner, apprendimento sociale (Bandura), elaborazione delle informazioni (HIP). Presenti in tutti i programmi come base fondamentale.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-orange);"><h4 style="color:var(--zanichelli-orange);margin-bottom:.5rem;">Sviluppo Linguistico-Comunicativo</h4><p style="font-size:.85rem;color:var(--text-secondary);">Tappe dell'acquisizione del linguaggio, comunicazione prelinguistica, sviluppo lessicale e sintattico.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-accent);"><h4 style="color:var(--zanichelli-accent);margin-bottom:.5rem;">Attaccamento & Sviluppo Emotivo</h4><p style="font-size:.85rem;color:var(--text-secondary);">Teoria di Bowlby e Ainsworth, modelli operativi interni, competenza emotiva, regolazione delle emozioni.</p></div>
+            <div class="card" style="border-left:4px solid var(--zanichelli-purple);"><h4 style="color:var(--zanichelli-purple);margin-bottom:.5rem;">Sviluppo Cognitivo</h4><p style="font-size:.85rem;color:var(--text-secondary);">Stadi piagetiani, memoria, attenzione, funzioni esecutive, pensiero e intelligenza nel bambino.</p></div>
+            <div class="card" style="border-left:4px solid #264653;"><h4 style="color:#264653;margin-bottom:.5rem;">Contesti di Sviluppo</h4><p style="font-size:.85rem;color:var(--text-secondary);">Ruolo della famiglia, del gruppo dei pari e della scuola nel determinare le traiettorie evolutive.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📑</div> Nucleo Esteso (presenza 50-70%)</div>
+        <div class="card">
+            <div class="pill-list">
+                <span class="pill" style="background:#DBEAFE;color:#1E40AF;">Sviluppo prenatale e neonato</span>
+                <span class="pill" style="background:#D1FAE5;color:#065F46;">Adolescenza e identità</span>
+                <span class="pill" style="background:#FEF3C7;color:#92400E;">Teoria della Mente (ToM)</span>
+                <span class="pill" style="background:#EDE9FE;color:#5B21B6;">Sviluppo morale</span>
+                <span class="pill" style="background:#FEE2E2;color:#991B1B;">Sviluppo tipico vs atipico</span>
+                <span class="pill" style="background:#E0F2FE;color:#075985;">Psicologia scolastica / BES</span>
+                <span class="pill" style="background:#FCE7F3;color:#9D174D;">Bullismo e cyberbullismo</span>
+                <span class="pill" style="background:#F0FDF4;color:#166534;">Prospettiva life-span</span>
+                <span class="pill" style="background:#FFF7ED;color:#9A3412;">Metodologia osservativa</span>
+                <span class="pill" style="background:#F5F3FF;color:#6D28D9;">Comportamenti prosociali</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">🔬</div> Specificità, Variazioni e Approfondimenti</div>
+        <div class="collapsible open">
+            <div class="collapsible-header" onclick="toggleC(this)">1. Specificità e Variazioni tematiche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Sviluppo Atipico e Disabilità:</strong> Moduli specifici a Bergamo ("Psicologia dello sviluppo tipico e atipico"), Catania, Palermo, Roma Marconi, Unicusano. A Benevento casi clinici su autismo, ADHD, sindrome di Rett.</p>
+                <p><strong>Bullismo e Cyberbullismo:</strong> Approfondimento alla Sapienza, Catania 2, L'Aquila, Roma Tor Vergata.</p>
+                <p><strong>Prospettiva del Ciclo di Vita (Life-span):</strong> Campania Vanvitelli, Messina, Pavia, Valle d'Aosta. Il Belsky (Zanichelli) e il nuovo Santrock-Baroncelli "Ciclo di vita" (McGraw-Hill 2026) sono i manuali più allineati.</p>
+                <p><strong>Applicazioni Clinico-Riabilitative:</strong> Benevento (Toilet Training, Sindrome di Rett, AAC).</p>
+                <p><strong>Analisi dei Dati e Ricerca:</strong> Bologna, Foggia, Roma Sapienza.</p>
+                <p><strong>Variazioni di CFU:</strong> Da 6 CFU (Pisa, Perugia) a 12 CFU (Bergamo, Foggia, Salento, Roma Marconi).</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">2. Prospettive / Scuole Teoriche<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <table class="spec-table">
+                    <thead><tr><th>Prospettiva</th><th>Presenza</th><th>Modalità</th><th>Note</th></tr></thead>
+                    <tbody>
+                        <tr><td>Costruttivismo (Piaget)</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Base fondamentale in quasi tutti i programmi</td></tr>
+                        <tr><td>Socio-culturale (Vygotskij/Bruner)</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Ruolo del contesto e del linguaggio</td></tr>
+                        <tr><td>Attaccamento (Bowlby/Ainsworth)</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Sviluppo emotivo-relazionale</td></tr>
+                        <tr><td>Cognitivismo / HIP</td><td><span class="tag tag-a">Alta</span></td><td>Esplicita</td><td>Memoria, attenzione, funzioni esecutive</td></tr>
+                        <tr><td>Ecologico-Sistemica (Bronfenbrenner)</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Contesti di sviluppo</td></tr>
+                        <tr><td>Psicoanalisi (Freud/Erikson)</td><td><span class="tag tag-m">Media</span></td><td>Esplicita/Implicita</td><td>~50% dei corsi, sviluppo psicosociale</td></tr>
+                        <tr><td>Etologia / Biologica</td><td><span class="tag tag-m">Media</span></td><td>Esplicita</td><td>Fattori innati, riflessi</td></tr>
+                        <tr><td>Neurocostruttivismo</td><td><span class="tag tag-b">Bassa</span></td><td>Esplicita</td><td>Bicocca, Molise — focus cognitivo/atipico</td></tr>
+                    </tbody>
+                </table>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">3. Modelli di Strutturazione del Corso<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p><strong>Modello Topico/Tematico (più diffuso, ~60%):</strong> Per aree funzionali (cognizione, linguaggio, emozioni). Bari, Bologna, Campania, Firenze, Genova, Napoli, Palermo e tutti i corsi Santrock.</p>
+                <p><strong>Modello Cronologico (~20%):</strong> Fasi della vita dal concepimento alla vecchiaia. Roma Marconi, Enna Kore, corsi Belsky e Kloep.</p>
+                <p><strong>Modello Modulare/Integrato (~20%):</strong> Parte istituzionale + parte speciale/metodologica. Genova, Parma, Roma Sapienza, Valle d'Aosta, corsi da 12 CFU.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">4. Sviluppo Tipico e Atipico — Mappatura<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <h4>Atenei con trattazione esplicita</h4>
+                <p>Bergamo (titolo del corso), Bologna, Firenze, Foggia, Molise (Di Burra), Padova (Moscardino), Palermo, Perugia, Pisa, Roma Marconi, Unicusano, Urbino.</p>
+                <h4>Atenei con concetti correlati</h4>
+                <p>Benevento (modulo Sviluppo Atipico), Bari, Catania (neurosviluppo, BES), Pavia, Milano Cattolica (resilienza), LUMSA (BES), Sapienza-Bianchi.</p>
+                <h4>Focus prevalente sullo sviluppo normativo</h4>
+                <p>Cagliari, Milano Statale, Milano-Bicocca, Parma.</p>
+            </div></div>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-header" onclick="toggleC(this)">5. Limiti dell'Analisi<span class="arrow">▼</span></div>
+            <div class="collapsible-body"><div class="cc">
+                <p>L'analisi risente della disomogeneità informativa dei sillabi. Ambiguità tra "Psicologia dello Sviluppo" e "Psicologia dell'Educazione" spesso trattate come blocco unico. Dati CFU non uniformi. Programma di Trieste non reperibile. I programmi riflettono l'A.A. 2024/2025 e non incorporano ancora le novità editoriali di gennaio 2026 (Santrock 5ª ed. e "Ciclo di vita").</p>
+            </div></div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="section-title"><div class="icon">📊</div> Prospettive Teoriche — Diffusione nei programmi</div>
+        <div class="card"><div class="chart-container chart-md"><canvas id="chartTeorie"></canvas></div></div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: POSIZIONAMENTO ZANICHELLI ==================== -->
+<div class="tab-panel" id="zanichelli">
+    <div class="section">
+        <div class="section-title"><div class="icon">🔴</div> Situazione attuale — Belsky, "Psicologia dello sviluppo"</div>
+        <div class="highlight-box zanichelli-highlight">
+            <h4>Zanichelli è marginale con 2 cattedre (3,9%) — e la situazione è in peggioramento</h4>
+            <p>Il <strong>Belsky (2ª ed. 2020)</strong> è adottato solo al <strong>Molise</strong> e a <strong>Roma Uninettuno</strong>. Il suo unico vantaggio differenziante (copertura life-span) è stato <strong>neutralizzato</strong> dal lancio del <strong>Santrock & Baroncelli "Psicologia del ciclo di vita" (McGraw-Hill, gennaio 2026)</strong>, che offre lo stesso approccio topico-life-span ma con brand Santrock, curatore italiano, piattaforma Connect e capitolo originale sulle implicazioni professionali. Il rischio è non solo di non crescere, ma di <strong>perdere anche le 2 cattedre attuali</strong>.</p>
+        </div>
+        <div class="highlight-box alert-box">
+            <h4>⚠️ La strategia McGraw-Hill a doppio binario</h4>
+            <p>McGraw-Hill ha lanciato simultaneamente:<br>
+            <strong>1) Santrock 5ª ed. (Rollo):</strong> Per i corsi L-24 classici, focus infanzia-adolescenza, struttura topica.<br>
+            <strong>2) Santrock & Baroncelli "Ciclo di vita":</strong> Per i corsi life-span, L-19, LM-85bis e i docenti che cercavano un'alternativa al Santrock classico.<br>
+            Questa strategia copre l'intero spettro della domanda: chi vuole il manuale tradizionale ha la 5ª ed., chi vuole la prospettiva life-span ha il "Ciclo di vita". Zanichelli non ha un prodotto competitivo in nessuno dei due segmenti.</p>
+        </div>
+        <div class="swot-grid">
+            <div class="swot-box swot-strengths">
+                <h4>✅ Punti di Forza</h4>
+                <ul>
+                    <li>Approccio narrativo centrato sulla persona — stilisticamente unico</li>
+                    <li>Forte sensibilità interculturale e prospettiva globale</li>
+                    <li>Visione ecologica dei sistemi evolutivi integrata</li>
+                    <li>Brand Zanichelli riconosciuto in ambito accademico</li>
+                    <li>Stile accessibile e coinvolgente per studenti del I anno</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-weaknesses">
+                <h4>⚠️ Punti di Debolezza</h4>
+                <ul>
+                    <li>Solo 2 cattedre su 51 — quota del 3,9%</li>
+                    <li>Nessun autore/curatore italiano</li>
+                    <li>2ª ed. 2020 — datata vs Santrock 5ª ed. (2026) e Gillibrand 3ª ed. (2025)</li>
+                    <li>Vantaggio life-span neutralizzato dal Santrock-Baroncelli "Ciclo di vita"</li>
+                    <li>Struttura cronologica poco allineata al modello topico (~60% dei corsi)</li>
+                    <li>Risorse digitali inadeguate vs Connect e MyLab</li>
+                    <li>Assenza sezioni su sviluppo atipico, DSA, BES</li>
+                    <li>Nessuna presenza in grandi atenei</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-opportunities">
+                <h4>🚀 Opportunità</h4>
+                <ul>
+                    <li>Atenei con manuali molto datati: Camaioni 2007 (Enna, Salento), Macchi Cassia 2012 (Bicocca ×2, Padova, Molise), Shaffer 2015 (Sapienza)</li>
+                    <li>Atenei senza testo: Bergamo ×2, San Raffaele, Trieste, Unicusano</li>
+                    <li>Saturazione McGraw-Hill: alcuni docenti cercano attivamente alternative al monopolio Santrock</li>
+                    <li>Nicchia "autori italiani": un nuovo manuale Zanichelli italiano competerebbe con Il Mulino su un terreno dove McGraw-Hill è debole</li>
+                    <li>Cross-selling: atenei dove Zanichelli è già presente con Schacter (Psicol. Generale)</li>
+                </ul>
+            </div>
+            <div class="swot-box swot-threats">
+                <h4>🔶 Minacce</h4>
+                <ul>
+                    <li>Santrock-Baroncelli "Ciclo di vita" (gen. 2026) — neutralizza il vantaggio Belsky</li>
+                    <li>Santrock 5ª ed. (gen. 2026) — consolida il dominio sul segmento classico</li>
+                    <li>Gillibrand 3ª ed. (nov. 2025) — Pearson in crescita</li>
+                    <li>Connect e MyLab come barriere digitali</li>
+                    <li>Inerzia accademica: Santrock adottato da un decennio</li>
+                    <li>Il Mulino con autori italiani radicati in atenei chiave</li>
+                    <li>Rischio concreto di perdere le 2 cattedre se il Belsky non viene rinnovato</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">📋</div> Carta d'Identità del Manuale — Doppio Scenario</div>
+
+        <div class="id-card">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-blue);">📘</div>
+                <div>
+                    <h3>Scenario 1 — Evoluzione del Belsky (3ª edizione italiana)</h3>
+                    <p>Come dovrebbe essere la prossima edizione — urgenza elevata</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>📌 Il problema strutturale (aggravato dal "Ciclo di vita" McGraw-Hill)</h5>
+                <p>Il Belsky era l'unico manuale con approccio life-span e sensibilità interculturale. Con l'uscita del Santrock-Baroncelli "Ciclo di vita", questo posizionamento non è più esclusivo. Il Belsky deve ora differenziarsi su altri assi: l'approccio narrativo centrato sulla persona, la sensibilità interculturale, la visione ecologica. Ma soprattutto deve <strong>colmare i gap strutturali</strong> che ne hanno impedito la diffusione in 6 anni (2020-2026).</p>
+            </div>
+            <div class="id-section">
+                <h5>🔧 Interventi prioritari per la 3ª edizione</h5>
+                <ul>
+                    <li><strong>Curatura italiana autorevole:</strong> Coinvolgere un/a docente di M-PSI/04 come curatore — condizione necessaria, non negoziabile. Idealmente da un ateneo dove il Belsky non è adottato, per creare un effetto "ambasciatore"</li>
+                    <li><strong>Doppia organizzazione topica + cronologica:</strong> Ristrutturare con "percorsi di lettura" flessibili che permettano sia l'uso topico che cronologico — il Belsky diventa competitivo sia con il Santrock classico che con il "Ciclo di vita"</li>
+                    <li><strong>Capitolo su sviluppo atipico e BES:</strong> Tema presente in >50% dei programmi e assente nel Belsky</li>
+                    <li><strong>Capitolo su implicazioni professionali:</strong> Per competere con il cap. 14 originale del Santrock-Baroncelli</li>
+                    <li><strong>Aggiornamento dispositivi digitali, genitorialità contemporanea, epigenetica</strong></li>
+                    <li><strong>Piattaforma digitale competitiva</strong> con quiz adattivi, video, flashcard</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>⏰ Urgenza e tempistica</h5>
+                <p>La finestra per agire è stretta. Se il Santrock-Baroncelli "Ciclo di vita" conquista le sedi life-span nel 2026/27, il Belsky resterà senza mercato. Una 3ª edizione dovrebbe uscire <strong>entro l'A.A. 2027/2028</strong> per avere una chance. Con una 3ª edizione rinnovata, l'obiettivo realistico è passare da 2 a 4-6 cattedre (8-12%), aggredendo atenei con manuali datati e sedi senza testo dichiarato.</p>
+            </div>
+        </div>
+
+        <div class="id-card scenario-b">
+            <div class="id-card-header">
+                <div class="id-icon" style="background:var(--zanichelli-accent);">📕</div>
+                <div>
+                    <h3>Scenario 2 — Nuovo manuale italiano (alternativa strategica)</h3>
+                    <p>Un testo che competa dove McGraw-Hill è strutturalmente debole</p>
+                </div>
+            </div>
+            <div class="id-section">
+                <h5>🎯 Logica strategica ridefinita</h5>
+                <p>Con la doppia mossa McGraw-Hill (Santrock 5ª ed. + Ciclo di vita), competere frontalmente con manuali tradotti è sempre più difficile. La vera lacuna del mercato è un <strong>manuale italiano di riferimento</strong> con struttura topica moderna: Il Mulino ha autori italiani ma testi frammentati e datati; UTET ha un buon manuale ma una rete debole. Un <strong>manuale Zanichelli scritto da un team italiano di eccellenza</strong> potrebbe intercettare la domanda di "autenticità italiana" che i manuali tradotti non soddisfano. La strategia non è più "competere con il Santrock" ma "offrire l'alternativa italiana al Santrock".</p>
+            </div>
+            <div class="id-section">
+                <h5>📌 Posizionamento differenziante</h5>
+                <ul>
+                    <li><strong>Autori italiani riconosciuti:</strong> Il vantaggio che né Santrock né Gillibrand possono avere. Contesto normativo italiano (BES, inclusione, 0-6), dati ISTAT, ricerche italiane come contenuto nativo</li>
+                    <li><strong>Struttura topica flessibile:</strong> Per domini con percorsi personalizzabili per 6, 8 e 12 CFU</li>
+                    <li><strong>Sviluppo tipico e atipico integrati:</strong> In ogni capitolo, non come appendice</li>
+                    <li><strong>Life-span autentico:</strong> Non una traduzione americana "adattata", ma una trattazione radicata nella realtà demografica e sociale italiana</li>
+                    <li><strong>Piattaforma digitale nativa:</strong> Non un adattamento, ma un prodotto carta+digitale progettato insieme</li>
+                </ul>
+            </div>
+            <div class="id-section">
+                <h5>👥 Profilo autori</h5>
+                <p>Team di 3-4 autori italiani con competenze complementari: sviluppo cognitivo (area Bicocca/Padova), sviluppo socio-emotivo (area Roma/Napoli), metodologia osservativa (area Bologna/Firenze), sviluppo atipico (area Bergamo/Trento). Coinvolgere ricercatori attivi in atenei chiave dove McGraw-Hill domina per creare un "effetto troiano".</p>
+            </div>
+            <div class="id-section">
+                <h5>📐 Formato e tempistica</h5>
+                <p>~450-500 pp. con versione essenziale ~300 pp. Piattaforma digitale nativa. Uscita ideale: A.A. 2028/2029. Target: posizionarsi come "il manuale italiano di psicologia dello sviluppo" — la scelta naturale per chi non vuole un testo tradotto.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">🎯</div> Atenei Target — Priorità di intervento</div>
+        <div class="card" style="padding:.5rem;">
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Priorità</th><th>Ateneo</th><th>Situazione attuale</th><th>Perché è un target</th><th>Azione suggerita</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">DIFESA</span></td><td>Molise (Baralla)</td><td>Belsky 2ª ed. (2020)</td><td>Rischio migrazione verso Santrock-Baroncelli "Ciclo di vita"</td><td>Contatto immediato; anticipazione 3ª edizione; risorse aggiuntive</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">DIFESA</span></td><td>Roma Uninettuno (Bombi)</td><td>Belsky 2ª ed. (2020)</td><td>Bombi è co-autrice del Berti-Bombi (Il Mulino) — rischio doppio</td><td>Consolidare rapporto; esplorare coinvolgimento come consulente 3ª ed.</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>Enna Kore</td><td>Camaioni (Il Mulino, 2007)</td><td>Manuale datato 19 anni; alta probabilità di cambio</td><td>Visita con copia saggio Belsky; evidenziare life-span vs Camaioni</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>Lecce Salento</td><td>Camaioni (Il Mulino, 2007)</td><td>Stesso manuale datato; Zanichelli già presente con Schacter</td><td>Cross-selling: pacchetto Schacter + Belsky</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>Roma Sapienza (Salute)</td><td>Shaffer-Kipp (Piccin, 2015)</td><td>Testo 2015; Zanichelli già alla Sapienza con Schacter</td><td>Contatto Nicolais; confronto Belsky vs Shaffer</td></tr>
+<tr><td><span class="badge" style="background:#FEE2E2;color:#991B1B;">ALTA</span></td><td>Bergamo (×2)</td><td>Leganto — nessun testo</td><td>Finestra completamente aperta su 2 cattedre</td><td>Contatto Conte e Florio; copia saggio + demo</td></tr>
+<tr><td><span class="badge" style="background:#FFEDD5;color:#9A3412;">MEDIA</span></td><td>Milano San Raffaele</td><td>Leganto — nessun testo</td><td>Nessun testo visibile; ateneo prestigioso</td><td>Contatto Tobia; copia saggio</td></tr>
+<tr><td><span class="badge" style="background:#FFEDD5;color:#9A3412;">MEDIA</span></td><td>Trieste</td><td>Non disponibile</td><td>Programma non reperibile</td><td>Contatto Passolunghi, Pellizzoni</td></tr>
+<tr><td><span class="badge" style="background:#FFEDD5;color:#9A3412;">MEDIA</span></td><td>Pisa</td><td>Casalini (Hogrefe, 2023)</td><td>Editore di nicchia</td><td>Contatto esplorativo Smorti</td></tr>
+<tr><td><span class="badge" style="background:#FFEDD5;color:#9A3412;">MEDIA</span></td><td>Roma Marconi</td><td>Santrock (McGraw-Hill, 2017)</td><td>Edizione vecchia 2017; telematica permeabile</td><td>Proporre Belsky life-span per utenza adulta</td></tr>
+<tr><td><span class="badge" style="background:#DBEAFE;color:#1E40AF;">DEVELOP</span></td><td>Milano-Bicocca (×2)</td><td>Macchi Cassia (Il Mulino, 2012)</td><td>Testo 2012; ma la docente è co-autrice</td><td>Target Scenario 2; possibile coinvolgimento autoriale</td></tr>
+<tr><td><span class="badge" style="background:#DBEAFE;color:#1E40AF;">DEVELOP</span></td><td>Padova (5 cattedre)</td><td>Mix editori — frammentazione</td><td>Ateneo strategico; frammentazione = opportunità</td><td>Lungo termine; target Scenario 2</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><div class="icon">⚡</div> Quick Win e Azioni Immediate</div>
+        <div class="highlight-box" style="border-left-color:#D97706;background:linear-gradient(135deg,#FEF3C7,#FFFBEB);">
+            <h4>🚨 Azione urgente: difendere le 2 cattedre Zanichelli</h4>
+            <p>La priorità assoluta è evitare la perdita di Molise e Uninettuno. Il Santrock-Baroncelli "Ciclo di vita" è un'alternativa diretta per questi docenti.<br>
+            <strong>Molise (Prof.ssa Baralla):</strong> Contatto immediato per conferma adozione. Comunicare l'intenzione di aggiornare il Belsky. Inviare risorse digitali aggiuntive.<br>
+            <strong>Roma Uninettuno (Prof.ssa Bombi):</strong> Anna Silvia Bombi è co-autrice del Berti-Bombi (Il Mulino, usato a Trento). Consolidare il rapporto; esplorare un possibile coinvolgimento come consulente per la 3ª edizione Belsky o per il nuovo manuale italiano (Scenario 2).</p>
+        </div>
+        <div class="highlight-box">
+            <h4>Monitoraggio prioritario — A.A. 2026/2027</h4>
+            <p>Monitorare attentamente l'impatto del Santrock-Baroncelli "Ciclo di vita" sulle adozioni del prossimo anno accademico. Verificare se Baroncelli lo adotta anche per i corsi L-24 a Perugia (attualmente usa il Santrock classico). Se il "Ciclo di vita" conquista 3-5 cattedre nel 2026/27, la posizione del Belsky diventa insostenibile e si deve accelerare sullo Scenario 2 (nuovo manuale italiano).</p>
+        </div>
+    </div>
+</div>
+
+</div><!-- /main-content -->
+
+<!-- ===================== FOOTER ===================== -->
+<div class="footer">
+    <p>Zanichelli Editore — Intelligence Report Psicologia dello Sviluppo L-24 | Febbraio 2026 | Dati raccolti da syllabi accademici A.A. 2024-2026</p>
+    <p style="margin-top:.3rem;">Dashboard generata per uso interno — Promozione Editoriale Universitaria</p>
+</div>
+
+<!-- ===================== CHARTS ===================== -->
+<script>
+const ZB='#003C82',ZL='#0068C8',ZA='#E63946',ZG='#2A9D8F',ZO='#F4A261',ZGo='#E9C46A',ZP='#7B2D8E';
+
+new Chart(document.getElementById('chartMarketShare'),{
+    type:'doughnut',
+    data:{labels:['McGraw-Hill (Santrock+Leman+altri)','Il Mulino (Camaioni+Caravita+Macchi Cassia+Berti+Kloep)','Pearson (Gillibrand/O\'Donnell+Tambelli)','UTET (Vianello)','Zanichelli (Belsky)','Piccin (Shaffer-Kipp)','Altro / N.D.'],
+        datasets:[{data:[28,9,5,3,2,1,3],backgroundColor:['#F97316',ZG,'#3B82F6','#64748B',ZA,'#8B5CF6','#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},padding:10}},title:{display:true,text:'Distribuzione adozioni per editore (51 insegnamenti)',font:{size:14,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartEditoreBar'),{
+    type:'bar',
+    data:{labels:['McGraw-Hill','Il Mulino','Pearson','UTET','Zanichelli','Piccin','Altro/N.D.'],
+        datasets:[{label:'N° adozioni',data:[28,9,5,3,2,1,3],backgroundColor:['#F97316',ZG,'#3B82F6','#64748B',ZA,'#8B5CF6','#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'N° cattedre per editore',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,grid:{color:'#EDF2F7'}},y:{grid:{display:false}}}}
+});
+
+new Chart(document.getElementById('chartSemestre'),{
+    type:'pie',
+    data:{labels:['I Semestre','II Semestre','Annuale','Non specificato'],
+        datasets:[{data:[20,16,2,13],backgroundColor:[ZB,ZG,ZO,'#CBD5E0'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}},title:{display:true,text:'Distribuzione per Semestre',font:{size:13,weight:'bold'},color:ZB}}}
+});
+
+new Chart(document.getElementById('chartTeorie'),{
+    type:'bar',
+    data:{labels:['Costruttivismo (Piaget)','Socio-culturale (Vygotskij/Bruner)','Attaccamento (Bowlby/Ainsworth)','Cognitivismo / HIP','Ecologico-Sistemica (Bronfenbrenner)','Psicoanalisi (Freud/Erikson)','Etologia / Biologica','Neurocostruttivismo'],
+        datasets:[{label:'Diffusione nei programmi',data:[95,90,90,85,60,50,45,20],backgroundColor:[ZB,ZL,ZA,ZGo,ZG,ZO,ZP,'#CBD5E0'],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Diffusione prospettive teoriche nei programmi (%)',font:{size:13,weight:'bold'},color:ZB}},scales:{x:{beginAtZero:true,max:100,grid:{color:'#EDF2F7'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false}}}}
+});
+
+function showTab(tabId){
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+}
+function toggleC(h){h.parentElement.classList.toggle('open')}
+function filterTable(){
+    const s=document.getElementById('searchTable').value.toLowerCase();
+    const e=document.getElementById('filterEditore').value.toLowerCase();
+    document.querySelectorAll('#mainTable tbody tr').forEach(r=>{
+        const t=r.textContent.toLowerCase();
+        r.style.display=(!s||t.includes(s))&&(!e||t.includes(e))?'':'none';
+    });
+}
+let sortDir={};
+function sortTable(c){
+    const tb=document.querySelector('#mainTable tbody');
+    const rows=Array.from(tb.querySelectorAll('tr'));
+    sortDir[c]=!sortDir[c];
+    rows.sort((a,b)=>{
+        const at=a.children[c].textContent.trim().toLowerCase();
+        const bt=b.children[c].textContent.trim().toLowerCase();
+        return sortDir[c]?at.localeCompare(bt):bt.localeCompare(at);
+    });
+    rows.forEach(r=>tb.appendChild(r));
+}
+</script>
+</body>
+</html>
