@@ -996,7 +996,7 @@ document.addEventListener('input', updateProgress);
 function handleSubmit(e) {
   e.preventDefault();
 
-  var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwlUFcQbf2VJYqS-ecFP3HTBv3Pl_8hys12pCrira90smSUtDpyyr-kr5OpWOfnY2gFdA/exec';
+  var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwriQT2SlyKCPclMeenMWGbA-P9G6lMPvYxAubVjLjIM8Lkl9dGehF9Ec3qNYOqUo9zrQ/exec';
 
   // Mostra indicatore
   var submitBtn = document.querySelector('.btn-submit');
@@ -1024,49 +1024,64 @@ function handleSubmit(e) {
     }
   }
 
-  // ===== NUOVO BLOCCO: nomi leggibili per argomenti =====
+  // ===== Raccogli argomenti con nomi leggibili =====
   var materiaKey = data['materia'] || '';
-  if (materiaKey && DB[materiaKey]) {
-    var argList = DB[materiaKey].argomenti;
-    var argLeggibili = [];
-    for (var key in data) {
-      if (key.indexOf('arg_') === 0) {
-        var parts = key.split('_');
-        var idx = parseInt(parts[parts.length - 1]);
-        var nomeLeggibile = (argList && argList[idx]) ? argList[idx] : key;
-        argLeggibili.push(nomeLeggibile + ': ' + data[key]);
-        delete data[key];
-      }
-    }
-    if (argLeggibili.length > 0) {
-      data['argomenti_materia'] = argLeggibili.join(' | ');
-    }
-  }
+  var argLeggibili = [];
+  var argKeys = [];
+  var domLeggibili = [];
+  var domKeys = [];
 
-  // ===== NUOVO BLOCCO: nomi leggibili per domande manuale =====
-  var manualeKey = data['manuale'] || '';
-  if (materiaKey && manualeKey && DB[materiaKey] && DB[materiaKey].domande_specifiche && DB[materiaKey].domande_specifiche[manualeKey]) {
-    var domande = DB[materiaKey].domande_specifiche[manualeKey].questions;
-    var domLeggibili = [];
-    for (var key in data) {
-      if (/^(ps_|pc_|pg_|ac_|pso_|pm_|sg_|altro_)/.test(key)) {
-        var labelTrovata = key;
-        for (var i = 0; i < domande.length; i++) {
-          if (domande[i].name === key) {
-            labelTrovata = domande[i].label;
+  // Prima passa: identifica e raccogli
+  var allKeys = Object.keys(data);
+  for (var i = 0; i < allKeys.length; i++) {
+    var k = allKeys[i];
+    
+    // Argomenti Likert (arg_*)
+    if (k.indexOf('arg_') === 0) {
+      argKeys.push(k);
+      var parts = k.split('_');
+      var idx = parseInt(parts[parts.length - 1]);
+      var nomeLeggibile = k;
+      if (materiaKey && DB[materiaKey] && DB[materiaKey].argomenti && DB[materiaKey].argomenti[idx]) {
+        nomeLeggibile = DB[materiaKey].argomenti[idx];
+      }
+      argLeggibili.push(nomeLeggibile + ': ' + data[k]);
+    }
+    
+    // Domande specifiche manuale
+    if (/^(ps_|pc_|pg_|ac_|pso_|pm_|sg_|altro_)/.test(k)) {
+      domKeys.push(k);
+      var labelTrovata = k;
+      var manualeKey = data['manuale'] || '';
+      if (materiaKey && manualeKey && DB[materiaKey] && DB[materiaKey].domande_specifiche && DB[materiaKey].domande_specifiche[manualeKey]) {
+        var domande = DB[materiaKey].domande_specifiche[manualeKey].questions;
+        for (var j = 0; j < domande.length; j++) {
+          if (domande[j].name === k) {
+            labelTrovata = domande[j].label;
             break;
           }
         }
-        domLeggibili.push(labelTrovata + ': ' + data[key]);
-        delete data[key];
       }
-    }
-    if (domLeggibili.length > 0) {
-      data['domande_manuale'] = domLeggibili.join(' | ');
+      domLeggibili.push(labelTrovata + ': ' + data[k]);
     }
   }
 
-  // ===== FINE NUOVO BLOCCO =====
+  // Seconda passa: rimuovi i campi tecnici
+  for (var i = 0; i < argKeys.length; i++) { delete data[argKeys[i]]; }
+  for (var i = 0; i < domKeys.length; i++) { delete data[domKeys[i]]; }
+
+  // Aggiungi i campi leggibili
+  if (argLeggibili.length > 0) {
+    data['argomenti_materia'] = argLeggibili.join(' | ');
+  }
+  if (domLeggibili.length > 0) {
+    data['domande_manuale'] = domLeggibili.join(' | ');
+  }
+
+  // ===== Debug: mostra in console prima di inviare =====
+  console.log('Dati da inviare:', data);
+  console.log('argomenti_materia:', data['argomenti_materia']);
+  console.log('domande_manuale:', data['domande_manuale']);
 
   // Crea form nascosto e invia
   var hiddenForm = document.createElement('form');
@@ -1074,11 +1089,12 @@ function handleSubmit(e) {
   hiddenForm.action = GOOGLE_SCRIPT_URL;
   hiddenForm.style.display = 'none';
 
-  for (var key in data) {
+  var dataKeys = Object.keys(data);
+  for (var i = 0; i < dataKeys.length; i++) {
     var input = document.createElement('input');
     input.type = 'hidden';
-    input.name = key;
-    input.value = data[key];
+    input.name = dataKeys[i];
+    input.value = data[dataKeys[i]];
     hiddenForm.appendChild(input);
   }
 
