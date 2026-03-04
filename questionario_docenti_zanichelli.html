@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionario Docenti — Zanichelli Università</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#003865;--blue-light:#0057b8;--red:#E63946;--green:#2A9D8F;--orange:#F4A261;--purple:#7C3AED;
+  --bg:#f5f7fa;--card:#ffffff;--border:#dee2e6;--text:#212529;--text-light:#6c757d;--radius:14px;
+  --shadow:0 4px 24px rgba(0,60,130,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+
+.header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-light) 100%);color:#fff;padding:48px 24px 36px;text-align:center}
+.header h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.header .subtitle{opacity:.88;font-size:1rem;max-width:720px;margin:0 auto 16px}
+.header .badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.badge-l24{background:var(--red);color:#fff}
+.badge-l19{background:var(--green);color:#fff}
+.badge-lm85{background:var(--purple);color:#fff}
+.badge-ed{background:rgba(255,255,255,.2);color:#fff}
+
+.intro-bar{max-width:860px;margin:-24px auto 0;position:relative;z-index:10;background:var(--card);border-radius:var(--radius);padding:24px 28px;box-shadow:var(--shadow);border-left:5px solid var(--blue)}
+.intro-bar h3{color:var(--blue);font-size:1rem;margin-bottom:8px}
+.intro-bar p{font-size:.9rem;color:var(--text-light);line-height:1.7}
+
+.form-wrap{max-width:860px;margin:32px auto;padding:0 16px 60px}
+
+.section{background:var(--card);border-radius:var(--radius);padding:28px 28px 24px;margin-bottom:24px;box-shadow:var(--shadow)}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:.85rem;margin-right:10px}
+.section h2{display:flex;align-items:center;font-size:1.1rem;font-weight:700;color:var(--blue);margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #e8f0fe}
+
+label.q-label{display:block;font-weight:600;font-size:.92rem;margin-bottom:6px;color:var(--text)}
+label.q-label .q-num{color:var(--blue);margin-right:4px}
+.q-hint{font-size:.8rem;color:var(--text-light);margin-bottom:10px}
+.q-group{margin-bottom:22px}
+
+select,input[type="text"],input[type="email"],input[type="number"],textarea{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit;background:#fff;transition:border .2s}
+select:focus,input:focus,textarea:focus{border-color:var(--blue);outline:none}
+textarea{resize:vertical;min-height:80px}
+
+.option-list{list-style:none;padding:0}
+.option-list li{margin-bottom:8px}
+.option-list label{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;cursor:pointer;padding:8px 12px;border-radius:8px;transition:background .15s}
+.option-list label:hover{background:#f0f4ff}
+.option-list input[type="radio"],.option-list input[type="checkbox"]{margin-top:3px;accent-color:var(--blue)}
+
+.scale-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.scale-row .scale-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.scale-row .scale-item label{font-size:.75rem;color:var(--text-light);text-align:center;max-width:80px}
+.scale-row input[type="radio"]{accent-color:var(--blue)}
+
+.likert-table{width:100%;border-collapse:collapse;font-size:.84rem;margin-bottom:8px}
+.likert-table th{background:var(--blue);color:#fff;padding:8px 6px;text-align:center;font-weight:600;font-size:.75rem}
+.likert-table th:first-child{text-align:left;min-width:200px}
+.likert-table td{padding:8px 6px;border-bottom:1px solid #eee;text-align:center}
+.likert-table td:first-child{text-align:left;font-weight:500}
+.likert-table tr:hover{background:#f8faff}
+.likert-table input[type="radio"]{accent-color:var(--blue)}
+
+.conditional{display:none;margin-top:16px;padding:20px;background:#f8faff;border-radius:10px;border:1px dashed var(--blue)}
+.conditional.visible{display:block}
+.conditional h3{font-size:.95rem;color:var(--blue);margin-bottom:14px;font-weight:700}
+.manual-tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:.72rem;font-weight:700;background:#ffe0e4;color:var(--red);margin-left:6px}
+
+.submit-row{text-align:center;margin-top:8px}
+.btn-submit{background:var(--blue);color:#fff;border:none;padding:14px 48px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s}
+.btn-submit:hover{background:var(--blue-light)}
+
+.footer{text-align:center;padding:24px;color:var(--text-light);font-size:.78rem}
+
+.progress-bar{max-width:860px;margin:16px auto 0;padding:0 16px}
+.progress-track{background:#e0e4ea;border-radius:6px;height:6px;overflow:hidden}
+.progress-fill{background:linear-gradient(90deg,var(--blue),var(--blue-light));height:100%;width:0%;transition:width .4s ease;border-radius:6px}
+.progress-text{font-size:.72rem;color:var(--text-light);text-align:right;margin-top:4px}
+
+.highlight-box{margin-top:20px;padding:20px;background:linear-gradient(135deg,#f0f4ff,#f8faff);border-radius:10px;border:2px solid var(--blue)}
+.highlight-box label.q-label{font-size:1rem}
+
+@media(max-width:600px){
+  .header h1{font-size:1.4rem}
+  .section{padding:20px 16px}
+  .likert-table{font-size:.72rem}
+  .likert-table th,.likert-table td{padding:6px 3px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>Questionario Docenti Universitari</h1>
+  <p class="subtitle">Indagine sulle esigenze didattiche e le adozioni di manuali nei corsi L-24, L-19 e LM-85bis</p>
+  <div class="badges">
+    <span class="badge badge-l24">L-24 Scienze e Tecniche Psicologiche</span>
+    <span class="badge badge-l19">L-19 Scienze dell'Educazione</span>
+    <span class="badge badge-lm85">LM-85bis Formazione Primaria</span>
+    <span class="badge badge-ed">Direzione Editoriale Zanichelli</span>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText">Sezione 1 di 6</div>
+</div>
+
+<!-- INTRO -->
+<div class="intro-bar">
+  <h3>Perché questo questionario</h3>
+  <p>Gentile Docente, Zanichelli sta conducendo un'indagine sulle esigenze didattiche nei corsi di laurea L-24, L-19 e LM-85bis, con l'obiettivo di migliorare la propria offerta editoriale. Le sue risposte — anonime e trattate in forma aggregata — ci aiuteranno a comprendere i bisogni reali della didattica. Il tempo stimato è di <strong>8-12 minuti</strong>. Il questionario si adatta automaticamente alla sua materia e al manuale adottato. La ringraziamo per la collaborazione.</p>
+</div>
+
+<!-- FORM -->
+<div class="form-wrap">
+<form id="questionario" onsubmit="return handleSubmit(event)">
+
+<!-- ═══════════════════ SEZ. 1: PROFILO ═══════════════════ -->
+<div class="section" data-section="1">
+  <h2><span class="section-num">1</span> Profilo dell'insegnamento</h2>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">1.1</span> Classe di laurea in cui insegna</label>
+    <ul class="option-list">
+      <li><label><input type="radio" name="classe" value="L-24" required onchange="onClasseChange()"> L-24 — Scienze e Tecniche Psicologiche</label></li>
+      <li><label><input type="radio" name="classe" value="L-19" onchange="onClasseChange()"> L-19 — Scienze dell'Educazione e della Formazione</label></li>
+      <li><label><input type="radio" name="classe" value="LM-85bis" onchange="onClasseChange()"> LM-85bis — Scienze della Formazione Primaria</label></li>
+      <li><label><input type="radio" name="classe" value="Più classi" onchange="onClasseChange()"> Insegno in più classi di laurea</label></li>
+    </ul>
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">1.2</span> Materia insegnata</label>
+    <p class="q-hint">Selezioni la materia: le domande successive si adatteranno alla sua disciplina.</p>
+    <select name="materia" id="selectMateria" onchange="onMateriaChange()" required>
+      <option value="">Seleziona la materia…</option>
+      <option value="psicologia_sviluppo">Psicologia dello Sviluppo</option>
+      <option value="psicologia_clinica">Psicologia Clinica</option>
+      <option value="psicologia_generale">Psicologia Generale</option>
+      <option value="antropologia_culturale">Antropologia Culturale</option>
+      <option value="psicologia_sociale">Psicologia Sociale</option>
+      <option value="psicometria">Psicometria</option>
+      <option value="sociologia_generale">Sociologia Generale</option>
+    </select>
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">1.3</span> Anno di corso, semestre e CFU</label>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:140px;">
+        <select name="anno"><option value="">Anno…</option><option>1° anno</option><option>2° anno</option><option>3° anno</option><option>4° anno</option><option>5° anno</option></select>
+      </div>
+      <div style="flex:1;min-width:140px;">
+        <select name="semestre"><option value="">Semestre…</option><option>I semestre</option><option>II semestre</option><option>Annuale</option></select>
+      </div>
+      <div style="flex:1;min-width:100px;">
+        <input type="number" name="cfu" placeholder="CFU" min="1" max="18">
+      </div>
+    </div>
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">1.4</span> Numero approssimativo di studenti iscritti al corso</label>
+    <select name="studenti"><option value="">Seleziona…</option><option>Meno di 50</option><option>50-100</option><option>101-200</option><option>201-400</option><option>Più di 400</option></select>
+  </div>
+</div>
+
+<!-- ═══════════════════ SEZ. 2: MANUALE ADOTTATO ═══════════════════ -->
+<div class="section" data-section="2">
+  <h2><span class="section-num">2</span> Manuale attualmente adottato</h2>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">2.1</span> Quale manuale principale adotta per questo insegnamento?</label>
+    <p class="q-hint">La lista si adatta alla materia selezionata. Se il suo testo non è presente, scelga "Altro manuale".</p>
+    <select name="manuale" id="selectManuale" onchange="onManualeChange()" required>
+      <option value="">— Prima selezioni la materia nella sezione 1 —</option>
+    </select>
+  </div>
+
+  <div class="q-group" id="altroManualeWrap" style="display:none">
+    <label class="q-label">Specificare autore, titolo ed editore:</label>
+    <input type="text" name="manuale_altro" placeholder="Es. Autore — Titolo (Editore, anno)">
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">2.2</span> Da quanti anni accademici adotta questo manuale?</label>
+    <select name="anni_adozione"><option value="">Seleziona…</option><option>È la prima adozione (A.A. corrente)</option><option>2-3 anni</option><option>4-5 anni</option><option>Più di 5 anni</option></select>
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">2.3</span> Quanto è complessivamente soddisfatto del manuale?</label>
+    <div class="scale-row">
+      <div class="scale-item"><input type="radio" name="soddisfazione" value="1"><label>1 — Per nulla</label></div>
+      <div class="scale-item"><input type="radio" name="soddisfazione" value="2"><label>2</label></div>
+      <div class="scale-item"><input type="radio" name="soddisfazione" value="3"><label>3</label></div>
+      <div class="scale-item"><input type="radio" name="soddisfazione" value="4"><label>4</label></div>
+      <div class="scale-item"><input type="radio" name="soddisfazione" value="5"><label>5 — Molto</label></div>
+    </div>
+  </div>
+
+  <!-- === CONTAINER DOMANDE SPECIFICHE PER MANUALE === -->
+  <div id="manualeSpecificoContainer"></div>
+
+  <!-- DOMANDA COMUNE -->
+  <div class="q-group" style="margin-top:24px;padding-top:20px;border-top:2px solid #e8f0fe;">
+    <label class="q-label"><span class="q-num">2.9</span> Sta considerando di cambiare manuale nei prossimi 1-2 anni?</label>
+    <ul class="option-list">
+      <li><label><input type="radio" name="cambio" value="si_cerco"> Sì, sto cercando alternative</label></li>
+      <li><label><input type="radio" name="cambio" value="valuto"> Potrei valutare se trovassi qualcosa di migliore</label></li>
+      <li><label><input type="radio" name="cambio" value="no"> No, sono soddisfatto del manuale attuale</label></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════ SEZ. 3: CONTENUTI ═══════════════════ -->
+<div class="section" data-section="3">
+  <h2><span class="section-num">3</span> Contenuti e approccio didattico</h2>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">3.1</span> Quanto sono importanti i seguenti argomenti nel suo insegnamento?</label>
+    <p class="q-hint">1 = Non trattato — 2 = Marginale — 3 = Importante — 4 = Fondamentale. La tabella si adatta alla materia selezionata.</p>
+    <div style="overflow-x:auto" id="argomentiContainer">
+      <p style="color:var(--text-light);font-style:italic;font-size:.88rem">Selezioni prima la materia nella Sezione 1 per visualizzare gli argomenti specifici.</p>
+    </div>
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">3.2</span> Quale approccio strutturale preferisce per un manuale della sua materia?</label>
+    <ul class="option-list" id="approccioList">
+      <li><label><input type="radio" name="approccio" value="sistematico"> Sistematico / enciclopedico (copertura completa)</label></li>
+      <li><label><input type="radio" name="approccio" value="tematico"> Tematico / per problemi</label></li>
+      <li><label><input type="radio" name="approccio" value="misto"> Misto (nucleo teorico + approfondimenti tematici)</label></li>
+      <li><label><input type="radio" name="approccio" value="indifferente"> Indifferente, purché il contenuto sia di qualità</label></li>
+    </ul>
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">3.3</span> Utilizza testi complementari accanto al manuale principale?</label>
+    <ul class="option-list">
+      <li><label><input type="radio" name="complementari" value="no"> No, solo il manuale</label></li>
+      <li><label><input type="radio" name="complementari" value="si_articoli"> Sì, articoli scientifici</label></li>
+      <li><label><input type="radio" name="complementari" value="si_testo"> Sì, un secondo manuale o testo monografico</label></li>
+      <li><label><input type="radio" name="complementari" value="si_dispense"> Sì, dispense e materiali prodotti da me</label></li>
+    </ul>
+  </div>
+
+  <div class="q-group" id="complementariDettaglio" style="display:none">
+    <label class="q-label">Su quali tematiche integra con testi complementari?</label>
+    <textarea name="complementari_temi" placeholder="Es. sviluppo atipico, metodologia della ricerca, casi clinici, etnografie specifiche…"></textarea>
+  </div>
+</div>
+
+<!-- ═══════════════════ SEZ. 4: RISORSE DIGITALI ═══════════════════ -->
+<div class="section" data-section="4">
+  <h2><span class="section-num">4</span> Risorse digitali</h2>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">4.1</span> Quanto sono importanti le risorse digitali collegate al manuale nella sua didattica?</label>
+    <div class="scale-row">
+      <div class="scale-item"><input type="radio" name="digit_import" value="1"><label>1 — Per nulla</label></div>
+      <div class="scale-item"><input type="radio" name="digit_import" value="2"><label>2</label></div>
+      <div class="scale-item"><input type="radio" name="digit_import" value="3"><label>3</label></div>
+      <div class="scale-item"><input type="radio" name="digit_import" value="4"><label>4</label></div>
+      <div class="scale-item"><input type="radio" name="digit_import" value="5"><label>5 — Fondamentali</label></div>
+    </div>
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">4.2</span> Quali risorse digitali utilizza o vorrebbe avere?</label>
+    <ul class="option-list">
+      <li><label><input type="checkbox" name="digit_tipo[]" value="quiz"> Quiz e test di autovalutazione per studenti</label></li>
+      <li><label><input type="checkbox" name="digit_tipo[]" value="slide"> Slide pronte per le lezioni</label></li>
+      <li><label><input type="checkbox" name="digit_tipo[]" value="video"> Video di approfondimento / esperimenti classici</label></li>
+      <li><label><input type="checkbox" name="digit_tipo[]" value="testbank"> Test-bank per esami</label></li>
+      <li><label><input type="checkbox" name="digit_tipo[]" value="ebook"> E-book con funzionalità interattive</label></li>
+      <li><label><input type="checkbox" name="digit_tipo[]" value="piattaforma"> Piattaforma adattiva (tipo Connect, MyLab)</label></li>
+      <li><label><input type="checkbox" name="digit_tipo[]" value="casi"> Casi di studio interattivi / simulazioni</label></li>
+    </ul>
+  </div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">4.3</span> La piattaforma digitale collegata al manuale influenza la sua scelta del testo?</label>
+    <ul class="option-list">
+      <li><label><input type="radio" name="digit_influenza" value="decisiva"> Sì, è un fattore decisivo</label></li>
+      <li><label><input type="radio" name="digit_influenza" value="importante"> È importante ma non determinante</label></li>
+      <li><label><input type="radio" name="digit_influenza" value="irrilevante"> No, scelgo solo in base al contenuto del testo</label></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════ SEZ. 5: MANUALE IDEALE ═══════════════════ -->
+<div class="section" data-section="5">
+  <h2><span class="section-num">5</span> Il manuale ideale</h2>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">5.1</span> Quanto sarebbero importanti le seguenti caratteristiche in un manuale ideale per il suo corso?</label>
+    <p class="q-hint">1 = Irrilevante — 5 = Indispensabile</p>
+    <div style="overflow-x:auto">
+    <table class="likert-table">
+      <thead><tr><th>Caratteristica</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+      <tbody>
+        <tr><td>Orientato al profilo professionale dei miei studenti</td><td><input type="radio" name="id_orientato" value="1"></td><td><input type="radio" name="id_orientato" value="2"></td><td><input type="radio" name="id_orientato" value="3"></td><td><input type="radio" name="id_orientato" value="4"></td><td><input type="radio" name="id_orientato" value="5"></td></tr>
+        <tr><td>Basato su ricerca internazionale aggiornata</td><td><input type="radio" name="id_ricerca" value="1"></td><td><input type="radio" name="id_ricerca" value="2"></td><td><input type="radio" name="id_ricerca" value="3"></td><td><input type="radio" name="id_ricerca" value="4"></td><td><input type="radio" name="id_ricerca" value="5"></td></tr>
+        <tr><td>Casi, esempi e riferimenti normativi del contesto italiano</td><td><input type="radio" name="id_italiano" value="1"></td><td><input type="radio" name="id_italiano" value="2"></td><td><input type="radio" name="id_italiano" value="3"></td><td><input type="radio" name="id_italiano" value="4"></td><td><input type="radio" name="id_italiano" value="5"></td></tr>
+        <tr><td>Strumenti pratici (griglie, schede, protocolli)</td><td><input type="radio" name="id_pratici" value="1"></td><td><input type="radio" name="id_pratici" value="2"></td><td><input type="radio" name="id_pratici" value="3"></td><td><input type="radio" name="id_pratici" value="4"></td><td><input type="radio" name="id_pratici" value="5"></td></tr>
+        <tr><td>Ricca dotazione di risorse digitali</td><td><input type="radio" name="id_digitale" value="1"></td><td><input type="radio" name="id_digitale" value="2"></td><td><input type="radio" name="id_digitale" value="3"></td><td><input type="radio" name="id_digitale" value="4"></td><td><input type="radio" name="id_digitale" value="5"></td></tr>
+        <tr><td>Lunghezza gestibile (350-500 pagine)</td><td><input type="radio" name="id_lunghezza" value="1"></td><td><input type="radio" name="id_lunghezza" value="2"></td><td><input type="radio" name="id_lunghezza" value="3"></td><td><input type="radio" name="id_lunghezza" value="4"></td><td><input type="radio" name="id_lunghezza" value="5"></td></tr>
+        <tr><td>Autore/curatore italiano di riferimento</td><td><input type="radio" name="id_autore_ita" value="1"></td><td><input type="radio" name="id_autore_ita" value="2"></td><td><input type="radio" name="id_autore_ita" value="3"></td><td><input type="radio" name="id_autore_ita" value="4"></td><td><input type="radio" name="id_autore_ita" value="5"></td></tr>
+        <tr><td>Prezzo contenuto / buon rapporto qualità-prezzo</td><td><input type="radio" name="id_prezzo" value="1"></td><td><input type="radio" name="id_prezzo" value="2"></td><td><input type="radio" name="id_prezzo" value="3"></td><td><input type="radio" name="id_prezzo" value="4"></td><td><input type="radio" name="id_prezzo" value="5"></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Box proposta Zanichelli — iniettato dinamicamente -->
+  <div id="propostaZanichelli"></div>
+
+  <div class="q-group">
+    <label class="q-label"><span class="q-num">5.3</span> Quali elementi considera imprescindibili in un manuale per il suo corso?</label>
+    <p class="q-hint">Risposta libera — ci aiuta a capire ciò che davvero conta per lei.</p>
+    <textarea name="imprescindibili" placeholder="Es. chiarezza espositiva, casi italiani, copertura della metodologia, aggiornamento empirico…"></textarea>
+  </div>
+</div>
+
+<!-- ═══════════════════ SEZ. 6: CONTATTO ═══════════════════ -->
+<div class="section" data-section="6">
+  <h2><span class="section-num">6</span> Disponibilità al contatto <span style="font-weight:400;font-size:.82rem;color:var(--text-light)">(facoltativa)</span></h2>
+  <p style="font-size:.88rem;color:var(--text-light);margin-bottom:18px">Se desidera ricevere aggiornamenti sui risultati dell'indagine o essere coinvolto in futuri progetti editoriali, può lasciarci i suoi riferimenti.</p>
+  <div class="q-group"><label class="q-label">Nome e cognome</label><input type="text" name="nome" placeholder="Facoltativo"></div>
+  <div class="q-group"><label class="q-label">Ateneo</label><input type="text" name="ateneo" placeholder="Facoltativo"></div>
+  <div class="q-group"><label class="q-label">E-mail</label><input type="email" name="email" placeholder="Facoltativo"></div>
+  <div class="q-group">
+    <ul class="option-list">
+      <li><label><input type="checkbox" name="consenso_aggiorn" value="si"> Desidero ricevere i risultati aggregati dell'indagine</label></li>
+      <li><label><input type="checkbox" name="consenso_contatto" value="si"> Sono disponibile a essere contattato per un eventuale progetto editoriale</label></li>
+    </ul>
+  </div>
+</div>
+
+<div class="submit-row">
+  <button type="submit" class="btn-submit">Invia le risposte</button>
+  <p style="font-size:.78rem;color:var(--text-light);margin-top:10px">I dati saranno trattati in forma anonima e aggregata ai sensi del GDPR.</p>
+</div>
+
+</form>
+</div>
+
+<div class="footer">
+  <p>Questionario a cura della Direzione Editoriale — Zanichelli editore S.p.A.</p>
+  <p style="margin-top:4px">Per informazioni: direzione.universitaria@zanichelli.it</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT — MOTORE DI RAMIFICAZIONE A 3 LIVELLI
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+// ============================================================
+// DATABASE: MANUALI PER MATERIA (con editore e domande specifiche)
+// ============================================================
+const DB = {
+
+// ──────────────────────────────────────────────
+// PSICOLOGIA DELLO SVILUPPO
+// ──────────────────────────────────────────────
+psicologia_sviluppo: {
+  label: 'Psicologia dello Sviluppo',
+  argomenti: [
+    'Sviluppo cognitivo (Piaget, Vygotskij, neo-piagetiani)',
+    'Sviluppo del linguaggio',
+    'Sviluppo emotivo e regolazione delle emozioni',
+    'Attaccamento e relazioni primarie',
+    'Sviluppo sociale e relazioni tra pari',
+    'Sviluppo morale e prosocialità',
+    'Prerequisiti apprendimento (lettura, scrittura, calcolo)',
+    'Sviluppo atipico, DSA e BES',
+    'Neuroscienze dello sviluppo',
+    'Osservazione del bambino in contesto educativo',
+    'Sviluppo e tecnologia (media, screen-time)',
+    'Contesti familiari (famiglie non tradizionali, migrazione)'
+  ],
+  manuali: [
+    {value:'santrock',label:'Santrock, Deater-Deckard, Lansford & Rollo — Psicologia dello Sviluppo (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'santrock_ciclovita',label:'Santrock & Baroncelli — Psicologia del ciclo di vita (McGraw-Hill 2026)',editore:'McGraw-Hill'},
+    {value:'leman',label:'Leman, Bremner, Parke & Gauvain — Psicologia dello Sviluppo (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'caravita',label:'Caravita, Milani & Traficante — Psic. dello Sviluppo e dell\'Educazione (Il Mulino)',editore:'Il Mulino'},
+    {value:'berti',label:'Berti & Bombi / Berti & Surian — Corso / Fondamenti (Il Mulino)',editore:'Il Mulino'},
+    {value:'camaioni',label:'Camaioni & Di Blasio — Psicologia dello Sviluppo (Il Mulino)',editore:'Il Mulino'},
+    {value:'macchi',label:'Macchi Cassia, Valenza & Simion — Lo sviluppo della mente umana (Il Mulino)',editore:'Il Mulino'},
+    {value:'miller',label:'Miller — Teorie dello sviluppo psicologico (Il Mulino)',editore:'Il Mulino'},
+    {value:'barone',label:'Barone — Manuale di Psicologia dello Sviluppo (Carocci)',editore:'Carocci'},
+    {value:'vianello',label:'Vianello, Gini & Lanfranchi — Psicologia dello Sviluppo (UTET)',editore:'UTET'},
+    {value:'gillibrand',label:'Gillibrand, Lam & O\'Donnell — Psicologia dello Sviluppo (Pearson)',editore:'Pearson'},
+    {value:'tambelli',label:'Tambelli (a cura di) — Psicologia dello Sviluppo (Pearson)',editore:'Pearson'},
+    {value:'shaffer',label:'Shaffer & Kipp — Psicologia dello Sviluppo (Piccin)',editore:'Piccin'},
+    {value:'harris',label:'Harris — Psicologia del bambino (Raffaello Cortina)',editore:'Cortina'},
+    {value:'belsky',label:'Belsky — Psicologia dello Sviluppo (Zanichelli)',editore:'Zanichelli'},
+    {value:'damico',label:'D\'Amico & Piccardi — Psicologia per insegnare (Zanichelli)',editore:'Zanichelli'},
+  ],
+  domande_specifiche: {
+    santrock: {title:'Santrock (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'radio',name:'ps_sant_cronologico',label:'L\'approccio cronologico del Santrock è adeguato per i suoi studenti?',options:['Sì, adeguato e ben strutturato','Parzialmente — alcuni capitoli meno rilevanti','Preferirei un approccio tematico o per domini']},
+      {type:'scale',name:'ps_sant_prospettiva',label:'Il Santrock è pensato per psicologi. Quanto sente la mancanza di una prospettiva per educatori/insegnanti?'},
+      {type:'radio',name:'ps_sant_connect',label:'Utilizza la piattaforma Connect collegata al Santrock?',options:['Sì, attivamente','Sì, ma solo alcune funzionalità','No, non la utilizzo']},
+      {type:'scale',name:'ps_sant_italiano',label:'Quanto è importante avere casi, dati e riferimenti normativi italiani?'}
+    ]},
+    santrock_ciclovita: {title:'Santrock & Baroncelli — Ciclo di vita (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'textarea',name:'ps_ciclo_motivo',label:'Cosa l\'ha spinta a scegliere l\'approccio topico rispetto al cronologico?'},
+      {type:'radio',name:'ps_ciclo_lifespan',label:'La copertura life-span completa è adeguata per il suo corso?',options:['Adeguata','Eccessiva — preferirei un focus sulla fascia 0-11','Dipende dai CFU a disposizione']}
+    ]},
+    leman: {title:'Leman et al. (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'radio',name:'ps_lem_equilibrio',label:'L\'equilibrio tra impianto cronologico e approfondimenti tematici è adeguato?',options:['Sì, mi permette flessibilità','Il testo è troppo generale per insegnanti','Manca di applicazioni concrete al contesto educativo']},
+      {type:'scale',name:'ps_lem_bes',label:'Avverte la mancanza di un focus specifico sullo sviluppo atipico e BES?'}
+    ]},
+    caravita: {title:'Caravita, Milani & Traficante (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'ps_car_orientamento',label:'L\'orientamento educativo del Caravita è il motivo principale della scelta?',options:['Sì, è il motivo principale','Importante ma non l\'unico','Ho scelto per altri motivi']},
+      {type:'radio',name:'ps_car_internaz',label:'La ricerca internazionale è sufficientemente rappresentata?',options:['Sì, bilanciamento buono','Avrei bisogno di più ricerca internazionale','Preferisco un taglio italiano']},
+      {type:'radio',name:'ps_car_digitale',label:'Le risorse digitali di accompagnamento sono sufficienti?',options:['Sì','No, avrei bisogno di più risorse','Non utilizzo risorse digitali del manuale']}
+    ]},
+    berti: {title:'Berti & Bombi / Berti & Surian (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'ps_mul_aggiorn',label:'Ha riscontrato problemi di aggiornamento dei contenuti?',options:['No, i contenuti teorici restano validi','Parzialmente — alcuni capitoli andrebbero aggiornati','Sì, aggiornamento significativo necessario']},
+      {type:'scale',name:'ps_mul_nuovogen',label:'Sarebbe interessato a un manuale che mantenga il rigore italiano ma aggiunga una dimensione applicativa per insegnanti/educatori?'}
+    ]},
+    camaioni: {title:'Camaioni & Di Blasio (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'ps_cam_aggiorn',label:'Il testo risale al 2007. L\'aggiornamento è un problema per il suo corso?',options:['No, i fondamenti restano validi','Parzialmente — integro con materiali aggiornati','Sì, è un problema significativo']},
+      {type:'scale',name:'ps_cam_nuovogen',label:'Quanto sarebbe interessato a un manuale di nuova generazione con taglio applicativo?'}
+    ]},
+    macchi: {title:'Macchi Cassia et al. (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'ps_mac_aggiorn',label:'Il testo (2012) necessita di aggiornamento?',options:['No, solido sulle neuroscienze cognitive','Parzialmente','Sì, significativamente']},
+      {type:'scale',name:'ps_mac_applicativo',label:'Quanto è importante la dimensione applicativa (casi di classe, osservazione)?'}
+    ]},
+    miller: {title:'Miller — Teorie dello sviluppo (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'ps_mil_integraz',label:'Integra il Miller con un manuale più applicativo?',options:['Sì, uso un secondo testo','Sì, con articoli e dispense','No, il Miller è sufficiente']},
+      {type:'scale',name:'ps_mil_applicativo',label:'Quanto sarebbe utile un testo complementare che traduca le teorie in pratica educativa?'}
+    ]},
+    barone: {title:'Barone (Carocci)',tag:'Carocci',questions:[
+      {type:'radio',name:'ps_bar_clinico',label:'Il taglio clinico-evolutivo del Barone è adeguato per studenti L-19/LM-85bis?',options:['Adeguato — anche gli educatori devono conoscere la prospettiva clinica','Parzialmente — alcuni capitoli più pertinenti a L-24','Meno adeguato — preferirei un focus pedagogico']},
+      {type:'textarea',name:'ps_bar_integra',label:'Integra il Barone con altri testi? Su quali tematiche?'}
+    ]},
+    vianello: {title:'Vianello, Gini & Lanfranchi (UTET)',tag:'UTET',questions:[
+      {type:'radio',name:'ps_via_italiano',label:'L\'impronta di ricerca italiana è un valore aggiunto?',options:['Grande valore aggiunto','Positivo, ma vorrei più confronto internazionale','Indifferente — conta la qualità']},
+      {type:'scale',name:'ps_via_applicativa',label:'Quanto conta la dimensione applicativa (casi di classe, strumenti di osservazione)?'}
+    ]},
+    gillibrand: {title:'Gillibrand et al. (Pearson)',tag:'Pearson',questions:[
+      {type:'radio',name:'ps_pea_mylab',label:'Utilizza la piattaforma MyLab collegata al testo?',options:['Sì, attivamente','Sì, parzialmente','No']},
+      {type:'radio',name:'ps_pea_profilo',label:'Il testo è adeguato per il profilo dei suoi studenti?',options:['Sì, adeguato','Parzialmente — è pensato per psicologi','Non del tutto — manca prospettiva educativa']}
+    ]},
+    tambelli: {title:'Tambelli (Pearson)',tag:'Pearson',questions:[
+      {type:'radio',name:'ps_tam_profilo',label:'Il testo è adeguato per il profilo dei suoi studenti?',options:['Sì, adeguato','Parzialmente','Non del tutto']},
+      {type:'scale',name:'ps_tam_atipico',label:'La copertura dello sviluppo atipico è sufficiente?'}
+    ]},
+    belsky: {title:'Belsky (Zanichelli)',tag:'Zanichelli',questions:[
+      {type:'textarea',name:'ps_zan_motivo',label:'Cosa l\'ha spinta a scegliere il Belsky?'},
+      {type:'textarea',name:'ps_zan_miglior',label:'Quali aspetti del testo andrebbero migliorati?'}
+    ]},
+    damico: {title:'D\'Amico & Piccardi (Zanichelli)',tag:'Zanichelli',questions:[
+      {type:'textarea',name:'ps_dam_motivo',label:'Cosa l\'ha spinta a scegliere questo testo?'},
+      {type:'textarea',name:'ps_dam_miglior',label:'Quali aspetti andrebbero migliorati?'}
+    ]},
+  },
+  proposta: '<span class="q-num">5.2</span> Immagini un manuale intitolato <em>"Psicologia dello sviluppo per insegnare"</em> — scritto per formare educatori e insegnanti, con ricerca internazionale, casi italiani, sviluppo tipico e atipico integrati, griglie di osservazione e risorse digitali. Quanto sarebbe interessato?'
+},
+
+// ──────────────────────────────────────────────
+// PSICOLOGIA CLINICA
+// ──────────────────────────────────────────────
+psicologia_clinica: {
+  label: 'Psicologia Clinica',
+  argomenti: [
+    'Fondamenti epistemologici e storia della psicologia clinica',
+    'Diagnosi e assessment (DSM-5-TR, colloquio clinico)',
+    'Psicopatologia speciale (ansia, umore, personalità, schizofrenia)',
+    'Modelli di intervento (CBT, psicodinamico, sistemico)',
+    'Diagnosi funzionale e PDM-2',
+    'Disturbi del neurosviluppo (DSA, ADHD, autismo)',
+    'Neuropsicologia clinica',
+    'Attaccamento e trauma',
+    'Relazione terapeutica e colloquio clinico',
+    'Psicologia clinica nei contesti educativi',
+    'Nuove dipendenze comportamentali',
+    'Telepsicologia e interventi digitali'
+  ],
+  manuali: [
+    {value:'verrocchio',label:'Verrocchio — Manuale di Psicologia Clinica (Piccin 2023)',editore:'Piccin'},
+    {value:'hooley',label:'Hooley & Nock — Psicopatologia e Psicologia Clinica (Pearson)',editore:'Pearson'},
+    {value:'kring',label:'Kring & Johnson — Psicologia Clinica (Zanichelli 6ª ed. 2023)',editore:'Zanichelli'},
+    {value:'occhini',label:'Occhini — Psicologia clinica per insegnare (Zanichelli 2023)',editore:'Zanichelli'},
+    {value:'delcorno',label:'Del Corno & Lang — Elementi di Psicologia Clinica (Franco Angeli)',editore:'Franco Angeli'},
+    {value:'lingiardi',label:'Lingiardi — La personalità e i suoi disturbi (R. Cortina 2024)',editore:'Cortina'},
+    {value:'castonguay',label:'Castonguay & Oltmanns (R. Cortina 2023)',editore:'Cortina'},
+    {value:'sanavio',label:'Sanavio & Cornoldi — Psicologia clinica (Il Mulino)',editore:'Il Mulino'},
+    {value:'comer',label:'Comer — Psicologia clinica (UTET)',editore:'UTET'},
+  ],
+  domande_specifiche: {
+    verrocchio: {title:'Verrocchio (Piccin)',tag:'Piccin',questions:[
+      {type:'radio',name:'pc_ver_ital',label:'L\'impronta italiana del Verrocchio è un vantaggio decisivo rispetto ai manuali tradotti?',options:['Sì, è il motivo principale della scelta','Importante ma non l\'unico','Ho scelto per altri motivi']},
+      {type:'radio',name:'pc_ver_funzionale',label:'La copertura della diagnosi funzionale (PDM-2, meccanismi di difesa) è adeguata?',options:['Sì, adeguata','Potrebbe essere più approfondita','Insufficiente — integro con McWilliams o altri']},
+      {type:'scale',name:'pc_ver_digitale',label:'Quanto sente la mancanza di risorse digitali strutturate (quiz, piattaforma)?'}
+    ]},
+    hooley: {title:'Hooley & Nock (Pearson)',tag:'Pearson',questions:[
+      {type:'radio',name:'pc_hoo_ediz',label:'Quale edizione utilizza?',options:['Edizione 2017','Nuova edizione 2025','Non sono sicuro']},
+      {type:'radio',name:'pc_hoo_clinrel',label:'Sente la mancanza di una componente clinico-relazionale (colloquio, relazione terapeutica)?',options:['Sì, integro con altri testi','Parzialmente','No, il testo è sufficiente']},
+      {type:'scale',name:'pc_hoo_italiano',label:'Quanto è importante avere casi e riferimenti al contesto italiano?'}
+    ]},
+    kring: {title:'Kring & Johnson (Zanichelli)',tag:'Zanichelli',questions:[
+      {type:'textarea',name:'pc_kring_motivo',label:'Cosa l\'ha spinta a scegliere il Kring?'},
+      {type:'radio',name:'pc_kring_pdm',label:'Sente la mancanza di una sezione sulla diagnosi funzionale (PDM-2)?',options:['Sì, sarebbe molto utile','Parzialmente','No, il DSM-5-TR è sufficiente']},
+      {type:'textarea',name:'pc_kring_miglior',label:'Quali aspetti del testo andrebbero migliorati?'}
+    ]},
+    occhini: {title:'Occhini — Psicologia clinica per insegnare (Zanichelli)',tag:'Zanichelli',questions:[
+      {type:'radio',name:'pc_occh_unicita',label:'Il taglio specifico per educatori/insegnanti è stato il fattore decisivo nella scelta?',options:['Sì, non esiste equivalente','Importante ma non l\'unico motivo','Ho scelto per altri motivi']},
+      {type:'radio',name:'pc_occh_ampliare',label:'Quali tematiche andrebbero ampliate in una eventuale 2ª edizione?',options:['Disturbi del neurosviluppo e BES','Prima infanzia (0-3)','Lutto e trauma','Psicologia positiva','Tutte le precedenti']},
+      {type:'textarea',name:'pc_occh_feedback',label:'Ha feedback specifici sull\'Occhini?'}
+    ]},
+    delcorno: {title:'Del Corno & Lang (Franco Angeli)',tag:'Franco Angeli',questions:[
+      {type:'radio',name:'pc_dc_aggiorn',label:'Il testo (2013) necessita di aggiornamento?',options:['Sì, significativamente','Parzialmente','No, è ancora valido']},
+      {type:'scale',name:'pc_dc_alternativa',label:'Quanto sarebbe interessato a un\'alternativa più aggiornata con taglio simile?'}
+    ]},
+    lingiardi: {title:'Lingiardi (R. Cortina)',tag:'Cortina',questions:[
+      {type:'radio',name:'pc_ling_completezza',label:'Il focus sulla personalità è sufficiente come unico testo del corso?',options:['Sì','No, integro con un manuale generalista','No, integro con testi specifici sulla psicopatologia']},
+    ]},
+  },
+  proposta: '<span class="q-num">5.2</span> Immagini un manuale di psicologia clinica che integri diagnosi descrittiva (DSM-5-TR) e funzionale (PDM-2), con colloquio clinico, casi italiani e sezioni specifiche per contesti educativi. Quanto sarebbe interessato?'
+},
+
+// ──────────────────────────────────────────────
+// PSICOLOGIA GENERALE
+// ──────────────────────────────────────────────
+psicologia_generale: {
+  label: 'Psicologia Generale',
+  argomenti: [
+    'Percezione',
+    'Attenzione',
+    'Memoria',
+    'Apprendimento',
+    'Linguaggio e pensiero',
+    'Emozione e motivazione',
+    'Intelligenza',
+    'Coscienza e stati alterati',
+    'Neuroscienze cognitive',
+    'Metodi di ricerca in psicologia',
+    'Storia della psicologia',
+    'Psicologia e contesti educativi'
+  ],
+  manuali: [
+    {value:'holt',label:'Holt et al. — Psicologia Generale (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'feldman',label:'Feldman / Feldman-Amoretti — Psicologia Generale (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'schacter',label:'Schacter, Gilbert, Nock — Psicologia Generale (Zanichelli)',editore:'Zanichelli'},
+    {value:'atkinson',label:'Atkinson & Hilgard — Introduzione alla Psicologia (Piccin)',editore:'Piccin'},
+    {value:'girotto',label:'Girotto & Zorzi — Manuale di Psicologia Generale (Il Mulino)',editore:'Il Mulino'},
+    {value:'anolli',label:'Anolli & Legrenzi — Psicologia Generale (Il Mulino)',editore:'Il Mulino'},
+    {value:'ciccarelli',label:'Ciccarelli & White — Psicologia Generale (Pearson)',editore:'Pearson'},
+    {value:'gerrig',label:'Gerrig, Zimbardo et al. — Psicologia Generale (Pearson)',editore:'Pearson'},
+    {value:'coon',label:'Coon & Mitterer — Psicologia Generale (UTET)',editore:'UTET'},
+    {value:'cherubini',label:'Cherubini et al. — Psicologia Generale (R. Cortina)',editore:'Cortina'},
+    {value:'revlin',label:'Revlin — Psicologia Cognitiva (Zanichelli)',editore:'Zanichelli'},
+    {value:'gray',label:'Gray — Psicologia (Zanichelli)',editore:'Zanichelli'},
+  ],
+  domande_specifiche: {
+    holt: {title:'Holt et al. (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'radio',name:'pg_holt_connect',label:'Utilizza la piattaforma Connect?',options:['Sì, attivamente','Sì, parzialmente','No']},
+      {type:'scale',name:'pg_holt_italiano',label:'Quanto è importante avere riferimenti al contesto italiano?'},
+      {type:'radio',name:'pg_holt_adeguato',label:'Il testo è adeguato al profilo dei suoi studenti?',options:['Perfettamente adeguato','Adeguato ma troppo esteso','Troppo generale per il mio corso']}
+    ]},
+    feldman: {title:'Feldman (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'radio',name:'pg_feld_connect',label:'Utilizza Connect?',options:['Sì, attivamente','Sì, parzialmente','No']},
+      {type:'scale',name:'pg_feld_profondita',label:'La profondità di trattazione è adeguata per il suo corso?'}
+    ]},
+    schacter: {title:'Schacter et al. (Zanichelli)',tag:'Zanichelli',questions:[
+      {type:'textarea',name:'pg_sch_motivo',label:'Cosa l\'ha spinta a scegliere lo Schacter?'},
+      {type:'textarea',name:'pg_sch_miglior',label:'Quali aspetti del testo andrebbero migliorati?'},
+      {type:'scale',name:'pg_sch_digitale',label:'Quanto sono importanti le risorse digitali Zanichelli nel suo uso del testo?'}
+    ]},
+    atkinson: {title:'Atkinson & Hilgard (Piccin)',tag:'Piccin',questions:[
+      {type:'radio',name:'pg_atk_aggiorn',label:'L\'edizione in uso (2017) necessita di aggiornamento?',options:['Sì','Parzialmente','No, resta un classico valido']},
+      {type:'scale',name:'pg_atk_alternativa',label:'Sarebbe interessato a un\'alternativa più recente con risorse digitali?'}
+    ]},
+    girotto: {title:'Girotto & Zorzi (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'pg_gir_taglio',label:'Il taglio cognitivo del Girotto-Zorzi è adeguato per il suo corso?',options:['Perfettamente adeguato','Adeguato ma manca la parte emotivo-motivazionale','Troppo specialistico']},
+    ]},
+  },
+  proposta: '<span class="q-num">5.2</span> Immagini un manuale di psicologia generale progettato specificamente per corsi L-19, con i processi cognitivi collegati ai contesti educativi e risorse digitali avanzate. Quanto sarebbe interessato?'
+},
+
+// ──────────────────────────────────────────────
+// ANTROPOLOGIA CULTURALE
+// ──────────────────────────────────────────────
+antropologia_culturale: {
+  label: 'Antropologia Culturale',
+  argomenti: [
+    'Concetto di cultura (definizione, superamento di "razza")',
+    'Metodologia etnografica e osservazione partecipante',
+    'Etnocentrismo e relativismo culturale',
+    'Storia del pensiero antropologico',
+    'Parentela e famiglia',
+    'Religione e rito',
+    'Antropologia dell\'educazione / schooling',
+    'Migrazioni e transnazionalismo',
+    'Antropologia medica ed etnopsichiatria',
+    'Globalizzazione e post-colonialismo',
+    'Genere e sessualità',
+    'Antropologia dell\'alimentazione'
+  ],
+  manuali: [
+    {value:'dei',label:'Dei — Antropologia culturale (Il Mulino)',editore:'Il Mulino'},
+    {value:'tassan',label:'Tassan — Antropologia per insegnare (Zanichelli 2020)',editore:'Zanichelli'},
+    {value:'schultz',label:'Schultz & Lavenda — Antropologia culturale (Zanichelli 4ª ed. 2021)',editore:'Zanichelli'},
+    {value:'fabietti_zan',label:'Fabietti — Storia dell\'antropologia (Zanichelli 4ª ed. 2020)',editore:'Zanichelli'},
+    {value:'kottak',label:'Kottak — Antropologia Culturale (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'palumbo',label:'Palumbo, Pizza, Schirripa — Antropologia culturale e sociale (Hoepli)',editore:'Hoepli'},
+    {value:'king',label:'King — La riscoperta dell\'umanità (Einaudi)',editore:'Einaudi'},
+    {value:'engelke',label:'Engelke — Pensare come un antropologo (Einaudi)',editore:'Einaudi'},
+    {value:'fabietti_mond',label:'Fabietti — Elementi di antropologia culturale (Mondadori)',editore:'Mondadori'},
+    {value:'robbins',label:'Robbins — Antropologia culturale (UTET)',editore:'UTET'},
+    {value:'biondi',label:'Biondi & Richards — L\'errore della razza (Carocci)',editore:'Carocci'},
+  ],
+  domande_specifiche: {
+    dei: {title:'Dei (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'ac_dei_aggiorn',label:'L\'edizione in uso è sufficientemente aggiornata?',options:['Sì','Parzialmente — mancano temi post-2016','No, attendo la nuova edizione 2026']},
+      {type:'radio',name:'ac_dei_applicativo',label:'Sente la mancanza di un taglio applicativo per educatori/insegnanti?',options:['Sì, molto','Parzialmente','No, il taglio generalista va bene']}
+    ]},
+    tassan: {title:'Tassan — Antropologia per insegnare (Zanichelli)',tag:'Zanichelli',questions:[
+      {type:'radio',name:'ac_tass_unicita',label:'Il taglio specifico per insegnanti è stato decisivo nella scelta?',options:['Sì, unico nel panorama','Importante ma non l\'unico motivo','Ho scelto per altri motivi']},
+      {type:'radio',name:'ac_tass_ampliare',label:'Quali tematiche andrebbero ampliate in una 2ª edizione?',options:['Antropocene e ambiente','Migrazioni post-2020','Didattica digitale e identità online','Childhood studies','Tutte le precedenti']},
+      {type:'textarea',name:'ac_tass_feedback',label:'Ha feedback specifici sul Tassan?'}
+    ]},
+    schultz: {title:'Schultz & Lavenda (Zanichelli)',tag:'Zanichelli',questions:[
+      {type:'textarea',name:'ac_sch_motivo',label:'Cosa l\'ha spinta a scegliere lo Schultz & Lavenda?'},
+      {type:'radio',name:'ac_sch_prezzo',label:'Il prezzo (€55) è un fattore limitante?',options:['Sì, è troppo alto per i miei studenti','Parzialmente','No, il rapporto qualità-prezzo è buono']},
+      {type:'textarea',name:'ac_sch_miglior',label:'Quali aspetti andrebbero migliorati?'}
+    ]},
+    kottak: {title:'Kottak (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'radio',name:'ac_kot_connect',label:'Utilizza Connect?',options:['Sì','Parzialmente','No']},
+      {type:'scale',name:'ac_kot_italiano',label:'Quanto è importante avere casi e riferimenti al contesto italiano?'}
+    ]},
+    palumbo: {title:'Palumbo, Pizza, Schirripa (Hoepli)',tag:'Hoepli',questions:[
+      {type:'radio',name:'ac_pal_taglio',label:'Il taglio critico-contemporaneo è adeguato per i suoi studenti?',options:['Perfettamente adeguato','Adeguato ma mancano alcuni fondamenti','Troppo specialistico']},
+      {type:'scale',name:'ac_pal_digitale',label:'Sente la mancanza di risorse digitali strutturate?'}
+    ]},
+    king: {title:'King — La riscoperta dell\'umanità (Einaudi)',tag:'Einaudi',questions:[
+      {type:'radio',name:'ac_king_completezza',label:'Il King copre tutti i temi del suo programma?',options:['Sì','No, integro con un manuale più sistematico','No, integro con monografie tematiche']},
+    ]},
+  },
+  proposta: '<span class="q-num">5.2</span> Immagini un manuale di antropologia culturale con rigore teorico internazionale e un capitolo dedicato all\'antropologia dell\'educazione e dello schooling per insegnanti. Quanto sarebbe interessato?'
+},
+
+// ──────────────────────────────────────────────
+// PSICOLOGIA SOCIALE
+// ──────────────────────────────────────────────
+psicologia_sociale: {
+  label: 'Psicologia Sociale',
+  argomenti: [
+    'Cognizione sociale (attribuzioni, euristiche, schemi)',
+    'Sé e identità sociale',
+    'Atteggiamenti e persuasione',
+    'Conformismo e influenza sociale',
+    'Stereotipi, pregiudizio e discriminazione',
+    'Dinamiche di gruppo',
+    'Aggressività e comportamento prosociale',
+    'Relazioni interpersonali e attrazione',
+    'Comunicazione e media digitali',
+    'Psicologia di comunità e intervento',
+    'Bullismo e cyberbullismo',
+    'Diversità, genere e inclusione'
+  ],
+  manuali: [
+    {value:'myers',label:'Myers, Twenge, Marta, Pozzi — Psicologia sociale (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'hogg',label:'Hogg & Vaughan — Psicologia sociale (Pearson)',editore:'Pearson'},
+    {value:'andrighetto',label:'Andrighetto & Riva — Psicologia sociale (Il Mulino 2020)',editore:'Il Mulino'},
+    {value:'boca',label:'Boca, Bocchiaro, Scaffidi Abbate — Intro Psicol. Sociale (Il Mulino)',editore:'Il Mulino'},
+    {value:'hewstone',label:'Hewstone, Stroebe, Jonas — Intro alla psicol. sociale (Il Mulino)',editore:'Il Mulino'},
+    {value:'crisp',label:'Crisp & Turner — Psicologia sociale (UTET)',editore:'UTET'},
+    {value:'gattino',label:'Gattino, Miglietta, Converso — Intro psicol. sociale (Carocci 2008)',editore:'Carocci'},
+    {value:'aronson',label:'Aronson, Wilson, Sommers — Psicologia Sociale (Il Mulino)',editore:'Il Mulino'},
+    {value:'kenrick',label:'Kenrick, Neuberg, Cialdini — Psicologia sociale (Pearson)',editore:'Pearson'},
+    {value:'smith_ps',label:'Smith, Mackie & Claypool — Psicologia sociale (Zanichelli)',editore:'Zanichelli'},
+  ],
+  domande_specifiche: {
+    myers: {title:'Myers et al. (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'radio',name:'pso_my_connect',label:'Utilizza Connect?',options:['Sì, attivamente','Sì, parzialmente','No']},
+      {type:'scale',name:'pso_my_italiano',label:'Quanto è importante avere casi e ricerche del contesto italiano?'},
+      {type:'radio',name:'pso_my_profilo',label:'Il taglio generalista del Myers è adeguato per i suoi studenti?',options:['Perfettamente adeguato','Adeguato ma troppo esteso','Preferirei un taglio più applicativo per educatori']}
+    ]},
+    hogg: {title:'Hogg & Vaughan (Pearson)',tag:'Pearson',questions:[
+      {type:'radio',name:'pso_hv_mylab',label:'Utilizza MyLab?',options:['Sì','Parzialmente','No']},
+      {type:'radio',name:'pso_hv_estensione',label:'L\'estensione del testo (~600 pp.) è adeguata ai CFU?',options:['Adeguata','Troppo estesa — devo selezionare capitoli','Troppo sintetica']}
+    ]},
+    gattino: {title:'Gattino et al. (Carocci 2008)',tag:'Carocci',questions:[
+      {type:'radio',name:'pso_gat_aggiorn',label:'Il testo (2008) necessita di aggiornamento?',options:['Sì, significativamente','Parzialmente','No, resta valido']},
+      {type:'scale',name:'pso_gat_alternativa',label:'Sarebbe interessato a un\'alternativa aggiornata con taglio educativo?'}
+    ]},
+    smith_ps: {title:'Smith, Mackie & Claypool (Zanichelli)',tag:'Zanichelli',questions:[
+      {type:'textarea',name:'pso_smith_motivo',label:'Cosa l\'ha spinta a scegliere questo testo?'},
+      {type:'textarea',name:'pso_smith_miglior',label:'Quali aspetti andrebbero migliorati nella prossima edizione?'}
+    ]},
+  },
+  proposta: '<span class="q-num">5.2</span> Immagini un manuale di psicologia sociale con taglio educativo e professionalizzante — casi su bullismo, inclusione, dinamiche di classe, burnout dell\'educatore, con risorse digitali. Quanto sarebbe interessato?'
+},
+
+// ──────────────────────────────────────────────
+// PSICOMETRIA
+// ──────────────────────────────────────────────
+psicometria: {
+  label: 'Psicometria',
+  argomenti: [
+    'Statistica descrittiva (distribuzioni, tendenza centrale, variabilità)',
+    'Probabilità e distribuzioni teoriche',
+    'Inferenza statistica (verifica ipotesi, intervalli di confidenza)',
+    'Correlazione e regressione',
+    'ANOVA e confronti tra gruppi',
+    'Costruzione e validazione di test',
+    'Attendibilità e validità',
+    'Teoria classica dei test (CTT)',
+    'Item Response Theory (IRT)',
+    'Analisi fattoriale',
+    'Metodologia della ricerca (disegni sperimentali)',
+    'Software statistico (R, SPSS, JASP)'
+  ],
+  manuali: [
+    {value:'chiorri',label:'Chiorri — Fondamenti di psicometria (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'aron',label:'Aron, Coups, Aron — Fondamenti di statistica/psicometria (Pearson)',editore:'Pearson'},
+    {value:'ercolani',label:'Ercolani et al. — Statistica per la psicologia (Il Mulino)',editore:'Il Mulino'},
+    {value:'mannarini',label:'Mannarini — Psicometria (Il Mulino)',editore:'Il Mulino'},
+    {value:'primi',label:'Primi & Chiesi — Introduzione alla psicometria (Laterza)',editore:'Laterza'},
+    {value:'barbaranelli',label:'Barbaranelli & Natali — I test psicologici (Carocci)',editore:'Carocci'},
+    {value:'albano',label:'Albano & Testa — Statistica per la ricerca sociale (Carocci)',editore:'Carocci'},
+    {value:'shaughnessy',label:'Shaughnessy — Metodologia della ricerca (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'gallucci',label:'Gallucci et al. — Modelli statistici (Il Mulino/Pearson)',editore:'Pearson'},
+  ],
+  domande_specifiche: {
+    chiorri: {title:'Chiorri (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'radio',name:'pm_chi_ediz',label:'Quale edizione utilizza?',options:['3ª edizione (2020)','4ª edizione (2025)','Teoria e tecnica dei test (2023)']},
+      {type:'radio',name:'pm_chi_connect',label:'Utilizza Connect?',options:['Sì','Parzialmente','No']},
+      {type:'scale',name:'pm_chi_software',label:'Quanto è importante l\'integrazione con software statistico (R, SPSS)?'}
+    ]},
+    aron: {title:'Aron et al. (Pearson)',tag:'Pearson',questions:[
+      {type:'radio',name:'pm_aron_livello',label:'Il livello di trattazione matematica è adeguato?',options:['Troppo semplice','Adeguato','Troppo avanzato']},
+      {type:'radio',name:'pm_aron_mylab',label:'Utilizza MyLab?',options:['Sì','Parzialmente','No']}
+    ]},
+    ercolani: {title:'Ercolani et al. (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'pm_erc_aggiorn',label:'I testi (2001-2008) necessitano di aggiornamento?',options:['Sì, significativamente','Parzialmente','No, i fondamenti restano validi']},
+      {type:'scale',name:'pm_erc_alternativa',label:'Sarebbe interessato a un\'alternativa più moderna e digitale?'}
+    ]},
+  },
+  proposta: '<span class="q-num">5.2</span> Immagini un manuale di psicometria con forte integrazione digitale: esercizi interattivi, dataset scaricabili, ambienti R/JASP online, approccio "open science". Quanto sarebbe interessato?'
+},
+
+// ──────────────────────────────────────────────
+// SOCIOLOGIA GENERALE
+// ──────────────────────────────────────────────
+sociologia_generale: {
+  label: 'Sociologia Generale',
+  argomenti: [
+    'Fondamenti epistemologici (immaginazione sociologica)',
+    'Classici del pensiero (Durkheim, Weber, Marx)',
+    'Cultura, norme e valori',
+    'Socializzazione',
+    'Interazione sociale e gruppi',
+    'Stratificazione e disuguaglianze',
+    'Devianza e controllo sociale',
+    'Famiglia e genere',
+    'Globalizzazione e migrazioni',
+    'Sociologia dell\'educazione',
+    'Sociologia della salute',
+    'Metodologia della ricerca sociale'
+  ],
+  manuali: [
+    {value:'croteau',label:'Croteau & Hoynes — Sociologia generale (McGraw-Hill)',editore:'McGraw-Hill'},
+    {value:'bagnasco',label:'Bagnasco, Barbagli, Cavalli — Corso/Elementi di sociologia (Il Mulino)',editore:'Il Mulino'},
+    {value:'giddens',label:'Giddens & Sutton — Fondamenti di sociologia (Il Mulino)',editore:'Il Mulino'},
+    {value:'smelser',label:'Smelser — Manuale di sociologia (Il Mulino)',editore:'Il Mulino'},
+    {value:'manza',label:'Manza, Arum, Haney — Progetto sociologia (Pearson)',editore:'Pearson'},
+    {value:'gammaitoni',label:'Gammaitoni (a cura di) — La Sociologia (UTET 2025)',editore:'UTET'},
+    {value:'gallino',label:'Gallino/Borgna — Manuale di sociologia (UTET)',editore:'UTET'},
+    {value:'bichi',label:'Bichi — Sociologia (Vita e Pensiero)',editore:'Vita e Pensiero'},
+    {value:'jedlowski',label:'Jedlowski — Il mondo in questione (Carocci)',editore:'Carocci'},
+  ],
+  domande_specifiche: {
+    croteau: {title:'Croteau & Hoynes (McGraw-Hill)',tag:'McGraw-Hill',questions:[
+      {type:'radio',name:'sg_cro_connect',label:'Utilizza Connect?',options:['Sì, attivamente','Sì, parzialmente','No']},
+      {type:'radio',name:'sg_cro_americano',label:'L\'origine americana del testo è un limite?',options:['No, gli esempi sono universali','Parzialmente — integro con casi italiani','Sì, preferirei un manuale italiano']}
+    ]},
+    bagnasco: {title:'Bagnasco, Barbagli, Cavalli (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'sg_bag_ediz',label:'Quale versione utilizza?',options:['Corso di sociologia (completo)','Elementi di sociologia','I concetti di base']},
+      {type:'radio',name:'sg_bag_aggiorn',label:'L\'edizione in uso è sufficientemente aggiornata?',options:['Sì','Parzialmente','No, necessita aggiornamento']}
+    ]},
+    giddens: {title:'Giddens & Sutton (Il Mulino)',tag:'Il Mulino',questions:[
+      {type:'radio',name:'sg_gid_adeguato',label:'Il testo è adeguato per il profilo L-19?',options:['Sì, perfettamente','Adeguato ma manca un taglio educativo','Non del tutto adeguato']}
+    ]},
+    manza: {title:'Manza et al. (Pearson)',tag:'Pearson',questions:[
+      {type:'radio',name:'sg_man_mylab',label:'Utilizza MyLab?',options:['Sì','Parzialmente','No']},
+      {type:'scale',name:'sg_man_innovativo',label:'L\'approccio per domande-chiave è efficace per i suoi studenti?'}
+    ]},
+  },
+  proposta: '<span class="q-num">5.2</span> Immagini un manuale di sociologia pensato specificamente per corsi L-19/L-24, con ponti tra sociologia e psicologia, sezioni su salute mentale, emozioni e devianza, e casi italiani. Quanto sarebbe interessato?'
+}
+
+};
+
+
+// ============================================================
+// LOGICA DI RAMIFICAZIONE
+// ============================================================
+
+function getClasse() {
+  const r = document.querySelector('input[name="classe"]:checked');
+  return r ? r.value : '';
+}
+
+function onClasseChange() {
+  // Aggiorna le materie disponibili in base alla classe
+  const classe = getClasse();
+  const sel = document.getElementById('selectMateria');
+  const opts = sel.options;
+  // Psicometria solo per L-24
+  for (let i = 0; i < opts.length; i++) {
+    if (opts[i].value === 'psicometria') {
+      opts[i].disabled = (classe === 'L-19' || classe === 'LM-85bis');
+    }
+    // Psicologia Sociale non in LM-85bis
+    if (opts[i].value === 'psicologia_sociale') {
+      opts[i].disabled = (classe === 'LM-85bis');
+    }
+    // Sociologia non in LM-85bis
+    if (opts[i].value === 'sociologia_generale') {
+      opts[i].disabled = (classe === 'LM-85bis');
+    }
+  }
+}
+
+function onMateriaChange() {
+  const materia = document.getElementById('selectManuale').value = '';
+  const materiaKey = document.getElementById('selectMateria').value;
+  if (!materiaKey || !DB[materiaKey]) {
+    document.getElementById('selectManuale').innerHTML = '<option value="">— Prima selezioni la materia —</option>';
+    document.getElementById('argomentiContainer').innerHTML = '<p style="color:var(--text-light);font-style:italic;font-size:.88rem">Selezioni una materia per visualizzare gli argomenti.</p>';
+    document.getElementById('manualeSpecificoContainer').innerHTML = '';
+    document.getElementById('propostaZanichelli').innerHTML = '';
+    return;
+  }
+
+  const data = DB[materiaKey];
+
+  // Popola select manuali
+  let html = '<option value="">Seleziona il manuale…</option>';
+  let lastEditore = '';
+  // Raggruppa per editore
+  const groups = {};
+  data.manuali.forEach(m => {
+    if (!groups[m.editore]) groups[m.editore] = [];
+    groups[m.editore].push(m);
+  });
+  for (const [ed, manuali] of Object.entries(groups)) {
+    html += `<optgroup label="${ed}">`;
+    manuali.forEach(m => { html += `<option value="${m.value}">${m.label}</option>`; });
+    html += '</optgroup>';
+  }
+  html += '<option value="altro">Altro manuale (specificare)</option>';
+  html += '<option value="nessuno">Non adotto un manuale unico</option>';
+  document.getElementById('selectManuale').innerHTML = html;
+
+  // Popola tabella argomenti
+  let tbl = '<table class="likert-table"><thead><tr><th>Argomento</th><th>1</th><th>2</th><th>3</th><th>4</th></tr></thead><tbody>';
+  data.argomenti.forEach((arg, i) => {
+    const n = 'arg_' + materiaKey + '_' + i;
+    tbl += `<tr><td>${arg}</td>`;
+    for (let v = 1; v <= 4; v++) {
+      tbl += `<td><input type="radio" name="${n}" value="${v}"></td>`;
+    }
+    tbl += '</tr>';
+  });
+  tbl += '</tbody></table>';
+  document.getElementById('argomentiContainer').innerHTML = tbl;
+
+  // Popola proposta Zanichelli
+  if (data.proposta) {
+    document.getElementById('propostaZanichelli').innerHTML = `
+      <div class="highlight-box">
+        <label class="q-label">${data.proposta}</label>
+        <div class="scale-row" style="margin-top:12px">
+          <div class="scale-item"><input type="radio" name="interesse_proposta" value="1"><label>1 — Per nulla</label></div>
+          <div class="scale-item"><input type="radio" name="interesse_proposta" value="2"><label>2</label></div>
+          <div class="scale-item"><input type="radio" name="interesse_proposta" value="3"><label>3</label></div>
+          <div class="scale-item"><input type="radio" name="interesse_proposta" value="4"><label>4</label></div>
+          <div class="scale-item"><input type="radio" name="interesse_proposta" value="5"><label>5 — Lo adotterei subito</label></div>
+        </div>
+      </div>`;
+  }
+
+  // Reset domande specifiche manuale
+  document.getElementById('manualeSpecificoContainer').innerHTML = '';
+  document.getElementById('altroManualeWrap').style.display = 'none';
+}
+
+function onManualeChange() {
+  const materiaKey = document.getElementById('selectMateria').value;
+  const manualeKey = document.getElementById('selectManuale').value;
+  const container = document.getElementById('manualeSpecificoContainer');
+  container.innerHTML = '';
+  document.getElementById('altroManualeWrap').style.display = (manualeKey === 'altro') ? 'block' : 'none';
+
+  if (!materiaKey || !manualeKey || manualeKey === 'altro' || manualeKey === 'nessuno') {
+    if (manualeKey === 'altro' || manualeKey === 'nessuno') {
+      container.innerHTML = `
+        <div class="conditional visible">
+          <h3>Domande aggiuntive</h3>
+          <div class="q-group">
+            <label class="q-label">Quali criteri guidano la sua scelta (o non-scelta) di un manuale?</label>
+            <textarea name="altro_criteri" placeholder="Es. preferenza per dispense proprie, articoli, pluralità di fonti…"></textarea>
+          </div>
+        </div>`;
+    }
+    return;
+  }
+
+  const data = DB[materiaKey];
+  if (!data || !data.domande_specifiche || !data.domande_specifiche[manualeKey]) return;
+
+  const spec = data.domande_specifiche[manualeKey];
+  let html = `<div class="conditional visible"><h3>Domande specifiche: ${spec.title} <span class="manual-tag">${spec.tag}</span></h3>`;
+
+  let qNum = 4;
+  spec.questions.forEach((q, idx) => {
+    html += '<div class="q-group">';
+    html += `<label class="q-label">2.${qNum} ${q.label}</label>`;
+
+    if (q.type === 'radio') {
+      html += '<ul class="option-list">';
+      q.options.forEach(opt => {
+        html += `<li><label><input type="radio" name="${q.name}" value="${opt.substring(0,30).replace(/\s/g,'_')}"> ${opt}</label></li>`;
+      });
+      html += '</ul>';
+    } else if (q.type === 'scale') {
+      html += '<div class="scale-row">';
+      html += '<div class="scale-item"><input type="radio" name="'+q.name+'" value="1"><label>1 — Per nulla</label></div>';
+      html += '<div class="scale-item"><input type="radio" name="'+q.name+'" value="2"><label>2</label></div>';
+      html += '<div class="scale-item"><input type="radio" name="'+q.name+'" value="3"><label>3</label></div>';
+      html += '<div class="scale-item"><input type="radio" name="'+q.name+'" value="4"><label>4</label></div>';
+      html += '<div class="scale-item"><input type="radio" name="'+q.name+'" value="5"><label>5 — Molto</label></div>';
+      html += '</div>';
+    } else if (q.type === 'textarea') {
+      html += `<textarea name="${q.name}" placeholder="Descriva brevemente…"></textarea>`;
+    } else if (q.type === 'checkbox') {
+      html += '<ul class="option-list">';
+      q.options.forEach(opt => {
+        html += `<li><label><input type="checkbox" name="${q.name}[]" value="${opt.substring(0,20).replace(/\s/g,'_')}"> ${opt}</label></li>`;
+      });
+      html += '</ul>';
+    }
+
+    html += '</div>';
+    qNum++;
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// Mostra/nascondi dettaglio complementari
+document.querySelectorAll('input[name="complementari"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const val = r.value;
+    document.getElementById('complementariDettaglio').style.display = (val !== 'no') ? 'block' : 'none';
+  });
+});
+
+// Progress bar
+function updateProgress() {
+  const sections = document.querySelectorAll('.section');
+  const total = sections.length;
+  let filled = 0;
+  sections.forEach(s => {
+    const inputs = s.querySelectorAll('input:checked, select option:checked:not([value=""]), textarea');
+    let hasSomething = false;
+    inputs.forEach(i => {
+      if (i.tagName === 'TEXTAREA' && i.value.trim()) hasSomething = true;
+      if (i.tagName === 'INPUT' && i.checked) hasSomething = true;
+      if (i.tagName === 'OPTION' && i.value) hasSomething = true;
+    });
+    // Simplified: check if any required field in section is filled
+    const selects = s.querySelectorAll('select');
+    selects.forEach(sel => { if (sel.value) hasSomething = true; });
+    if (hasSomething) filled++;
+  });
+  const pct = Math.round((filled / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `Completamento: ~${pct}%`;
+}
+
+document.addEventListener('change', updateProgress);
+document.addEventListener('input', updateProgress);
+
+function handleSubmit(e) {
+  e.preventDefault();
+
+  var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwlUFcQbf2VJYqS-ecFP3HTBv3Pl_8hys12pCrira90smSUtDpyyr-kr5OpWOfnY2gFdA/exec';
+
+  // Mostra indicatore
+  var submitBtn = document.querySelector('.btn-submit');
+  if (submitBtn) {
+    submitBtn.textContent = 'Invio in corso...';
+    submitBtn.disabled = true;
+  }
+
+  // Crea un form nascosto con method POST e action verso Google Apps Script
+  var hiddenForm = document.createElement('form');
+  hiddenForm.method = 'POST';
+  hiddenForm.action = GOOGLE_SCRIPT_URL;
+  hiddenForm.style.display = 'none';
+
+  // Raccogli tutti i dati dal form originale
+  var fd = new FormData(document.getElementById('questionario'));
+  for (var pair of fd.entries()) {
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = pair[0];
+    input.value = pair[1];
+    hiddenForm.appendChild(input);
+  }
+
+  // Aggiungi il form al body e invialo
+  document.body.appendChild(hiddenForm);
+  hiddenForm.submit();
+
+  return false;
+}
+// Mostra conferma se si torna dopo invio riuscito
+if (window.location.search.includes('sent=ok')) {
+  document.getElementById('questionario').innerHTML = 
+    '<div style="text-align:center; padding:60px 20px;">' +
+      '<div style="font-size:64px; margin-bottom:20px;">✓</div>' +
+      '<h2 style="color:#1a5276;">Grazie per aver compilato il questionario!</h2>' +
+      '<p style="font-size:18px; color:#555;">Le Sue risposte sono state registrate con successo.</p>' +
+      '<p style="font-size:16px; color:#777; margin-top:20px;">' +
+        'Se ha richiesto una copia saggio o un incontro, ' +
+        'sarà ricontattato/a entro 48 ore lavorative.</p>' +
+    '</div>';
+}
+</script>
+</body>
+</html>
