@@ -1005,28 +1005,89 @@ function handleSubmit(e) {
     submitBtn.disabled = true;
   }
 
-  // Crea un form nascosto con method POST e action verso Google Apps Script
+  // Raccogli tutti i dati dal form originale
+  var fd = new FormData(document.getElementById('questionario'));
+  var data = {};
+  for (var pair of fd.entries()) {
+    if (data[pair[0]]) {
+      if (Array.isArray(data[pair[0]])) data[pair[0]].push(pair[1]);
+      else data[pair[0]] = [data[pair[0]], pair[1]];
+    } else {
+      data[pair[0]] = pair[1];
+    }
+  }
+
+  // Converti array in stringhe
+  for (var key in data) {
+    if (Array.isArray(data[key])) {
+      data[key] = data[key].join('; ');
+    }
+  }
+
+  // ===== NUOVO BLOCCO: nomi leggibili per argomenti =====
+  var materiaKey = data['materia'] || '';
+  if (materiaKey && DB[materiaKey]) {
+    var argList = DB[materiaKey].argomenti;
+    var argLeggibili = [];
+    for (var key in data) {
+      if (key.indexOf('arg_') === 0) {
+        var parts = key.split('_');
+        var idx = parseInt(parts[parts.length - 1]);
+        var nomeLeggibile = (argList && argList[idx]) ? argList[idx] : key;
+        argLeggibili.push(nomeLeggibile + ': ' + data[key]);
+        delete data[key];
+      }
+    }
+    if (argLeggibili.length > 0) {
+      data['argomenti_materia'] = argLeggibili.join(' | ');
+    }
+  }
+
+  // ===== NUOVO BLOCCO: nomi leggibili per domande manuale =====
+  var manualeKey = data['manuale'] || '';
+  if (materiaKey && manualeKey && DB[materiaKey] && DB[materiaKey].domande_specifiche && DB[materiaKey].domande_specifiche[manualeKey]) {
+    var domande = DB[materiaKey].domande_specifiche[manualeKey].questions;
+    var domLeggibili = [];
+    for (var key in data) {
+      if (/^(ps_|pc_|pg_|ac_|pso_|pm_|sg_|altro_)/.test(key)) {
+        var labelTrovata = key;
+        for (var i = 0; i < domande.length; i++) {
+          if (domande[i].name === key) {
+            labelTrovata = domande[i].label;
+            break;
+          }
+        }
+        domLeggibili.push(labelTrovata + ': ' + data[key]);
+        delete data[key];
+      }
+    }
+    if (domLeggibili.length > 0) {
+      data['domande_manuale'] = domLeggibili.join(' | ');
+    }
+  }
+
+  // ===== FINE NUOVO BLOCCO =====
+
+  // Crea form nascosto e invia
   var hiddenForm = document.createElement('form');
   hiddenForm.method = 'POST';
   hiddenForm.action = GOOGLE_SCRIPT_URL;
   hiddenForm.style.display = 'none';
 
-  // Raccogli tutti i dati dal form originale
-  var fd = new FormData(document.getElementById('questionario'));
-  for (var pair of fd.entries()) {
+  for (var key in data) {
     var input = document.createElement('input');
     input.type = 'hidden';
-    input.name = pair[0];
-    input.value = pair[1];
+    input.name = key;
+    input.value = data[key];
     hiddenForm.appendChild(input);
   }
 
-  // Aggiungi il form al body e invialo
   document.body.appendChild(hiddenForm);
   hiddenForm.submit();
 
   return false;
 }
+
 // Mostra conferma se si torna dopo invio riuscito
 if (window.location.search.includes('sent=ok')) {
   document.getElementById('questionario').innerHTML = 
