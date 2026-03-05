@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presentazione Questionario Docenti — Zanichelli Università</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#003865;--blue-light:#0057b8;--blue-pale:#e8f0fe;--red:#E63946;--green:#2A9D8F;--orange:#F4A261;
+  --purple:#7C3AED;--bg:#f5f7fa;--card:#ffffff;--border:#dee2e6;--text:#212529;--text-light:#6c757d;
+  --radius:14px;--shadow:0 4px 24px rgba(0,60,130,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+
+/* === NAV === */
+.topnav{position:sticky;top:0;z-index:100;background:var(--blue);padding:0 24px;display:flex;align-items:center;height:56px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.topnav .logo{font-weight:800;font-size:1.1rem;color:#fff;margin-right:32px;white-space:nowrap}
+.topnav .nav-links{display:flex;gap:4px;overflow-x:auto;flex:1}
+.topnav .nav-links a{color:rgba(255,255,255,.75);text-decoration:none;font-size:.78rem;font-weight:600;padding:6px 14px;border-radius:8px;white-space:nowrap;transition:all .2s}
+.topnav .nav-links a:hover,.topnav .nav-links a.active{color:#fff;background:rgba(255,255,255,.15)}
+
+/* === HERO === */
+.hero{background:linear-gradient(135deg,var(--blue) 0%,#004a8f 50%,var(--blue-light) 100%);color:#fff;padding:72px 24px 56px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero h1{font-size:2.6rem;font-weight:900;margin-bottom:12px;position:relative;z-index:1}
+.hero .subtitle{font-size:1.15rem;opacity:.88;max-width:800px;margin:0 auto 28px;position:relative;z-index:1}
+.hero-badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;position:relative;z-index:1}
+.hero-badge{padding:6px 18px;border-radius:24px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.hero-badge.b1{background:var(--red);color:#fff}
+.hero-badge.b2{background:var(--green);color:#fff}
+.hero-badge.b3{background:var(--purple);color:#fff}
+.hero-badge.b4{background:rgba(255,255,255,.2);color:#fff}
+
+/* === LAYOUT === */
+.container{max-width:1100px;margin:0 auto;padding:0 20px}
+.section-block{padding:56px 0 40px}
+.section-block:nth-child(even){background:#fff}
+.section-title{font-size:1.6rem;font-weight:800;color:var(--blue);margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.section-title .num{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--blue);color:#fff;font-size:1rem;flex-shrink:0}
+.section-subtitle{font-size:1rem;color:var(--text-light);margin-bottom:32px;max-width:800px}
+
+/* === CARDS === */
+.card{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-bottom:20px}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.card-icon.blue{background:var(--blue-pale);color:var(--blue)}
+.card-icon.red{background:#ffe0e4;color:var(--red)}
+.card-icon.green{background:#d4f0eb;color:var(--green)}
+.card-icon.orange{background:#fef0e0;color:var(--orange)}
+.card-icon.purple{background:#ede5ff;color:var(--purple)}
+.card-title{font-size:1.05rem;font-weight:700;color:var(--blue)}
+.card p,.card li{font-size:.9rem;color:var(--text);line-height:1.75}
+
+/* === GRID === */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}.grid-4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid-4{grid-template-columns:1fr}.hero h1{font-size:1.6rem}}
+
+/* === STATS === */
+.stat-card{background:var(--card);border-radius:var(--radius);padding:24px;text-align:center;box-shadow:var(--shadow);border-top:4px solid var(--blue)}
+.stat-card.red{border-top-color:var(--red)}
+.stat-card.green{border-top-color:var(--green)}
+.stat-card.purple{border-top-color:var(--purple)}
+.stat-card.orange{border-top-color:var(--orange)}
+.stat-num{font-size:2.2rem;font-weight:900;color:var(--blue);line-height:1.1}
+.stat-card.red .stat-num{color:var(--red)}
+.stat-card.green .stat-num{color:var(--green)}
+.stat-card.purple .stat-num{color:var(--purple)}
+.stat-card.orange .stat-num{color:var(--orange)}
+.stat-label{font-size:.78rem;color:var(--text-light);margin-top:6px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+
+/* === FLOW DIAGRAM === */
+.flow{display:flex;align-items:stretch;gap:0;margin:32px 0;flex-wrap:wrap;justify-content:center}
+.flow-step{background:var(--card);border-radius:var(--radius);padding:24px 20px;flex:1;min-width:180px;max-width:220px;box-shadow:var(--shadow);text-align:center;position:relative}
+.flow-step .step-num{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:.9rem;margin-bottom:10px}
+.flow-step h4{font-size:.88rem;font-weight:700;color:var(--blue);margin-bottom:6px}
+.flow-step p{font-size:.78rem;color:var(--text-light);line-height:1.5}
+.flow-arrow{display:flex;align-items:center;font-size:1.5rem;color:var(--blue);padding:0 4px;font-weight:900}
+@media(max-width:900px){.flow-arrow{display:none}.flow{gap:12px}}
+
+/* === LEVEL DIAGRAM === */
+.level-diagram{margin:28px 0}
+.level-row{display:flex;align-items:stretch;margin-bottom:12px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.level-label{background:var(--blue);color:#fff;padding:16px 20px;font-weight:700;font-size:.85rem;min-width:160px;display:flex;align-items:center}
+.level-label.l2{background:var(--blue-light)}
+.level-label.l3{background:var(--purple)}
+.level-content{background:var(--card);padding:16px 20px;flex:1;font-size:.85rem;line-height:1.7;display:flex;align-items:center}
+.level-content .tag{display:inline-block;padding:2px 10px;border-radius:6px;font-size:.72rem;font-weight:700;margin:2px 4px}
+.tag-blue{background:var(--blue-pale);color:var(--blue)}
+.tag-green{background:#d4f0eb;color:var(--green)}
+.tag-red{background:#ffe0e4;color:var(--red)}
+.tag-purple{background:#ede5ff;color:var(--purple)}
+.tag-orange{background:#fef0e0;color:var(--orange)}
+
+/* === ARCH DIAGRAM === */
+.arch-box{margin:32px 0;padding:32px;background:linear-gradient(135deg,#f8faff,#f0f4ff);border-radius:var(--radius);border:2px solid var(--blue-pale)}
+.arch-row{display:flex;justify-content:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.arch-item{background:var(--card);border-radius:12px;padding:18px 24px;text-align:center;box-shadow:0 2px 12px rgba(0,60,130,.06);min-width:200px;flex:1;max-width:320px}
+.arch-item.highlight{border:2px solid var(--blue);background:var(--blue-pale)}
+.arch-item h4{font-size:.88rem;font-weight:700;color:var(--blue);margin-bottom:4px}
+.arch-item p{font-size:.78rem;color:var(--text-light)}
+.arch-connector{text-align:center;font-size:1.5rem;color:var(--blue);margin:4px 0;font-weight:900}
+
+/* === TABLE === */
+.data-table{width:100%;border-collapse:collapse;font-size:.84rem;margin:20px 0}
+.data-table th{background:var(--blue);color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.3px}
+.data-table td{padding:10px 14px;border-bottom:1px solid #eee}
+.data-table tr:hover{background:#f8faff}
+.data-table .highlight-cell{font-weight:700;color:var(--blue)}
+
+/* === TIMELINE === */
+.timeline{position:relative;margin:32px 0;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:3px;background:var(--blue-pale);border-radius:2px}
+.timeline-item{position:relative;margin-bottom:24px;padding-left:24px}
+.timeline-item::before{content:'';position:absolute;left:-24px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--blue);border:3px solid var(--blue-pale)}
+.timeline-item.done::before{background:var(--green)}
+.timeline-item h4{font-size:.92rem;font-weight:700;color:var(--blue);margin-bottom:4px}
+.timeline-item p{font-size:.84rem;color:var(--text-light);line-height:1.6}
+.timeline-item .date-tag{display:inline-block;padding:2px 10px;border-radius:6px;font-size:.72rem;font-weight:700;background:var(--blue-pale);color:var(--blue);margin-bottom:6px}
+
+/* === COMPARISON === */
+.compare-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:20px 0}
+.compare-table th{background:var(--blue);color:#fff;padding:10px 12px;text-align:center;font-weight:600}
+.compare-table th:first-child{text-align:left}
+.compare-table td{padding:10px 12px;border-bottom:1px solid #eee;text-align:center}
+.compare-table td:first-child{text-align:left;font-weight:600}
+.check{color:var(--green);font-weight:900;font-size:1.1rem}
+.cross{color:var(--red);font-weight:900;font-size:1.1rem}
+.partial{color:var(--orange);font-weight:900;font-size:1.1rem}
+
+/* === QUOTE === */
+.quote-box{background:linear-gradient(135deg,var(--blue),var(--blue-light));color:#fff;border-radius:var(--radius);padding:36px 40px;margin:32px 0;position:relative}
+.quote-box::before{content:'❝';font-size:4rem;position:absolute;top:8px;left:20px;opacity:.2;line-height:1}
+.quote-box p{font-size:1.1rem;font-weight:500;line-height:1.8;position:relative;z-index:1}
+.quote-box .author{margin-top:12px;font-size:.85rem;opacity:.75;font-weight:600}
+
+/* === FOOTER === */
+.footer{text-align:center;padding:40px 24px;color:var(--text-light);font-size:.8rem;border-top:1px solid var(--border)}
+.footer strong{color:var(--blue)}
+
+/* === PRINT === */
+@media print{
+  .topnav{display:none}
+  .section-block{page-break-inside:avoid;padding:24px 0}
+  .hero{padding:36px 24px}
+  body{font-size:11pt}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="topnav">
+  <div class="logo">Zanichelli Università</div>
+  <div class="nav-links">
+    <a href="#obiettivo" class="active">Obiettivo</a>
+    <a href="#numeri">Numeri</a>
+    <a href="#architettura">Architettura</a>
+    <a href="#tecnologia">Tecnologia</a>
+    <a href="#flusso">Flusso operativo</a>
+    <a href="#output">Output attesi</a>
+    <a href="#integrazione">Integrazione</a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <h1>Questionario Docenti Universitari</h1>
+  <p class="subtitle">Indagine qualitativa sulle esigenze didattiche e le caratteristiche editoriali prioritarie nei corsi L-24, L-19 e LM-85bis — Progettazione, architettura tecnica e piano operativo</p>
+  <div class="hero-badges">
+    <span class="hero-badge b1">7 Materie</span>
+    <span class="hero-badge b2">60+ Manuali censiti</span>
+    <span class="hero-badge b3">150+ Domande condizionali</span>
+    <span class="hero-badge b4">Marzo 2026</span>
+  </div>
+</div>
+
+<!-- ═══ 1. OBIETTIVO ═══ -->
+<div class="section-block" id="obiettivo">
+  <div class="container">
+    <div class="section-title"><span class="num">1</span> Obiettivo del progetto</div>
+    <p class="section-subtitle">Dal dato quantitativo all'intelligence qualitativa: perché serviva un questionario dopo l'indagine nazionale.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon blue">📊</div>
+          <div class="card-title">Cosa sapevamo già</div>
+        </div>
+        <p>L'indagine nazionale ha mappato le adozioni di manuali in 7 materie, 3 classi di laurea e un bacino di 178.914 studenti. Sappiamo <strong>chi adotta cosa e dove</strong>, con quote di mercato ponderate per studenti, posizionamento competitivo e bacini di conversione. Le dashboard prodotte quantificano il posizionamento Zanichelli in ciascuna cella materia × classe di laurea.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon red">❓</div>
+          <div class="card-title">Cosa non sapevamo</div>
+        </div>
+        <p><strong>Perché</strong> un docente usa quel manuale. Quanto ne è soddisfatto. Cosa cambierebbe. Se sta pensando di cambiarlo. Quali argomenti stanno guadagnando centralità. Che ruolo hanno le risorse digitali. Come reagirebbe a una proposta editoriale Zanichelli. Queste informazioni le ha solo il docente.</p>
+      </div>
+    </div>
+
+    <div class="quote-box">
+      <p>Il questionario trasforma i dati statici dell'indagine in intelligence operativa: identifica le cattedre dove c'è insoddisfazione, misura le priorità editoriali dei docenti, raccoglie reazioni dirette alle proposte Zanichelli, e individua potenziali autori e collaboratori.</p>
+      <div class="author">— Logica del progetto</div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-size:2rem;margin-bottom:8px">🎯</div>
+        <div style="font-size:.82rem;font-weight:700;color:var(--blue)">Misurare la soddisfazione</div>
+        <div style="font-size:.76rem;color:var(--text-light);margin-top:4px">Per manuale, per materia, per ateneo</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-size:2rem;margin-bottom:8px">📋</div>
+        <div style="font-size:.82rem;font-weight:700;color:var(--blue)">Graduare le priorità</div>
+        <div style="font-size:.76rem;color:var(--text-light);margin-top:4px">Quali caratteristiche editoriali contano di più</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-size:2rem;margin-bottom:8px">💡</div>
+        <div style="font-size:.82rem;font-weight:700;color:var(--blue)">Testare le proposte</div>
+        <div style="font-size:.76rem;color:var(--text-light);margin-top:4px">Reazioni dirette a nuovi titoli e nuove edizioni</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-size:2rem;margin-bottom:8px">🤝</div>
+        <div style="font-size:.82rem;font-weight:700;color:var(--blue)">Costruire relazioni</div>
+        <div style="font-size:.76rem;color:var(--text-light);margin-top:4px">Identificare potenziali autori e consulenti</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 2. NUMERI ═══ -->
+<div class="section-block" id="numeri">
+  <div class="container">
+    <div class="section-title"><span class="num">2</span> I numeri del questionario</div>
+    <p class="section-subtitle">Un database di domande costruito sull'analisi competitiva di 7 materie.</p>
+
+    <div class="grid-4">
+      <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">Materie coperte</div></div>
+      <div class="stat-card red"><div class="stat-num">60+</div><div class="stat-label">Manuali nel database</div></div>
+      <div class="stat-card green"><div class="stat-num">150+</div><div class="stat-label">Domande condizionali</div></div>
+      <div class="stat-card purple"><div class="stat-num">84</div><div class="stat-label">Argomenti disciplinari</div></div>
+    </div>
+
+    <div style="height:24px"></div>
+
+    <div class="grid-3">
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Livelli di ramificazione</div></div>
+      <div class="stat-card orange"><div class="stat-num">8-12'</div><div class="stat-label">Tempo di compilazione</div></div>
+      <div class="stat-card green"><div class="stat-num">35</div><div class="stat-label">Campi nel database risposte</div></div>
+    </div>
+
+    <div style="height:24px"></div>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Materia</th><th>Manuali censiti</th><th>Argomenti Likert</th><th>Manuali con domande L3</th><th>Classi di laurea</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="highlight-cell">Psicologia dello Sviluppo</td><td>16</td><td>12</td><td>15</td><td>L-24, L-19, LM-85bis</td></tr>
+        <tr><td class="highlight-cell">Psicologia Clinica</td><td>9</td><td>12</td><td>7</td><td>L-24, L-19, LM-85bis</td></tr>
+        <tr><td class="highlight-cell">Psicologia Generale</td><td>12</td><td>12</td><td>5</td><td>L-24, L-19</td></tr>
+        <tr><td class="highlight-cell">Antropologia Culturale</td><td>11</td><td>12</td><td>6</td><td>L-24, L-19, LM-85bis</td></tr>
+        <tr><td class="highlight-cell">Psicologia Sociale</td><td>10</td><td>12</td><td>4</td><td>L-24, L-19</td></tr>
+        <tr><td class="highlight-cell">Psicometria</td><td>9</td><td>12</td><td>3</td><td>Solo L-24</td></tr>
+        <tr><td class="highlight-cell">Sociologia Generale</td><td>9</td><td>12</td><td>4</td><td>L-24, L-19</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ 3. ARCHITETTURA ═══ -->
+<div class="section-block" id="architettura">
+  <div class="container">
+    <div class="section-title"><span class="num">3</span> Architettura a tre livelli</div>
+    <p class="section-subtitle">Il questionario si adatta automaticamente al profilo di ogni docente: classe di laurea → materia → manuale in uso.</p>
+
+    <div class="level-diagram">
+      <div class="level-row">
+        <div class="level-label">Livello 1<br>Nucleo comune</div>
+        <div class="level-content">
+          Tutti i rispondenti compilano le stesse 6 sezioni: <span class="tag tag-blue">Profilo insegnamento</span> <span class="tag tag-blue">Manuale adottato</span> <span class="tag tag-blue">Soddisfazione</span> <span class="tag tag-blue">Contenuti e approccio</span> <span class="tag tag-blue">Risorse digitali</span> <span class="tag tag-blue">Manuale ideale (Likert 8 dimensioni)</span> <span class="tag tag-blue">Contatto</span>
+        </div>
+      </div>
+      <div class="level-row">
+        <div class="level-label l2">Livello 2<br>Per materia</div>
+        <div class="level-content">
+          Alla selezione della materia si caricano: <span class="tag tag-green">Lista manuali per editore</span> <span class="tag tag-green">12 argomenti disciplinari (Likert)</span> <span class="tag tag-green">Proposta editoriale Zanichelli ad hoc</span> — Esempio: in Psicologia Clinica appaiono argomenti come DSM-5-TR, PDM-2, telepsicologia; in Antropologia appaiono migrazioni, antropocene, schooling.
+        </div>
+      </div>
+      <div class="level-row">
+        <div class="level-label l3">Livello 3<br>Per manuale</div>
+        <div class="level-content">
+          Alla selezione del manuale appaiono 2-4 domande mirate costruite dall'analisi competitiva: <span class="tag tag-purple">Uso piattaforma digitale?</span> <span class="tag tag-purple">Adeguatezza dell'approccio?</span> <span class="tag tag-purple">Lacune specifiche?</span> <span class="tag tag-purple">Aggiornamento necessario?</span> — Esempio: a chi usa Santrock si chiede dell'approccio cronologico; a chi usa Kring si chiede del PDM-2.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:28px">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">✓</div>
+          <div class="card-title">Perché questa scelta</div>
+        </div>
+        <p>Un questionario generico identico per tutti avrebbe prodotto risposte superficiali. La ramificazione a tre livelli permette di ottenere informazioni strategiche precise — come la percezione di una specifica lacuna in uno specifico manuale — senza allungare i tempi di compilazione, perché ogni docente vede solo le domande pertinenti al suo contesto.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon orange">⚡</div>
+          <div class="card-title">Risultato per il docente</div>
+        </div>
+        <p>Il docente percepisce un questionario breve e mirato ("sa già cosa insegno e cosa uso"), non un sondaggio generico. Questo aumenta il tasso di risposta e la qualità delle informazioni raccolte. Il docente si sente ascoltato come esperto, non interrogato come cliente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 4. TECNOLOGIA ═══ -->
+<div class="section-block" id="tecnologia">
+  <div class="container">
+    <div class="section-title"><span class="num">4</span> Scelte tecniche</div>
+    <p class="section-subtitle">Un sistema a tre componenti, gratuito, senza server da gestire, interamente sotto il nostro controllo.</p>
+
+    <div class="arch-box">
+      <div class="arch-row">
+        <div class="arch-item highlight">
+          <h4>📄 File HTML</h4>
+          <p>Form + CSS + JavaScript<br>Branding Zanichelli<br>Logica a 3 livelli</p>
+        </div>
+      </div>
+      <div class="arch-connector">▼ Form POST standard ▼</div>
+      <div class="arch-row">
+        <div class="arch-item">
+          <h4>⚙️ Google Apps Script</h4>
+          <p>Backend serverless<br>Riceve i dati<br>Invia alert email</p>
+        </div>
+      </div>
+      <div class="arch-connector">▼ appendRow() ▼</div>
+      <div class="arch-row">
+        <div class="arch-item">
+          <h4>📊 Google Sheet</h4>
+          <p>35 colonne<br>Condivisibile<br>Esportabile</p>
+        </div>
+        <div class="arch-item">
+          <h4>📬 Alert Email</h4>
+          <p>Notifica ad ogni risposta<br>Riepilogo essenziale<br>Link al dettaglio</p>
+        </div>
+      </div>
+      <div class="arch-connector">▼ hosting ▼</div>
+      <div class="arch-row">
+        <div class="arch-item">
+          <h4>🌐 GitHub Pages</h4>
+          <p>Hosting gratuito<br>HTTPS automatico<br>Stesso repo delle dashboard</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:20px"></div>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>Caratteristica</th><th>Google Forms</th><th>SurveyMonkey / Qualtrics</th><th style="background:var(--green)">Soluzione adottata</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ramificazione a 3 livelli</td><td class="cross">✗</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Branding Zanichelli personalizzato</td><td class="cross">✗</td><td class="partial">◐</td><td class="check">✓</td></tr>
+        <tr><td>Database manuali dinamico</td><td class="cross">✗</td><td class="partial">◐</td><td class="check">✓</td></tr>
+        <tr><td>Domande specifiche per manuale</td><td class="cross">✗</td><td class="partial">◐</td><td class="check">✓</td></tr>
+        <tr><td>Costo annuo</td><td class="check">€ 0</td><td class="cross">€ 500-3.000+</td><td class="check">€ 0</td></tr>
+        <tr><td>Controllo completo sui dati</td><td class="partial">◐</td><td class="cross">✗</td><td class="check">✓</td></tr>
+        <tr><td>Alert email personalizzati</td><td class="partial">◐</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Integrazione con dashboard esistenti</td><td class="cross">✗</td><td class="cross">✗</td><td class="check">✓</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid-2" style="margin-top:24px">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon blue">🔒</div>
+          <div class="card-title">Invio dati: form POST standard</div>
+        </div>
+        <p>I dati vengono trasmessi tramite form POST standard, il metodo più robusto e universalmente compatibile. La scelta è stata fatta dopo aver verificato che l'invio in formato JSON causava la perdita di dati a causa delle restrizioni CORS dei browser moderni. Il form POST funziona su tutti i dispositivi senza eccezioni.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon purple">🏷️</div>
+          <div class="card-title">Serializzazione leggibile</div>
+        </div>
+        <p>I campi dinamici (argomenti disciplinari, domande per manuale) vengono convertiti lato client in testo leggibile prima dell'invio. Nel Google Sheet appare direttamente <em>"Attaccamento e trauma: 4"</em> e non un codice tecnico. Chi consulta i dati capisce immediatamente il contenuto senza tabelle di decodifica.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 5. FLUSSO OPERATIVO ═══ -->
+<div class="section-block" id="flusso">
+  <div class="container">
+    <div class="section-title"><span class="num">5</span> Flusso operativo</div>
+    <p class="section-subtitle">Dalla preparazione delle liste all'analisi dei risultati: cinque fasi in sei settimane.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <h4>Segmentazione</h4>
+        <p>Suddivisione docenti in 4 categorie per personalizzare la comunicazione</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <h4>Invio email</h4>
+        <p>Mail personalizzate per materia, ateneo e manuale in uso</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <h4>Monitoraggio</h4>
+        <p>Alert in tempo reale, Google Sheet condiviso</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">4</div>
+        <h4>Sollecito</h4>
+        <p>Reminder dopo 10-14 giorni ai non rispondenti</p>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num">5</div>
+        <h4>Analisi</h4>
+        <p>Incrocio risposte × dati di mercato dashboard</p>
+      </div>
+    </div>
+
+    <div style="height:20px"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon blue">✉️</div>
+        <div class="card-title">Quattro versioni della comunicazione</div>
+      </div>
+      <table class="data-table" style="margin:12px 0 0">
+        <thead>
+          <tr><th>Versione</th><th>Target</th><th>Tono</th><th>Elemento chiave</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="highlight-cell">A</td><td>Docente non ancora conosciuto</td><td>Esplorativo</td><td>"Come sta cambiando la didattica di [materia]?"</td></tr>
+          <tr><td class="highlight-cell">B</td><td>Docente che già adotta Zanichelli o con rapporto esistente</td><td>Collaborativo</td><td>"Conosco il Suo insegnamento e il testo che utilizza"</td></tr>
+          <tr><td class="highlight-cell">C</td><td>Sollecito (dopo 10-14 giorni)</td><td>Leggero</td><td>Promemoria breve e non invasivo</td></tr>
+          <tr><td class="highlight-cell">D</td><td>Docente di materia scoperta (Psic. Sociale, Psicometria, Sociologia)</td><td>Ascolto</td><td>"Non abbiamo un titolo: ci aiuti a capire se e come investire"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="height:24px"></div>
+
+    <div class="timeline">
+      <div class="timeline-item done">
+        <div class="date-tag">Completato — Febbraio 2026</div>
+        <h4>Progettazione e sviluppo del questionario</h4>
+        <p>Architettura a 3 livelli, database manuali, domande specifiche, integrazione backend, test funzionali.</p>
+      </div>
+      <div class="timeline-item done">
+        <div class="date-tag">Completato — Marzo 2026</div>
+        <h4>Setup tecnico</h4>
+        <p>Google Apps Script, Google Sheet con 35 colonne, alert email, deploy su GitHub Pages, test di invio.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="date-tag">Settimana 10-14 marzo</div>
+        <h4>Invio Fase 1 — Cattedre prioritarie</h4>
+        <p>Invio personalizzato ai docenti delle cattedre B2/B3 (bacino di conversione) e delle cattedre con testi datati identificate nelle dashboard.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="date-tag">Settimana 17-28 marzo</div>
+        <h4>Invio Fase 2 — Estensione</h4>
+        <p>Primo sollecito ai non rispondenti. Estensione a tutti i docenti mappati nel database dell'indagine nazionale.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="date-tag">Settimana 31 marzo — 4 aprile</div>
+        <h4>Sollecito finale</h4>
+        <p>Secondo e ultimo promemoria. Chiusura raccolta risposte.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="date-tag">Aprile 2026</div>
+        <h4>Analisi e azioni commerciali</h4>
+        <p>Incrocio risposte × dati dashboard. Matrice opportunità. Report alla direzione editoriale. Avvio azioni sui target prioritari.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 6. OUTPUT ATTESI ═══ -->
+<div class="section-block" id="output">
+  <div class="container">
+    <div class="section-title"><span class="num">6</span> Output attesi</div>
+    <p class="section-subtitle">Cosa produrrà il questionario e come verrà utilizzato nelle decisioni editoriali e commerciali.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon red">📉</div>
+          <div class="card-title">Mappa della soddisfazione</div>
+        </div>
+        <p>Per ogni manuale e per ogni materia, un indice di soddisfazione medio (scala 1-5) e la percentuale di docenti che sta considerando di cambiare testo. Questo dato, incrociato con il bacino studenti delle dashboard, identifica le <strong>opportunità commerciali concrete</strong>: grande bacino + alta insoddisfazione = quick win.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon green">📊</div>
+          <div class="card-title">Graduatoria delle priorità editoriali</div>
+        </div>
+        <p>Per ciascuna disciplina, la classifica delle caratteristiche che i docenti considerano più importanti: aggiornamento scientifico, casi italiani, risorse digitali, prezzo, modularità, autore italiano, strumenti pratici, orientamento al profilo professionale. Dato fondamentale per la <strong>pianificazione editoriale</strong>.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon purple">💡</div>
+          <div class="card-title">Reazioni alle proposte Zanichelli</div>
+        </div>
+        <p>Per ogni materia, la risposta alla domanda "Quanto sarebbe interessato a un manuale con queste caratteristiche?" (scala 1-5). Dato diretto per valutare la <strong>fattibilità commerciale di nuovi titoli</strong>: "Psicologia dello sviluppo per insegnare", "Sociologia per psicologi", aggiornamento Occhini, ecc.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon orange">🤝</div>
+          <div class="card-title">Rete di contatti qualificati</div>
+        </div>
+        <p>Docenti che si dichiarano disponibili al contatto per progetti editoriali. Potenziali <strong>autori, curatori, revisori e consulenti</strong> per lo sviluppo di nuovi titoli o nuove edizioni. Il valore più duraturo dell'intera operazione.</p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:8px">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon blue">🔬</div>
+          <div class="card-title">Argomenti emergenti</div>
+        </div>
+        <p>Dalla tabella Likert degli argomenti disciplinari emergeranno le tematiche in ascesa: telepsicologia, nuove dipendenze, antropocene, open science, intelligenza artificiale nella didattica. Segnali per <strong>anticipare l'evoluzione dei programmi</strong> e aggiornare i titoli esistenti.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon red">🏗️</div>
+          <div class="card-title">Intelligence sulle materie scoperte</div>
+        </div>
+        <p>Per Psicologia Sociale, Psicometria e Sociologia Generale (dove Zanichelli è assente, con un mercato complessivo di 50.944 studenti), il questionario raccoglierà le prime indicazioni su <strong>se e come entrare</strong>: quale profilo di manuale manca, quali testi sono percepiti come datati, quale prezzo è atteso.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 7. INTEGRAZIONE ═══ -->
+<div class="section-block" id="integrazione">
+  <div class="container">
+    <div class="section-title"><span class="num">7</span> Integrazione con le dashboard</div>
+    <p class="section-subtitle">Il questionario completa il sistema informativo dell'indagine nazionale, aggiungendo la dimensione qualitativa ai dati quantitativi.</p>
+
+    <div class="arch-box">
+      <div class="arch-row">
+        <div class="arch-item">
+          <h4>Dashboard Indagine Nazionale</h4>
+          <p>Quote di mercato ponderate<br>Posizionamento competitivo<br>Bacini di conversione<br><strong>DATO QUANTITATIVO</strong></p>
+        </div>
+        <div class="arch-item" style="display:flex;align-items:center;justify-content:center;min-width:80px;max-width:80px;font-size:2rem;font-weight:900;color:var(--blue)">+</div>
+        <div class="arch-item">
+          <h4>Questionario Docenti</h4>
+          <p>Soddisfazione per manuale<br>Priorità editoriali<br>Reazioni a proposte Zanichelli<br><strong>DATO QUALITATIVO</strong></p>
+        </div>
+      </div>
+      <div class="arch-connector">▼</div>
+      <div class="arch-row">
+        <div class="arch-item highlight" style="max-width:600px">
+          <h4>Matrice delle Opportunità</h4>
+          <p>Dimensione bacino studenti × Insoddisfazione docente → Quattro quadranti decisionali</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-4" style="margin-top:24px">
+      <div class="card" style="border-left:4px solid var(--green);padding:20px">
+        <div style="font-size:.82rem;font-weight:800;color:var(--green);margin-bottom:8px">QUICK WIN</div>
+        <div style="font-size:.78rem;color:var(--text-light)">Grande bacino + Alta insoddisfazione</div>
+        <div style="font-size:.76rem;margin-top:8px">Azione commerciale immediata. Proposta di cambio manuale con copia saggio e incontro.</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--blue);padding:20px">
+        <div style="font-size:.82rem;font-weight:800;color:var(--blue);margin-bottom:8px">INVESTIMENTO STRATEGICO</div>
+        <div style="font-size:.78rem;color:var(--text-light)">Grande bacino + Bassa insoddisfazione</div>
+        <div style="font-size:.76rem;margin-top:8px">Costruzione di relazione a lungo termine. Proposta competitiva al prossimo cambio di edizione.</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--orange);padding:20px">
+        <div style="font-size:.82rem;font-weight:800;color:var(--orange);margin-bottom:8px">OPPORTUNITÀ TATTICA</div>
+        <div style="font-size:.78rem;color:var(--text-light)">Piccolo bacino + Alta insoddisfazione</div>
+        <div style="font-size:.76rem;margin-top:8px">Azione mirata a basso costo. Invio copia saggio, contatto diretto del promotore.</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--border);padding:20px">
+        <div style="font-size:.82rem;font-weight:800;color:var(--text-light);margin-bottom:8px">BASSA PRIORITÀ</div>
+        <div style="font-size:.78rem;color:var(--text-light)">Piccolo bacino + Bassa insoddisfazione</div>
+        <div style="font-size:.76rem;margin-top:8px">Monitoraggio. Nessuna azione immediata.</div>
+      </div>
+    </div>
+
+    <div class="quote-box" style="margin-top:32px">
+      <p>L'obiettivo finale è trasformare ogni risposta al questionario in un'azione commerciale specifica: una visita, una copia saggio, una proposta editoriale, un contatto per un progetto autoriale. Non raccogliamo dati per produrre report, ma per vendere libri migliori a chi li aspetta.</p>
+      <div class="author">— Visione operativa del progetto</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="footer">
+  <p><strong>Questionario Docenti Universitari — Presentazione del Progetto</strong></p>
+  <p>A cura di Sergio Sartini — Promotore editoriale universitario, Zanichelli editore S.p.A.</p>
+  <p style="margin-top:8px">Marzo 2026</p>
+</div>
+
+<!-- ═══ SCROLL NAV HIGHLIGHT ═══ -->
+<script>
+document.addEventListener('scroll', function() {
+  const sections = document.querySelectorAll('.section-block');
+  const links = document.querySelectorAll('.topnav .nav-links a');
+  let current = '';
+  sections.forEach(s => {
+    const top = s.offsetTop - 80;
+    if (window.scrollY >= top) current = s.id;
+  });
+  links.forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+  });
+});
+
+// Smooth scroll
+document.querySelectorAll('.topnav a').forEach(a => {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+
+</body>
+</html>
