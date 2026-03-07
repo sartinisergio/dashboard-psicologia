@@ -138,6 +138,56 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .quote-box p{font-size:1.1rem;font-weight:500;line-height:1.8;position:relative;z-index:1}
 .quote-box .author{margin-top:12px;font-size:.85rem;opacity:.75;font-weight:600}
 
+/* === EXAMPLE SCENARIO === */
+.scenario-box{background:linear-gradient(135deg,#fefce8,#fef9c3);border:2px solid #f59e0b;border-radius:var(--radius);padding:28px;margin:20px 0}
+.scenario-box .scenario-title{font-size:.92rem;font-weight:800;color:#92400e;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.scenario-box p{font-size:.85rem;color:#78350f;line-height:1.75}
+.scenario-box .scenario-highlight{background:#fef3c7;padding:2px 8px;border-radius:4px;font-weight:700}
+
+/* === INSIGHT CARD === */
+.insight-card{background:var(--card);border-radius:var(--radius);padding:24px 28px;box-shadow:var(--shadow);margin-bottom:16px;border-left:5px solid var(--blue);position:relative}
+.insight-card.red-border{border-left-color:var(--red)}
+.insight-card.green-border{border-left-color:var(--green)}
+.insight-card.purple-border{border-left-color:var(--purple)}
+.insight-card.orange-border{border-left-color:var(--orange)}
+.insight-num{position:absolute;top:16px;right:20px;font-size:2.2rem;font-weight:900;color:var(--blue-pale);line-height:1}
+.insight-card h4{font-size:.95rem;font-weight:700;color:var(--blue);margin-bottom:8px}
+.insight-card p{font-size:.85rem;color:var(--text);line-height:1.75}
+.insight-card .example{margin-top:12px;padding:12px 16px;background:#f8faff;border-radius:10px;font-size:.82rem;color:var(--text-light);line-height:1.6;font-style:italic}
+.insight-card.red-border .insight-num{color:#ffe0e4}
+.insight-card.green-border .insight-num{color:#d4f0eb}
+.insight-card.purple-border .insight-num{color:#ede5ff}
+.insight-card.orange-border .insight-num{color:#fef0e0}
+.insight-card.red-border h4{color:var(--red)}
+.insight-card.green-border h4{color:var(--green)}
+.insight-card.purple-border h4{color:var(--purple)}
+.insight-card.orange-border h4{color:var(--orange)}
+
+/* === PHASE HEADER === */
+.phase-header{display:flex;align-items:center;gap:16px;margin:40px 0 20px;padding-bottom:12px;border-bottom:3px solid var(--blue-pale)}
+.phase-header .phase-badge{display:inline-flex;align-items:center;justify-content:center;padding:6px 18px;border-radius:24px;background:var(--blue);color:#fff;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.phase-header h3{font-size:1.2rem;font-weight:700;color:var(--blue)}
+
+/* === DASHBOARD PREVIEW === */
+.dash-preview{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+.dash-preview-header{background:linear-gradient(135deg,var(--blue),var(--blue-light));color:#fff;padding:16px 24px;display:flex;align-items:center;gap:12px}
+.dash-preview-header .dash-icon{font-size:1.4rem}
+.dash-preview-header h4{font-size:.95rem;font-weight:700}
+.dash-preview-header .dash-tag{margin-left:auto;padding:3px 12px;border-radius:12px;background:rgba(255,255,255,.2);font-size:.7rem;font-weight:700;text-transform:uppercase}
+.dash-preview-body{padding:24px}
+.dash-preview-body p{font-size:.85rem;color:var(--text);line-height:1.75;margin-bottom:12px}
+.dash-preview-body .use-case{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;font-size:.82rem;color:#166534;line-height:1.6}
+.dash-preview-body .use-case strong{color:#15803d}
+
+/* === REPORT SECTION === */
+.report-card{background:var(--card);border-radius:var(--radius);padding:24px 28px;box-shadow:var(--shadow);margin-bottom:16px;display:flex;gap:20px;align-items:flex-start}
+.report-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.report-icon.immediate{background:#dcfce7;color:#16a34a}
+.report-icon.medium{background:var(--blue-pale);color:var(--blue)}
+.report-icon.monitor{background:#fef9c3;color:#ca8a04}
+.report-body h4{font-size:.95rem;font-weight:700;color:var(--blue);margin-bottom:6px}
+.report-body p{font-size:.85rem;color:var(--text);line-height:1.75}
+
 /* === FOOTER === */
 .footer{text-align:center;padding:40px 24px;color:var(--text-light);font-size:.8rem;border-top:1px solid var(--border)}
 .footer strong{color:var(--blue)}
@@ -164,6 +214,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <a href="#flusso">Flusso operativo</a>
     <a href="#output">Output attesi</a>
     <a href="#integrazione">Integrazione</a>
+    <a href="#analisi">Analisi incrociate</a>
+    <a href="#report">Report finale</a>
   </div>
 </nav>
 
@@ -189,14 +241,14 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       <div class="card">
         <div class="card-header">
           <div class="card-icon blue">📊</div>
-          <div class="card-title">Cosa sappiamo ora</div>
+          <div class="card-title">Cosa sappiamo ora (dashboard)</div>
         </div>
-        <p>L'indagine nazionale ha mappato le adozioni di manuali in 7 materie, 3 classi di laurea e un bacino di 178.914 studenti. Sappiamo <strong>chi adotta cosa e dove</strong>, con quote di mercato ponderate per studenti, posizionamento competitivo e bacini di conversione. Le dashboard prodotte quantificano il posizionamento Zanichelli in ciascuna cella materia × classe di laurea.</p>
+        <p>L'indagine nazionale ha mappato le adozioni di manuali in 7 materie, 3 classi di laurea e un bacino di <strong>178.914 studenti</strong>. Sappiamo <strong>chi adotta cosa e dove</strong>, con quote di mercato ponderate per studenti, posizionamento competitivo e bacini di conversione. Le dashboard prodotte quantificano il posizionamento Zanichelli in ciascuna cella materia × classe di laurea.</p>
       </div>
       <div class="card">
         <div class="card-header">
           <div class="card-icon red">❓</div>
-          <div class="card-title">Cosa non sappiamo ancora</div>
+          <div class="card-title">Cosa non sappiamo ancora (questionario)</div>
         </div>
         <p><strong>Perché</strong> un docente usa quel manuale. Quanto ne è soddisfatto. Cosa cambierebbe. Se sta pensando di cambiarlo. Quali argomenti stanno guadagnando centralità. Che ruolo hanno le risorse digitali. Come reagirebbe a una proposta editoriale Zanichelli. Queste informazioni le ha solo il docente.</p>
       </div>
@@ -228,6 +280,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
         <div style="font-size:.82rem;font-weight:700;color:var(--blue)">Costruire relazioni</div>
         <div style="font-size:.76rem;color:var(--text-light);margin-top:4px">Identificare potenziali autori e consulenti</div>
       </div>
+    </div>
+
+    <div class="scenario-box" style="margin-top:24px">
+      <div class="scenario-title">💡 Come i due strumenti lavorano insieme — un esempio concreto</div>
+      <p>La <strong>dashboard</strong> ci dice che in Psicologia dello Sviluppo per L-19, il Santrock (McGraw-Hill) ha il 49% del mercato con un bacino di 2.800 studenti. Il <strong>questionario</strong> ci dirà se quei docenti sono soddisfatti dell'approccio cronologico del Santrock o se sentono la mancanza di una prospettiva per educatori. Se emerge che il 40% è insoddisfatto e il 30% sta pensando di cambiare, abbiamo un <span class="scenario-highlight">bacino di conversione qualificato</span>: non più un dato di potenziale generico, ma un'opportunità commerciale con nome, cognome e motivazione.</p>
     </div>
   </div>
 </div>
@@ -546,11 +603,30 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   </div>
 </div>
 
-<!-- ═══ 7. INTEGRAZIONE ═══ -->
+<!-- ═══ 7. INTEGRAZIONE CON LE DASHBOARD ═══ -->
 <div class="section-block" id="integrazione">
   <div class="container">
     <div class="section-title"><span class="num">7</span> Integrazione con le dashboard</div>
-    <p class="section-subtitle">Il questionario completa il sistema informativo dell'indagine nazionale, aggiungendo la dimensione qualitativa ai dati quantitativi.</p>
+    <p class="section-subtitle">Il questionario completa il sistema informativo dell'indagine nazionale. L'incrocio dei dati quantitativi (quote di mercato, bacini studenti) con quelli qualitativi (soddisfazione, priorità, reazioni) produce informazioni che nessuno dei due strumenti da solo può dare.</p>
+
+    <!-- === 7.1 Flusso dati === -->
+    <div class="phase-header">
+      <span class="phase-badge">Fase 1</span>
+      <h3>Dall'opinione soggettiva al dato azionabile</h3>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon blue">🔗</div>
+        <div class="card-title">Tavola di decodifica — il ponte tra i due database</div>
+      </div>
+      <p>Quando avremo raccolto un numero sufficiente di risposte (realisticamente 30-50, con un tasso di risposta del 15-25% sulle cattedre censite), il primo passo sarà creare un secondo foglio nel Google Sheet che funzioni da tavola di decodifica: ogni risposta sarà collegata ai dati già presenti nelle dashboard — il bacino studenti della cattedra, la quota di mercato ponderata Zanichelli in quella cella materia × classe, il posizionamento competitivo. Questo incrocio è la chiave di tutto, perché trasforma un'opinione soggettiva in un dato azionabile.</p>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-title">💡 Il salto di qualità dell'incrocio</div>
+      <p>Il questionario da solo ci dice: <em>"Un docente è insoddisfatto del Santrock"</em>. La dashboard da sola ci dice: <em>"McGraw-Hill ha il 49% in Psicologia dello Sviluppo per L-19"</em>. L'incrocio ci dice: <span class="scenario-highlight">"Un docente insoddisfatto con 380 studenti in una cattedra dove McGraw-Hill ha il 49% — e ha chiesto di essere contattato"</span>. Questo è un lead commerciale completo.</p>
+    </div>
 
     <div class="arch-box">
       <div class="arch-row">
@@ -596,10 +672,137 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
       </div>
     </div>
 
+    <!-- === 7.2 Tre nuove dashboard === -->
+    <div class="phase-header">
+      <span class="phase-badge">Fase 2</span>
+      <h3>Tre nuove dashboard integrabili con le esistenti</h3>
+    </div>
+    <p style="font-size:.9rem;color:var(--text-light);margin-bottom:24px">Tre nuove pagine HTML da aggiungere al repository GitHub, con lo stesso stile delle dashboard attuali, che trasformeranno le risposte al questionario in strumenti visivi di decisione.</p>
+
+    <div class="dash-preview">
+      <div class="dash-preview-header">
+        <span class="dash-icon">🗺️</span>
+        <h4>Dashboard 1 — Mappa della soddisfazione</h4>
+        <span class="dash-tag">Heatmap</span>
+      </div>
+      <div class="dash-preview-body">
+        <p>Una matrice <strong>materia × classe di laurea</strong> dove ogni cella mostra il punteggio medio di soddisfazione (scala 1-5), la percentuale di docenti che considera di cambiare manuale, e il confronto con la quota Zanichelli in quella stessa cella. Visivamente sarà una heatmap con colori dal verde (alta soddisfazione) al rosso (bassa soddisfazione), sovrapposta alla mappa competitiva già esistente nelle dashboard.</p>
+        <div class="use-case">
+          <strong>Il dato potente emerge dall'incrocio:</strong> una cella con soddisfazione bassa e quota Zanichelli bassa è un'opportunità di conquista. Una cella con soddisfazione bassa e quota Zanichelli alta è un allarme di difesa — rischiamo di perdere adozioni che già abbiamo.
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-preview">
+      <div class="dash-preview-header">
+        <span class="dash-icon">📐</span>
+        <h4>Dashboard 2 — Priorità editoriali per materia</h4>
+        <span class="dash-tag">Radar / Barre</span>
+      </div>
+      <div class="dash-preview-body">
+        <p>Per ogni disciplina, un grafico radar o a barre orizzontali che mostra l'importanza media attribuita dai docenti a ciascuna delle <strong>8 caratteristiche del manuale ideale</strong>: orientamento al profilo professionale, ricerca internazionale, casi italiani, strumenti pratici, risorse digitali, lunghezza gestibile, autore italiano, prezzo.</p>
+        <div class="use-case">
+          <strong>Utilità diretta per la direzione editoriale:</strong> se i docenti di Psicologia dello Sviluppo mettono "strumenti pratici" e "orientamento al profilo professionale" ai primi posti, il briefing per un nuovo manuale lo deve riflettere. Il grafico traduce le opinioni dei docenti in specifiche editoriali misurabili.
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-preview">
+      <div class="dash-preview-header">
+        <span class="dash-icon">📋</span>
+        <h4>Dashboard 3 — Schede opportunità per cattedra</h4>
+        <span class="dash-tag">Operativa</span>
+      </div>
+      <div class="dash-preview-body">
+        <p>La più operativa delle tre. Per ogni cattedra da cui arriva una risposta, una <strong>scheda individuale</strong> che riassume: docente, ateneo, materia, classe, manuale in uso, soddisfazione, disponibilità al cambio, priorità dichiarate, reazione alla proposta Zanichelli, richiesta di contatto. Accanto, i dati dalla dashboard esistente: bacino studenti, quota Zanichelli, quota competitor, posizione nel quadrante della matrice opportunità.</p>
+        <div class="use-case">
+          <strong>In fondo a ogni scheda, un'azione suggerita:</strong> "Inviare copia saggio Occhini", "Programmare visita con proposta Kring vs Verrocchio", "Monitorare — soddisfatto del testo attuale". Ogni risposta al questionario si traduce in un'indicazione operativa per il promotore.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ 8. ANALISI INCROCIATE ═══ -->
+<div class="section-block" id="analisi">
+  <div class="container">
+    <div class="section-title"><span class="num">8</span> Cinque analisi che solo l'incrocio può produrre</div>
+    <p class="section-subtitle">Né l'indagine nazionale da sola, né il questionario da solo possono generare queste informazioni. Nascono esclusivamente dalla combinazione dei due dataset.</p>
+
+    <div class="insight-card">
+      <div class="insight-num">01</div>
+      <h4>Correlazione editore — soddisfazione</h4>
+      <p>Potremo misurare se i docenti che usano un determinato editore sono mediamente più o meno soddisfatti di quelli che ne usano un altro, per ciascuna materia. Non sarà più una percezione del promotore, ma un dato misurabile su cui costruire la proposta commerciale.</p>
+      <div class="example">Esempio: se emergerà che i docenti con manuali McGraw-Hill di Psicologia dello Sviluppo hanno una soddisfazione media di 3.2/5 e il 40% considera di cambiare, mentre quelli con manuali Il Mulino sono a 4.1/5 e solo il 10% considera il cambio, avremo un dato competitivo potentissimo per orientare le azioni commerciali — e per scegliere contro quale editore concentrare le risorse.</div>
+    </div>
+
+    <div class="insight-card red-border">
+      <div class="insight-num">02</div>
+      <h4>Domanda latente nelle materie scoperte</h4>
+      <p>Nelle risposte dei docenti delle tre materie dove Zanichelli è assente (Psicologia Sociale, Psicometria, Sociologia Generale — un mercato complessivo di 50.944 studenti), emergerà se percepiscono una carenza nell'offerta attuale e quale tipo di manuale vorrebbero. Il questionario usa la Versione D della mail, con un tono di ascolto: "non abbiamo un titolo, ci aiuti a capire se investire".</p>
+      <div class="example">Esempio: se 8 docenti su 12 di Sociologia Generale dicono che manca un testo orientato ai profili L-19/L-24 e il mercato vale 15.760 studenti, il business case per un nuovo titolo si costruisce da solo — con i nomi dei docenti che lo aspettano.</div>
+    </div>
+
+    <div class="insight-card green-border">
+      <div class="insight-num">03</div>
+      <h4>Profilo del manuale ideale per segmento</h4>
+      <p>Incrociando le risposte sulla tabella Likert delle 8 caratteristiche con la classe di laurea, potremo vedere se i docenti L-24 hanno priorità diverse da quelli L-19 e LM-85bis per la stessa materia. Questo dato è fondamentale per la strategia editoriale: giustifica l'esistenza di titoli differenziati per segmento e ne orienta il briefing.</p>
+      <div class="example">Esempio: in Psicologia Clinica, i docenti L-24 potrebbero dare massima importanza al rigore diagnostico DSM-5-TR, mentre quelli LM-85bis alla dimensione applicativa per insegnanti. Questo valida la strategia dei "titoli-funzione" (un Kring per L-24, un Occhini per LM-85bis) e può suggerire lo stesso approccio per altre materie dove oggi esiste un solo titolo trasversale.</div>
+    </div>
+
+    <div class="insight-card purple-border">
+      <div class="insight-num">04</div>
+      <h4>Tasso di reazione alle proposte Zanichelli per materia</h4>
+      <p>Ogni materia del questionario include una proposta editoriale Zanichelli formulata ad hoc (un nuovo titolo, una nuova edizione, un adattamento). L'interesse medio (scala 1-5) per ciascuna proposta, incrociato con il bacino potenziale dalla dashboard, fornisce alla direzione editoriale un criterio oggettivo per decidere dove investire prima.</p>
+      <div class="example">Esempio: se la proposta "Psicologia dello sviluppo per insegnare" riceve un interesse medio di 4.2/5 da parte dei docenti L-19 e LM-85bis, mentre "Sociologia per psicologi" riceve 2.8/5, la direzione ha un numero — non un'intuizione — per decidere la priorità di investimento tra i due progetti.</div>
+    </div>
+
+    <div class="insight-card orange-border">
+      <div class="insight-num">05</div>
+      <h4>Identificazione dei docenti-chiave</h4>
+      <p>Incrociando la disponibilità al contatto dichiarata nel questionario con il bacino studenti e la materia dalla dashboard, emergeranno i docenti ad alto valore sia commerciale (grandi cattedre con possibilità di conversione) sia editoriale (potenziali autori per progetti futuri). Il promotore potrà dare priorità ai contatti con il maggior impatto potenziale.</p>
+      <div class="example">Esempio: un docente di Psicologia dello Sviluppo in un grande ateneo, insoddisfatto del Santrock, con 400 studenti, che si dichiara disponibile a collaborare, è il profilo ideale sia per una conversione immediata (copia saggio + visita) sia per un progetto autoriale a medio termine.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ 9. REPORT FINALE ═══ -->
+<div class="section-block" id="report">
+  <div class="container">
+    <div class="section-title"><span class="num">9</span> Report di sintesi per la direzione</div>
+    <p class="section-subtitle">Il prodotto finale del sistema: un report che integra dati quantitativi dell'indagine e dati qualitativi del questionario in raccomandazioni operative strutturate su tre orizzonti temporali.</p>
+
+    <div class="report-card">
+      <div class="report-icon immediate">🚀</div>
+      <div class="report-body">
+        <h4>Azioni commerciali immediate</h4>
+        <p>Cattedre dove intervenire subito con copie saggio e visite: docenti insoddisfatti del manuale in uso, con bacini studenti significativi, che hanno chiesto di essere contattati o hanno espresso forte interesse per una proposta Zanichelli. Ogni azione sarà accompagnata dalla scheda opportunità della Dashboard 3, con tutti i dati necessari al promotore per preparare l'incontro.</p>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-icon medium">📘</div>
+      <div class="report-body">
+        <h4>Investimenti editoriali a medio termine</h4>
+        <p>Nuove edizioni, nuovi titoli e briefing autori calibrati sulle priorità dichiarate dai docenti. La Dashboard 2 (priorità editoriali per materia) fornirà le specifiche: se in una disciplina i docenti mettono "strumenti pratici" e "casi italiani" ai primi posti, il briefing per l'autore lo deve riflettere. I docenti che si sono dichiarati disponibili a collaborare costituiranno il primo bacino di contatto per i nuovi progetti.</p>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-icon monitor">👁️</div>
+      <div class="report-body">
+        <h4>Aree da monitorare</h4>
+        <p>Materie scoperte e segmenti dove il momento non è ancora maturo per entrare, ma dove conviene mantenere l'intelligence attiva. I dati sugli argomenti emergenti (tabella Likert del Livello 2) segnaleranno le direzioni di evoluzione delle discipline: quando un tema come la telepsicologia o l'open science raggiungerà una massa critica di interesse, saremo i primi ad avere il dato che lo dimostra.</p>
+      </div>
+    </div>
+
     <div class="quote-box" style="margin-top:32px">
       <p>L'obiettivo finale è trasformare ogni risposta al questionario in un'azione commerciale specifica: una visita, una copia saggio, una proposta editoriale, un contatto per un progetto autoriale. Non raccogliamo dati per produrre report, ma per vendere libri migliori a chi li aspetta.</p>
       <div class="author">— Visione operativa del progetto</div>
     </div>
+
   </div>
 </div>
 
